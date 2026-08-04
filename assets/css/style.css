@@ -470,6 +470,79 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .magfeature__desc { margin-top: 18px; font-size: 15.5px; color: rgba(255,255,255,.74); line-height: 1.8; }
 
 /* =========================================================
+   법률정보 게시판
+   ========================================================= */
+.board-top {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 22px;
+}
+.board-total { font-size: 14px; color: var(--gray-500); }
+.board-total b { color: var(--navy); font-weight: 700; }
+.board-search { display: flex; gap: 0; }
+.board-search input {
+  height: 44px; width: clamp(180px, 26vw, 280px); padding: 0 16px;
+  font: inherit; font-size: 14px; color: var(--ink);
+  border: 1px solid var(--line); border-right: 0; background: #fff;
+}
+.board-search input:focus { outline: 0; border-color: var(--navy); }
+.board-search button {
+  height: 44px; padding-inline: 20px; font-size: 14px; font-weight: 600;
+  background: var(--navy); color: #fff;
+}
+
+.board-list { border-top: 2px solid var(--navy); }
+.board-item { border-bottom: 1px solid var(--line); }
+.board-item > a {
+  display: grid; grid-template-columns: 64px 108px minmax(0, 1fr) 116px 40px;
+  align-items: center; gap: 18px; padding: 22px 12px;
+  transition: background .3s var(--ease);
+}
+.board-item > a:hover { background: var(--navy-soft); }
+.board-no { font-size: 14px; font-weight: 700; color: var(--gray-300); text-align: center; }
+.board-cate {
+  justify-self: start; padding: 5px 11px; font-size: 12px; font-weight: 600;
+  color: var(--navy); background: var(--navy-soft); white-space: nowrap;
+}
+.board-item.is-prec .board-cate { color: #7a5f28; background: rgba(176,141,79,.14); }
+.board-tit strong {
+  display: block; font-size: clamp(15px, 1.5vw, 17px); font-weight: 600;
+  color: var(--ink); letter-spacing: -.025em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.board-tit p {
+  margin-top: 6px; font-size: 13.5px; color: var(--gray-500);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.board-date { font-size: 13.5px; color: var(--gray-500); text-align: right; }
+.board-go { text-align: center; color: var(--gray-300); transition: color .3s var(--ease), transform .3s var(--ease); }
+.board-item > a:hover .board-go { color: var(--navy); transform: translateX(3px); }
+.board-empty { padding: 70px 12px; text-align: center; color: var(--gray-500); font-size: 15px; }
+
+.board-page { display: flex; justify-content: center; gap: 6px; margin-top: 40px; flex-wrap: wrap; }
+.board-page button {
+  min-width: 42px; height: 42px; padding-inline: 12px;
+  font-size: 14px; font-weight: 600; color: var(--gray-700);
+  border: 1px solid var(--line); background: #fff;
+  transition: all .25s var(--ease);
+}
+.board-page button:hover:not(:disabled) { border-color: var(--navy); color: var(--navy); }
+.board-page button.is-on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.board-page button:disabled { opacity: .35; cursor: default; }
+
+.board-note {
+  margin-top: 26px; padding: 18px 22px; background: var(--paper-alt);
+  border-left: 3px solid var(--navy); font-size: 13.5px; color: var(--gray-500); line-height: 1.75;
+}
+.board-note b { color: var(--navy); }
+
+@media (max-width: 900px) {
+  .board-item > a { grid-template-columns: 88px minmax(0, 1fr); gap: 8px 14px; padding: 18px 8px; }
+  .board-no, .board-go { display: none; }
+  .board-date { grid-column: 1 / -1; text-align: left; font-size: 12.5px; }
+  .board-tit strong, .board-tit p { white-space: normal; }
+}
+
+/* =========================================================
    Client list
    ========================================================= */
 .clients { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }

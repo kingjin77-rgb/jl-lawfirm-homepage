@@ -1,0 +1,420 @@
+{
+  "generatedAt": "2026-08-04 16:17",
+  "source": "법제처 국가법령정보 공동활용 (law.go.kr)",
+  "counts": {
+    "law": 11,
+    "prec": 19,
+    "total": 30
+  },
+  "items": [
+    {
+      "type": "law",
+      "category": "단체등기",
+      "title": "주택법",
+      "summary": "소관 국토교통부 · 시행 2026.08.04 · 최종 공포 2026.02.03",
+      "date": "2026.08.04",
+      "meta": {
+        "lawId": "001809",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EB%B2%95",
+      "no": 30
+    },
+    {
+      "type": "law",
+      "category": "하자소송",
+      "title": "공동주택관리법",
+      "summary": "소관 국토교통부 · 시행 2026.07.01 · 최종 공포 2026.03.05",
+      "date": "2026.07.01",
+      "meta": {
+        "lawId": "012345",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EB%8F%99%EC%A3%BC%ED%83%9D%EA%B4%80%EB%A6%AC%EB%B2%95",
+      "no": 29
+    },
+    {
+      "type": "law",
+      "category": "재건축·재개발",
+      "title": "도시 및 주거환경정비법",
+      "summary": "소관 국토교통부 · 시행 2026.07.01 · 최종 공포 2026.03.05",
+      "date": "2026.07.01",
+      "meta": {
+        "lawId": "009410",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EB%8F%84%EC%8B%9C%20%EB%B0%8F%20%EC%A3%BC%EA%B1%B0%ED%99%98%EA%B2%BD%EC%A0%95%EB%B9%84%EB%B2%95",
+      "no": 28
+    },
+    {
+      "type": "law",
+      "category": "재건축·재개발",
+      "title": "빈집 및 소규모주택 정비에 관한 특례법",
+      "summary": "소관 국토교통부 · 시행 2026.07.01 · 최종 공포 2026.03.05",
+      "date": "2026.07.01",
+      "meta": {
+        "lawId": "012805",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EB%B9%88%EC%A7%91%20%EB%B0%8F%20%EC%86%8C%EA%B7%9C%EB%AA%A8%EC%A3%BC%ED%83%9D%20%EC%A0%95%EB%B9%84%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%A1%80%EB%B2%95",
+      "no": 27
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
+      "title": "사해행위취소",
+      "summary": "포항지원-2025-가단-3804",
+      "date": "2026.06.18",
+      "meta": {
+        "caseNo": "포항지원-2025-가단-3804",
+        "court": "",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/판례/(%ED%8F%AC%ED%95%AD%EC%A7%80%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-3804)",
+      "no": 26
+    },
+    {
+      "type": "law",
+      "category": "재건축·재개발",
+      "title": "공익사업을 위한 토지 등의 취득 및 보상에 관한 법률",
+      "summary": "소관 국토교통부 · 시행 2026.06.16 · 최종 공포 2026.06.16",
+      "date": "2026.06.16",
+      "meta": {
+        "lawId": "009295",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EC%9D%B5%EC%82%AC%EC%97%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%ED%86%A0%EC%A7%80%20%EB%93%B1%EC%9D%98%20%EC%B7%A8%EB%93%9D%20%EB%B0%8F%20%EB%B3%B4%EC%83%81%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B2%95%EB%A5%A0",
+      "no": 25
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
+      "title": "사해행위취소",
+      "summary": "서울남부지방법원-2024-가단-308349",
+      "date": "2026.06.10",
+      "meta": {
+        "caseNo": "서울남부지방법원-2024-가단-308349",
+        "court": "",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EC%84%9C%EC%9A%B8%EB%82%A8%EB%B6%80%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2024-%EA%B0%80%EB%8B%A8-308349)",
+      "no": 24
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
+      "title": "이 사건 현금증여는 사해행위로서 취소되어야 함",
+      "summary": "인천지방법원-2026-가합-50032",
+      "date": "2026.06.09",
+      "meta": {
+        "caseNo": "인천지방법원-2026-가합-50032",
+        "court": "",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EC%9D%B8%EC%B2%9C%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2026-%EA%B0%80%ED%95%A9-50032)",
+      "no": 23
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
+      "title": "이 사건 증여계약은 사해행위로서 취소되어야 함",
+      "summary": "고양지원-2025-가단-56624",
+      "date": "2026.05.29",
+      "meta": {
+        "caseNo": "고양지원-2025-가단-56624",
+        "court": "",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EA%B3%A0%EC%96%91%EC%A7%80%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-56624)",
+      "no": 22
+    },
+    {
+      "type": "law",
+      "category": "민사·형사",
+      "title": "상가건물 임대차보호법",
+      "summary": "소관 국토교통부,법무부 · 시행 2026.05.12 · 최종 공포 2025.11.11",
+      "date": "2026.05.12",
+      "meta": {
+        "lawId": "009276",
+        "ministry": "국토교통부,법무부"
+      },
+      "link": "https://www.law.go.kr/법령/%EC%83%81%EA%B0%80%EA%B1%B4%EB%AC%BC%20%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
+      "no": 21
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "소유권이전등기말소등",
+      "summary": "대법원 · 2025다217707 · 판결",
+      "date": "2026.03.12",
+      "meta": {
+        "caseNo": "2025다217707",
+        "court": "대법원",
+        "keyword": "소유권이전등기 말소"
+      },
+      "link": "https://www.law.go.kr/판례/(2025%EB%8B%A4217707)",
+      "no": 20
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "이사건 소유권 이전등기 가등기 말소는 소멸시효 10년 완성으로 소멸됨",
+      "summary": "인천지방법원-2025-가단-217326",
+      "date": "2026.03.06",
+      "meta": {
+        "caseNo": "인천지방법원-2025-가단-217326",
+        "court": "",
+        "keyword": "소유권이전등기 말소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EC%9D%B8%EC%B2%9C%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-217326)",
+      "no": 19
+    },
+    {
+      "type": "law",
+      "category": "민사·형사",
+      "title": "민사집행법",
+      "summary": "소관 법무부 · 시행 2026.02.01 · 최종 공포 2025.01.31",
+      "date": "2026.02.01",
+      "meta": {
+        "lawId": "009290",
+        "ministry": "법무부"
+      },
+      "link": "https://www.law.go.kr/법령/%EB%AF%BC%EC%82%AC%EC%A7%91%ED%96%89%EB%B2%95",
+      "no": 18
+    },
+    {
+      "type": "prec",
+      "category": "하자소송",
+      "title": "하자보수보증금등",
+      "summary": "대법원 · 2025다218322 · 판결",
+      "date": "2026.01.29",
+      "meta": {
+        "caseNo": "2025다218322",
+        "court": "대법원",
+        "keyword": "하자보수보증금"
+      },
+      "link": "https://www.law.go.kr/판례/(2025%EB%8B%A4218322)",
+      "no": 17
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "피고는 체납자의 별지 목록 기재 부동산에 관하여 소유권이전청구권가등기의 말소등기절차를 이행하여야 함",
+      "summary": "대구지방법원-2025-가단-109875",
+      "date": "2026.01.15",
+      "meta": {
+        "caseNo": "대구지방법원-2025-가단-109875",
+        "court": "",
+        "keyword": "소유권이전등기 말소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EB%8C%80%EA%B5%AC%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-109875)",
+      "no": 16
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "소유권이전등기의 말소등기에 대하여 승낙의 의사표시를 할 의무",
+      "summary": "서울서부지방법원-2023-가단-232369",
+      "date": "2026.01.14",
+      "meta": {
+        "caseNo": "서울서부지방법원-2023-가단-232369",
+        "court": "",
+        "keyword": "소유권이전등기 말소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EC%84%9C%EC%9A%B8%EC%84%9C%EB%B6%80%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2023-%EA%B0%80%EB%8B%A8-232369)",
+      "no": 15
+    },
+    {
+      "type": "law",
+      "category": "단체등기",
+      "title": "민간임대주택에 관한 특별법",
+      "summary": "소관 국토교통부 · 시행 2026.01.02 · 최종 공포 2025.10.01",
+      "date": "2026.01.02",
+      "meta": {
+        "lawId": "000243",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EB%AF%BC%EA%B0%84%EC%9E%84%EB%8C%80%EC%A3%BC%ED%83%9D%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%B3%84%EB%B2%95",
+      "no": 14
+    },
+    {
+      "type": "law",
+      "category": "민사·형사",
+      "title": "주택임대차보호법",
+      "summary": "소관 국토교통부,법무부 · 시행 2026.01.02 · 최종 공포 2025.10.01",
+      "date": "2026.01.02",
+      "meta": {
+        "lawId": "001248",
+        "ministry": "국토교통부,법무부"
+      },
+      "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
+      "no": 13
+    },
+    {
+      "type": "prec",
+      "category": "하자소송",
+      "title": "하자보수보증금등",
+      "summary": "서울고등법원 · 2023나2013051 · 판결",
+      "date": "2025.08.28",
+      "meta": {
+        "caseNo": "2023나2013051",
+        "court": "서울고등법원",
+        "keyword": "하자보수보증금"
+      },
+      "link": "https://www.law.go.kr/판례/(2023%EB%82%982013051)",
+      "no": 12
+    },
+    {
+      "type": "law",
+      "category": "단체등기",
+      "title": "부동산등기법",
+      "summary": "소관 법무부 · 시행 2025.01.31 · 최종 공포 2024.09.20",
+      "date": "2025.01.31",
+      "meta": {
+        "lawId": "001697",
+        "ministry": "법무부"
+      },
+      "link": "https://www.law.go.kr/법령/%EB%B6%80%EB%8F%99%EC%82%B0%EB%93%B1%EA%B8%B0%EB%B2%95",
+      "no": 11
+    },
+    {
+      "type": "law",
+      "category": "하자소송",
+      "title": "집합건물의 소유 및 관리에 관한 법률",
+      "summary": "소관 법무부 · 시행 2023.09.29 · 최종 공포 2023.03.28",
+      "date": "2023.09.29",
+      "meta": {
+        "lawId": "001262",
+        "ministry": "법무부"
+      },
+      "link": "https://www.law.go.kr/법령/%EC%A7%91%ED%95%A9%EA%B1%B4%EB%AC%BC%EC%9D%98%20%EC%86%8C%EC%9C%A0%20%EB%B0%8F%20%EA%B4%80%EB%A6%AC%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B2%95%EB%A5%A0",
+      "no": 10
+    },
+    {
+      "type": "prec",
+      "category": "하자소송",
+      "title": "하자보수보증금등청구의소",
+      "summary": "대법원 · 2023다219417 · 판결",
+      "date": "2023.06.29",
+      "meta": {
+        "caseNo": "2023다219417",
+        "court": "대법원",
+        "keyword": "하자보수보증금"
+      },
+      "link": "https://www.law.go.kr/판례/(2023%EB%8B%A4219417)",
+      "no": 9
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "관리처분계획일부무효확인등",
+      "summary": "대법원 · 2022두56586 · 판결",
+      "date": "2023.06.29",
+      "meta": {
+        "caseNo": "2022두56586",
+        "court": "대법원",
+        "keyword": "관리처분계획 무효"
+      },
+      "link": "https://www.law.go.kr/판례/(2022%EB%91%9056586)",
+      "no": 8
+    },
+    {
+      "type": "prec",
+      "category": "하자소송",
+      "title": "하자보수보증금등",
+      "summary": "서울중앙지방법원 · 2019가합591124 · 판결",
+      "date": "2023.02.07",
+      "meta": {
+        "caseNo": "2019가합591124",
+        "court": "서울중앙지방법원",
+        "keyword": "하자보수보증금"
+      },
+      "link": "https://www.law.go.kr/판례/(2019%EA%B0%80%ED%95%A9591124)",
+      "no": 7
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "관리처분계획일부무효확인등",
+      "summary": "서울고등법원 · 2021누56376 · 판결",
+      "date": "2022.08.18",
+      "meta": {
+        "caseNo": "2021누56376",
+        "court": "서울고등법원",
+        "keyword": "관리처분계획 무효"
+      },
+      "link": "https://www.law.go.kr/판례/(2021%EB%88%8456376)",
+      "no": 6
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "현금청산금청구의소",
+      "summary": "대법원 · 2017두48437 · 판결",
+      "date": "2021.04.29",
+      "meta": {
+        "caseNo": "2017두48437",
+        "court": "대법원",
+        "keyword": "현금청산금"
+      },
+      "link": "https://www.law.go.kr/판례/(2017%EB%91%9048437)",
+      "no": 5
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "대체주택을 취득한 날부터 3년 이내에 현금청산금 지급을 구하는 소송절차가 진행 중인 경우가 아닐 경우 1세대 1주택 비과세 해당안됨",
+      "summary": "의정부지방법원-2020-구단-6233",
+      "date": "2021.02.15",
+      "meta": {
+        "caseNo": "의정부지방법원-2020-구단-6233",
+        "court": "",
+        "keyword": "현금청산금"
+      },
+      "link": "https://www.law.go.kr/판례/(%EC%9D%98%EC%A0%95%EB%B6%80%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2020-%EA%B5%AC%EB%8B%A8-6233)",
+      "no": 4
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "관리처분계획무효확인의소",
+      "summary": "대법원 · 2018두55753 · 판결",
+      "date": "2019.01.17",
+      "meta": {
+        "caseNo": "2018두55753",
+        "court": "대법원",
+        "keyword": "관리처분계획 무효"
+      },
+      "link": "https://www.law.go.kr/판례/(2018%EB%91%9055753)",
+      "no": 3
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "현금청산금 청구의 소",
+      "summary": "서울고등법원 · 2015누51998 · 판결",
+      "date": "2017.05.17",
+      "meta": {
+        "caseNo": "2015누51998",
+        "court": "서울고등법원",
+        "keyword": "현금청산금"
+      },
+      "link": "https://www.law.go.kr/판례/(2015%EB%88%8451998)",
+      "no": 2
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "현금청산금 청구의 소",
+      "summary": "서울행정법원 · 2014구합61231 · 판결",
+      "date": "2015.07.02",
+      "meta": {
+        "caseNo": "2014구합61231",
+        "court": "서울행정법원",
+        "keyword": "현금청산금"
+      },
+      "link": "https://www.law.go.kr/판례/(2014%EA%B5%AC%ED%95%A961231)",
+      "no": 1
+    }
+  ]
+}

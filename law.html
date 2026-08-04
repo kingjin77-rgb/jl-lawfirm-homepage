@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>법률정보 | 법무법인 제이엘</title>
+<meta name="description" content="집합건물법·도시정비법·공동주택관리법 등 제이엘 업무분야 관련 법령의 시행·개정 현황과 관련 대법원 판례를 정리합니다.">
+<script>document.documentElement.className+=' js';</script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="header is-sub">
+  <div class="container header__inner">
+    <a class="logo" href="index.html">
+      <span class="logo__mark">JL<span class="dot">.</span></span>
+      <span class="logo__name">법무법인 제이엘</span>
+    </a>
+    <nav class="gnb" aria-label="주메뉴">
+      <a href="about.html">법인소개</a>
+      <a href="lawyers.html">구성원</a>
+      <a href="practice.html">업무분야</a>
+      <a href="registry.html">단체등기</a>
+      <a href="law.html">법률정보</a>
+      <a href="magazine.html">제이엘 매거진</a>
+      <a href="contact.html">오시는 길</a>
+    </nav>
+    <div class="header__util">
+      <a class="btn-track" href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">등기진행조회</a>
+      <a class="header__tel" href="tel:025370123">
+        <span class="lbl">LEGAL CONSULTATION</span>
+        <span class="num">02-537-0123</span>
+      </a>
+    </div>
+    <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="subhero">
+    <div class="container subhero__inner">
+      <h1><span class="en">LEGAL INFORMATION</span>법률정보</h1>
+      <p class="breadcrumb"><span>HOME</span><span>법률정보</span></p>
+    </div>
+  </section>
+
+  <section class="section" data-board>
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">LAW &amp; PRECEDENT</span>법령 개정 · <strong>판례 동향</strong></h2>
+        <p class="sec-desc">
+          제이엘 업무분야에 직접 걸리는 법령의 시행·개정 현황과 관련 대법원 판례입니다.
+          법제처 국가법령정보 공동활용 시스템에서 자동으로 수집하며, 항목을 누르면 원문으로 이동합니다.
+        </p>
+      </div>
+
+      <div class="magfilter reveal" data-board-filter>
+        <button type="button" class="is-on" data-filter="all">전체</button>
+        <button type="button" data-filter="하자소송">하자소송</button>
+        <button type="button" data-filter="재건축·재개발">재건축 · 재개발</button>
+        <button type="button" data-filter="단체등기">단체등기</button>
+        <button type="button" data-filter="민사·형사">민사 · 형사</button>
+        <button type="button" data-filter="기업법무">기업법무</button>
+      </div>
+
+      <div class="board-top reveal">
+        <p class="board-total" data-board-total>불러오는 중…</p>
+        <form class="board-search" data-board-search role="search">
+          <input type="search" name="q" placeholder="법령명 · 사건명 검색" aria-label="법률정보 검색">
+          <button type="submit">검색</button>
+        </form>
+      </div>
+
+      <div class="board-list reveal" data-board-list>
+        <div class="board-empty">법률정보를 불러오는 중입니다…</div>
+      </div>
+
+      <div class="board-page" data-board-page></div>
+
+      <p class="board-note reveal">
+        <b>안내</b> — 본 목록은 법제처 국가법령정보 공동활용 Open API에서 자동 수집한 공개 정보입니다.
+        <span data-board-stamp></span><br>
+        법령 원문과 판례 전문은 법제처 국가법령정보센터에서 확인하실 수 있으며,
+        개별 사안의 판단은 사실관계에 따라 달라지므로 구체적인 사건은 담당 변호사와 상담하시기 바랍니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">JL ORIGINAL</span>제이엘 <strong>자체 분석</strong></h2>
+        <p class="sec-desc">공개 법령 정보와 별개로, 제이엘이 직접 작성한 검토보고서와 매거진입니다.</p>
+      </div>
+      <p class="reveal">
+        <a class="btn" href="magazine.html">제이엘 매거진 보기 <span class="arrow">&#8594;</span></a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section cta">
+    <div class="container cta__inner">
+      <div class="reveal">
+        <h2>내 사건에는 어떻게 적용되는지 궁금하다면</h2>
+        <p>법령은 같아도 결론은 사실관계에서 갈립니다. 담당 변호사가 직접 검토해 드립니다.</p>
+      </div>
+      <div class="cta__tels reveal" data-delay="120">
+        <div><span class="lbl">서울 본사</span><a class="num" href="tel:025370123">02-537-0123</a></div>
+        <div><span class="lbl">동탄 분사무소</span><a class="num" href="tel:18994252">1899-4252</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <nav class="footer__nav" aria-label="하단메뉴">
+        <a href="about.html">법인소개</a>
+        <a href="lawyers.html">구성원</a>
+        <a href="practice.html">업무분야</a>
+        <a href="corporate.html">기업법무</a>
+        <a href="registry.html">단체등기</a>
+        <a href="law.html">법률정보</a>
+        <a href="magazine.html">제이엘 매거진</a>
+        <a href="contact.html">오시는 길</a>
+      </nav>
+      <div class="footer__links">
+        <a href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">단체등기 진행조회</a>
+        <a href="https://www.scourt.go.kr/portal/information/events/search/search.jsp" target="_blank" rel="noopener">나의 사건검색</a>
+        <a href="https://ecfs.scourt.go.kr/ecf/index.jsp" target="_blank" rel="noopener">전자소송</a>
+        <a href="http://www.iros.go.kr/PMainJ.jsp" target="_blank" rel="noopener">인터넷등기소</a>
+        <a href="https://www.courtauction.go.kr/" target="_blank" rel="noopener">법원경매정보</a>
+        <a href="https://glaw.scourt.go.kr/wsjo/intesrch/sjo022.do" target="_blank" rel="noopener">종합법률정보</a>
+      </div>
+    </div>
+    <div class="footer__body">
+      <div><p class="footer__logo">JL<span class="dot">.</span><span class="ko">법무법인 제이엘</span></p></div>
+      <div class="footer__offices">
+        <address><h4>서울 본사</h4>서울 서초구 서초대로53길 15 정원빌딩 4층<br>TEL 02-537-0123 &nbsp;|&nbsp; FAX 02-537-1331</address>
+        <address><h4>동탄 분사무소</h4>경기도 화성시 동탄순환대로 127-5 우성센트럴타워 9층 914호<br>TEL 1899-4252 &nbsp;|&nbsp; FAX 0505-300-6300</address>
+      </div>
+    </div>
+    <div class="footer__copy">
+      <span>EMAIL jllaw2020@naver.com</span>
+      <span>© JL LAW FIRM. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="quick">
+  <a href="tel:025370123">서울 02-537-0123</a>
+  <a class="is-alt" href="tel:18994252">동탄 1899-4252</a>
+</div>
+
+<script src="assets/js/board.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

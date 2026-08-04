@@ -21,6 +21,7 @@
       <a href="lawyers.html">구성원</a>
       <a href="practice.html">업무분야</a>
       <a href="registry.html">단체등기</a>
+      <a href="law.html">법률정보</a>
       <a href="magazine.html">제이엘 매거진</a>
       <a href="contact.html">오시는 길</a>
     </nav>
@@ -55,9 +56,11 @@
       <div class="grid grid--2">
 
         <article class="office reveal">
-          <div class="office__map">
-            <!-- 카카오맵/네이버지도 iframe 삽입 위치 -->
-            <a href="https://map.kakao.com/?q=서울 서초구 서초대로53길 15 정원빌딩" target="_blank" rel="noopener">지도 보기 — 서울 본사</a>
+          <div class="office__map" id="map-seoul"
+               data-map data-lat="37.4955361954462" data-lng="127.014646495883"
+               data-label="법무법인 제이엘 서울 본사"
+               data-link="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EC%84%9C%EC%B4%88%EB%8C%80%EB%A1%9C53%EA%B8%B8%2015">
+            <a href="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EC%84%9C%EC%B4%88%EB%8C%80%EB%A1%9C53%EA%B8%B8%2015" target="_blank" rel="noopener">카카오맵에서 보기 — 서울 본사</a>
           </div>
           <div class="office__body">
             <p class="office__tag">HEAD OFFICE</p>
@@ -72,8 +75,11 @@
         </article>
 
         <article class="office reveal" data-delay="120">
-          <div class="office__map">
-            <a href="https://map.kakao.com/?q=경기도 화성시 동탄순환대로 127-5 우성센트럴타워" target="_blank" rel="noopener">지도 보기 — 동탄 분사무소</a>
+          <div class="office__map" id="map-dongtan"
+               data-map data-lat="37.166027084515264" data-lng="127.10730396739461"
+               data-label="법무법인 제이엘 동탄 분사무소"
+               data-link="https://map.kakao.com/?q=%EA%B2%BD%EA%B8%B0%20%ED%99%94%EC%84%B1%EC%8B%9C%20%EB%8F%99%ED%83%84%EC%88%9C%ED%99%98%EB%8C%80%EB%A1%9C%20127-5">
+            <a href="https://map.kakao.com/?q=%EA%B2%BD%EA%B8%B0%20%ED%99%94%EC%84%B1%EC%8B%9C%20%EB%8F%99%ED%83%84%EC%88%9C%ED%99%98%EB%8C%80%EB%A1%9C%20127-5" target="_blank" rel="noopener">카카오맵에서 보기 — 동탄 분사무소</a>
           </div>
           <div class="office__body">
             <p class="office__tag">DONGTAN BRANCH</p>
@@ -131,6 +137,7 @@
         <a href="practice.html">업무분야</a>
         <a href="corporate.html">기업법무</a>
         <a href="registry.html">단체등기</a>
+        <a href="law.html">법률정보</a>
         <a href="magazine.html">제이엘 매거진</a>
         <a href="contact.html">오시는 길</a>
       </nav>
@@ -162,6 +169,11 @@
   <a class="is-alt" href="tel:18994252">동탄 1899-4252</a>
 </div>
 
+<!-- 카카오맵 JavaScript SDK
+     ※ developers.kakao.com → 앱 → 플랫폼 → Web 에 배포 도메인과 http://localhost:5180 을 등록해야 로드됩니다.
+        미등록 도메인에서는 SDK 요청이 거부되고, 아래 스크립트가 지도 대신 링크를 그대로 남겨둡니다. -->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6dd941689e3c39956d9ba809f127c947&autoload=false"></script>
+<script src="assets/js/map.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
