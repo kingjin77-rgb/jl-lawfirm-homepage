@@ -1,6 +1,8 @@
-/* 카카오맵 렌더링
-   - [data-map] 요소를 찾아 지도를 그린다.
-   - SDK 미로드(도메인 미등록 등)면 아무것도 하지 않는다 → HTML 안의 "카카오맵에서 보기" 링크가 그대로 남는다.
+/* 지도 렌더링 — 2단 구성
+   1) 기본: OpenStreetMap 임베드 iframe. 키·도메인 등록이 필요 없어 어디서든 바로 뜬다.
+   2) 승격: 카카오 SDK가 로드되면(= 개발자 콘솔에 해당 도메인이 등록되면)
+      카카오맵으로 교체한다. 국내 지도는 카카오 쪽이 상세하다.
+   카카오 미등록 상태에서는 SDK 요청이 401(domain mismatched)로 거부되므로 1)이 그대로 남는다.
 */
 (function () {
   'use strict';
@@ -8,8 +10,62 @@
   var targets = document.querySelectorAll('[data-map]');
   if (!targets.length) return;
 
+  /* ---------- 1) OSM 임베드 ---------- */
+  function osmEmbed(el) {
+    var lat = parseFloat(el.dataset.lat);
+    var lng = parseFloat(el.dataset.lng);
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    var d = 0.0032; // 표시 범위(약 350m)
+    var bbox = [lng - d, lat - d * 0.62, lng + d, lat + d * 0.62].join('%2C');
+
+    var frame = document.createElement('iframe');
+    frame.src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + bbox +
+                '&layer=mapnik&marker=' + lat + '%2C' + lng;
+    frame.loading = 'lazy';
+    frame.title = (el.dataset.label || '사무소') + ' 위치';
+    frame.setAttribute('aria-label', frame.title);
+    frame.style.cssText = 'width:100%;height:100%;border:0;display:block';
+
+    el.innerHTML = '';
+    el.style.position = 'relative';
+    el.appendChild(frame);
+    addOverlay(el);
+  }
+
+  /* 라벨 + 길찾기 버튼 (두 방식 공통) */
+  function addOverlay(el) {
+    var label = el.dataset.label;
+    if (label) {
+      var tag = document.createElement('span');
+      tag.textContent = label;
+      tag.style.cssText =
+        'position:absolute;left:12px;top:12px;z-index:3;padding:7px 12px;' +
+        'background:#0d2162;color:#fff;font-size:13px;font-weight:600;white-space:nowrap;' +
+        'box-shadow:0 6px 18px rgba(8,21,65,.28);pointer-events:none';
+      el.appendChild(tag);
+    }
+    var link = el.dataset.link;
+    if (link) {
+      var a = document.createElement('a');
+      a.href = link;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = '카카오맵 길찾기 ↗';
+      a.style.cssText =
+        'position:absolute;right:12px;bottom:12px;z-index:3;padding:8px 14px;' +
+        'background:rgba(255,255,255,.94);color:#0d2162;font-size:13px;font-weight:600;' +
+        'box-shadow:0 4px 14px rgba(0,0,0,.16)';
+      el.appendChild(a);
+    }
+  }
+
+  targets.forEach(osmEmbed);
+
+  /* ---------- 2) 카카오 SDK가 살아있으면 승격 ---------- */
   if (typeof kakao === 'undefined' || !kakao.maps) {
-    console.warn('[map] 카카오 SDK 미로드 — 도메인 등록 여부를 확인하세요. 지도 대신 링크가 노출됩니다.');
+    console.info('[map] 카카오 SDK 미로드 — OpenStreetMap으로 표시합니다. ' +
+                 '카카오 개발자 콘솔에 이 도메인을 등록하면 카카오맵으로 자동 전환됩니다.');
     return;
   }
 
