@@ -20,15 +20,49 @@ jl-homepage/
 ├── practice.html     업무분야 — 민사·형사 / 하자소송 / 재건축·재개발 / 상속·이혼·조세 + 소송절차
 ├── corporate.html    기업법무 — 기업법률자문 · 법인등기 · 자문 고객사
 ├── registry.html     단체등기 — 입주아파트 / 분양전환 / 대지권 + 6단계 절차 + 준비서류
-├── magazine.html     제이엘 매거진 — 검토보고서 카드 그리드 (카테고리 필터)
-├── contact.html      오시는 길 — 서울 본사 / 동탄 분사무소
+├── law.html          법률정보 — 법제처 API 자동 수집 목록 (필터·검색·페이지네이션)
+├── magazine.html     제이엘 매거진 — THE ASSET 발행호 + 검토보고서 카드
+├── contact.html      오시는 길 — 서울 본사 / 동탄 분사무소 (카카오맵)
+├── magazine/
+│   └── issue-02.html         THE ASSET 제2호 (16면, 1.1MB, 이미지 base64 내장)
+├── data/
+│   └── law-feed.json         법률정보 피드 (자동 생성물, 직접 수정 금지)
+├── tools/
+│   └── fetch_law_feed.py     법제처 Open API 수집 스크립트
 └── assets/
     ├── css/style.css
-    ├── js/main.js
+    ├── js/main.js            공통 (헤더·내비·리빌·히어로·아코디언·매거진 필터)
+    ├── js/board.js           법률정보 게시판 렌더링
+    ├── js/map.js             카카오맵 렌더링
     ├── img/skyline.svg       영상 미재생 시 대체 배경 (직접 생성, 창문 점멸 애니메이션)
     ├── img/hero-poster.jpg   히어로 영상 포스터
+    ├── img/magazine/         매거진 표지
     └── video/hero.mp4        도시 전경 (Pexels, 15초, 877KB)
 ```
+
+## 법률정보 자동 수집
+
+법제처 국가법령정보 공동활용 Open API(law.go.kr)에서 법령 개정 현황과 판례를 가져온다.
+
+```bash
+LAW_GO_KR_OC=<OC코드> python jl-homepage/tools/fetch_law_feed.py
+```
+
+- 추적 법령 12종 — 집합건물법 · 공동주택관리법 · 주택법 · 부동산등기법 · 민간임대특별법 ·
+  도시정비법 · 소규모주택정비법 · 토지보상법 · 주택임대차보호법 · 상가임대차법 · 민사집행법 · 상법
+- 판례 검색어 24개 (분야별 핵심 쟁점)
+- 이 API는 검색어를 토큰 단위로 매칭하고 결과를 가나다순으로 돌려주므로
+  ("상법" 검색 → "…보상 등에 관한 법률"이 먼저 나옴), 법령명 정확 일치가 나올 때까지 페이지를 넘긴다.
+- `.github/workflows/law-feed.yml` 이 매일 06:00 KST 실행, 변경분이 있을 때만 커밋.
+  리포지토리 시크릿 `LAW_GO_KR_OC` 필요 (등록 완료).
+
+## 카카오맵
+
+`contact.html` 의 `[data-map]` 요소를 `assets/js/map.js` 가 렌더링한다.
+SDK가 로드되지 않으면 아무것도 하지 않고, HTML에 적힌 "카카오맵에서 보기" 링크가 그대로 남는다.
+
+**도메인 등록 필수** — developers.kakao.com → 앱(분양공고문분석기, ID 1515165) → 플랫폼 → Web 에
+배포 도메인과 `http://localhost:5180` 을 등록해야 지도가 뜬다. 미등록 시 SDK 요청이 조용히 거부된다.
 
 ## 정보구조 (GNB)
 
@@ -79,8 +113,9 @@ jl-homepage/
 - [ ] 변호사 프로필 사진 5인 (현재 성씨 한자 플레이스홀더 — `.leader__photo` / `.lawyer__photo` 안에 `<img>` 삽입)
 - [ ] 주요업무 아코디언 배경 이미지 5장 (현재 네이비 그라디언트, `.acc__bg`)
 - [ ] 매거진 카드 썸네일 (현재 그라디언트, `.magcard__thumb`)
-- [ ] 매거진 상세 페이지 및 게시일 (현재 목록만, 날짜 미표기 — 임의 날짜 넣지 않음)
-- [ ] 카카오맵/네이버지도 iframe (`contact.html` → `.office__map`)
+- [ ] 검토보고서 9건 열람 방식 — 현재 "준비 중" 표기. PDF 배포 / 상세 페이지 / 회원 열람 중 결정 필요
+- [ ] THE ASSET 1호 — 2호만 확보됨. 1호 발행 여부 확인 필요
+- [ ] 카카오 개발자 콘솔 도메인 등록 (등록 전까지 지도 대신 링크 노출)
 - [ ] 상담게시판 · 자료실 (동적 기능, 현재 미포함)
 
 ## 유의
