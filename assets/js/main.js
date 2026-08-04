@@ -57,14 +57,35 @@
 
   /* ---------- 히어로 슬라이드 (7초 체류 / 2초 크로스페이드) ---------- */
   var slides = document.querySelectorAll('.hero__slide');
+  var curEl = document.querySelector('[data-hero-current]');
+  var totEl = document.querySelector('[data-hero-total]');
+  if (totEl && slides.length) totEl.textContent = slides.length;
   if (slides.length > 1 && !reduced) {
     var idx = 0;
     setInterval(function () {
       slides[idx].classList.remove('is-active');
       idx = (idx + 1) % slides.length;
       slides[idx].classList.add('is-active');
+      if (curEl) curEl.textContent = idx + 1;
     }, 7000);
   }
+
+  /* ---------- 주요업무 아코디언 (hover + click/focus) ---------- */
+  document.querySelectorAll('[data-acc]').forEach(function (acc) {
+    var items = Array.prototype.slice.call(acc.querySelectorAll('.acc__item'));
+    var open = function (item) {
+      items.forEach(function (i) { i.classList.toggle('is-open', i === item); });
+    };
+    items.forEach(function (item) {
+      item.tabIndex = 0;
+      item.addEventListener('mouseenter', function () { open(item); });
+      item.addEventListener('click', function () { open(item); });
+      item.addEventListener('focus', function () { open(item); });
+      item.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(item); }
+      });
+    });
+  });
 
   /* ---------- 히어로 배경 영상 ----------
      파일이 없거나 재생 실패하면 이미지 슬라이드가 그대로 유지된다.
@@ -114,6 +135,22 @@
       });
     });
   });
+
+  /* ---------- 매거진 카테고리 필터 ---------- */
+  var magFilter = document.querySelector('[data-magfilter]');
+  var magList = document.querySelector('[data-maglist]');
+  if (magFilter && magList) {
+    magFilter.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-filter]');
+      if (!btn) return;
+      var cat = btn.dataset.filter;
+      magFilter.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-on', b === btn); });
+      magList.querySelectorAll('.magcard').forEach(function (card) {
+        var show = cat === 'all' || card.dataset.cat === cat;
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  }
 
   /* ---------- 현재 페이지 GNB 표시 ---------- */
   var here = location.pathname.split('/').pop() || 'index.html';

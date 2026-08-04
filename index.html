@@ -26,15 +26,18 @@
       <a href="about.html">법인소개</a>
       <a href="lawyers.html">구성원</a>
       <a href="practice.html">업무분야</a>
-      <a href="corporate.html">기업법무</a>
       <a href="registry.html">단체등기</a>
+      <a href="magazine.html">제이엘 매거진</a>
       <a href="contact.html">오시는 길</a>
     </nav>
 
-    <a class="header__tel" href="tel:025370123">
-      <span class="lbl">LEGAL CONSULTATION</span>
-      <span class="num">02-537-0123</span>
-    </a>
+    <div class="header__util">
+      <a class="btn-track" href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">등기진행조회</a>
+      <a class="header__tel" href="tel:025370123">
+        <span class="lbl">LEGAL CONSULTATION</span>
+        <span class="num">02-537-0123</span>
+      </a>
+    </div>
 
     <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -50,9 +53,9 @@
       <div class="hero__slide hero__slide--1 is-active"></div>
       <div class="hero__slide hero__slide--2"></div>
       <div class="hero__slide hero__slide--3"></div>
-      <!-- 배경 영상: assets/video/hero.mp4 를 넣으면 자동으로 슬라이드 위에 재생됩니다.
-           파일이 없으면 위 슬라이드가 그대로 노출됩니다. -->
-      <video class="hero__video" data-src="assets/video/hero.mp4"
+      <!-- 배경 영상(도시 전경). 파일 교체만으로 바뀝니다.
+           재생 불가 환경에서는 아래 스카이라인 슬라이드가 그대로 노출됩니다. -->
+      <video class="hero__video" data-src="assets/video/hero.mp4" poster="assets/img/hero-poster.jpg"
              muted loop playsinline preload="none" aria-hidden="true"></video>
     </div>
 
@@ -73,29 +76,148 @@
       </div>
     </div>
 
-    <div class="hero__scroll" aria-hidden="true">
-      <span>SCROLL</span>
-      <i></i>
+    <div class="container hero__hud">
+      <p class="hero__count"><b data-hero-current>1</b> / <span data-hero-total>3</span></p>
+      <div class="hero__scroll" aria-hidden="true">
+        <span>SCROLL</span>
+        <i></i>
+      </div>
+      <span></span>
     </div>
+  </section>
 
-    <div class="hero__meta">
-      <div class="container">
-        <ul>
-          <li><span class="k">CRIMINAL</span><span class="v">검찰 수사단계 변론</span></li>
-          <li><span class="k">REAL ESTATE</span><span class="v">부동산 · 건설하자</span></li>
-          <li><span class="k">CORPORATE</span><span class="v">금융기관 자문 · PF</span></li>
-          <li><span class="k">REGISTRATION</span><span class="v">공동주택 단체등기</span></li>
-        </ul>
+  <!-- ============ 숫자로 보는 제이엘 ============ -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="sec-head sec-head--center reveal">
+        <h2 class="sec-title"><span class="en">JL BY NUMBERS</span>숫자로 보는 <strong>법무법인 제이엘</strong></h2>
+        <p class="sec-desc">부장검사 출신 대표변호사와 전담 분야별 실무진이 하나의 팀으로 움직입니다.</p>
+      </div>
+
+      <div class="statgrid">
+        <div class="statcard reveal">
+          <span class="lbl">구성원 변호사</span>
+          <span class="num">5<small>인</small></span>
+          <span class="desc">검사 출신 변호사와 형사법 전문 변호사가 함께 사건을 봅니다.</span>
+        </div>
+        <div class="statcard reveal" data-delay="80">
+          <span class="lbl">대표변호사 경력</span>
+          <span class="num">28<small>기</small></span>
+          <span class="desc">사법연수원 제28기. 서울중앙지검 조사부 부부장검사, 부산지검 형사5부장검사 역임.</span>
+        </div>
+        <div class="statcard reveal" data-delay="160">
+          <span class="lbl">전담 업무분야</span>
+          <span class="num">5<small>개</small></span>
+          <span class="desc">민사·부동산 / 형사 / 기업법무 / 조세·상속 / 단체등기</span>
+        </div>
+        <div class="statcard reveal" data-delay="240">
+          <span class="lbl">사무소</span>
+          <span class="num">2<small>개소</small></span>
+          <span class="desc">서울 서초 본사와 화성 동탄 분사무소에서 상담이 가능합니다.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 주요업무 아코디언 ============ -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-head sec-head--center reveal">
+        <h2 class="sec-title"><span class="en">JL BUSINESS</span>주요업무</h2>
+        <p class="sec-desc">항목을 선택하면 세부 업무가 펼쳐집니다.</p>
+      </div>
+
+      <div class="acc reveal" data-acc>
+
+        <article class="acc__item is-open">
+          <div class="acc__bg" style="background-image:linear-gradient(150deg,#1b2b57,#42639f)"></div>
+          <div class="acc__body">
+            <span class="acc__no">01</span>
+            <h3 class="acc__title">민사 · 형사</h3>
+            <ul class="acc__list">
+              <li>부동산 소유권 · 명도 · 임대차</li>
+              <li>사해행위취소 · 채권 회수</li>
+              <li>가압류 · 가처분 등 보전처분</li>
+              <li>수사 초기 대응 · 피의자신문 참여</li>
+              <li>경제범죄 · 조세범 · 재산범죄</li>
+              <li><a href="practice.html#civil" style="color:#cbb27e;font-weight:600">자세히 보기 →</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="acc__item">
+          <div class="acc__bg" style="background-image:linear-gradient(150deg,#131d3c,#31456f)"></div>
+          <div class="acc__body">
+            <span class="acc__no">02</span>
+            <h3 class="acc__title">기업법무</h3>
+            <ul class="acc__list">
+              <li>기업 법률자문 (상시 고문)</li>
+              <li>금융기관 여신 · 담보 자문</li>
+              <li>PF 대출약정 · 계약서 검토</li>
+              <li>법인등기 · 상업등기</li>
+              <li>기업 분쟁 소송 · 채권 회수</li>
+              <li><a href="corporate.html" style="color:#cbb27e;font-weight:600">자세히 보기 →</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="acc__item">
+          <div class="acc__bg" style="background-image:linear-gradient(150deg,#1d2a4d,#3c5488)"></div>
+          <div class="acc__body">
+            <span class="acc__no">03</span>
+            <h3 class="acc__title">단체등기</h3>
+            <ul class="acc__list">
+              <li>입주 아파트 소유권이전등기</li>
+              <li>분양전환 등기</li>
+              <li>대지권 등기</li>
+              <li>근저당권 설정등기</li>
+              <li>등기권리증 교부 · 채권 정산</li>
+              <li><a href="registry.html" style="color:#cbb27e;font-weight:600">자세히 보기 →</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="acc__item">
+          <div class="acc__bg" style="background-image:linear-gradient(150deg,#16203f,#2c3f6b)"></div>
+          <div class="acc__body">
+            <span class="acc__no">04</span>
+            <h3 class="acc__title">하자소송</h3>
+            <ul class="acc__list">
+              <li>공동주택 하자보수 청구</li>
+              <li>하자보수보증금 청구</li>
+              <li>입주자대표회의 · 관리단 대리</li>
+              <li>하자감정 절차 대응</li>
+              <li>시공사 · 보증기관 상대 소송</li>
+              <li><a href="practice.html#defect" style="color:#cbb27e;font-weight:600">자세히 보기 →</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="acc__item">
+          <div class="acc__bg" style="background-image:linear-gradient(150deg,#1a2547,#485f92)"></div>
+          <div class="acc__body">
+            <span class="acc__no">05</span>
+            <h3 class="acc__title">재건축 · 재개발</h3>
+            <ul class="acc__list">
+              <li>조합설립 · 정관 자문</li>
+              <li>조합 총회 결의 · 임원 분쟁</li>
+              <li>관리처분계획 취소소송</li>
+              <li>현금청산 · 매도청구</li>
+              <li>집단 명도 · 수용 보상</li>
+              <li><a href="practice.html#redev" style="color:#cbb27e;font-weight:600">자세히 보기 →</a></li>
+            </ul>
+          </div>
+        </article>
+
       </div>
     </div>
   </section>
 
   <!-- ============ INTRO ============ -->
-  <section class="section">
+  <section class="section section--alt">
     <div class="container split">
       <div class="reveal">
-        <p class="sec-label">About</p>
-        <h2 class="sec-title">법무법인 제이엘<span class="en">Trust &amp; Truth</span></h2>
+        <h2 class="sec-title"><span class="en">ABOUT JL</span>법무법인 제이엘</h2>
       </div>
       <div class="reveal prose" data-delay="120">
         <p>
@@ -119,115 +241,92 @@
     </div>
   </section>
 
-  <!-- ============ PRACTICE ============ -->
-  <section class="section section--alt">
-    <div class="container">
-      <div class="sec-head sec-head--center reveal">
-        <p class="sec-label">Practice Areas</p>
-        <h2 class="sec-title">주요 업무분야<span class="en">Our Practice</span></h2>
-        <p class="sec-desc">분야별 지식과 경험을 쌓은 변호사가 사건을 직접 지휘하고, 전담팀이 실무를 수행합니다.</p>
-      </div>
-
-      <div class="grid grid--4">
-        <article class="pcard reveal">
-          <span class="pcard__no">01</span>
-          <h3 class="pcard__title">민사 · 부동산 · 하자</h3>
-          <p class="pcard__desc">부동산 소유권, 임대차, 명도, 건설 하자, 사해행위 소송에 특화하며 각종 손해배상 소송을 다수 처리합니다.</p>
-          <ul class="pcard__tags">
-            <li>소유권</li><li>임대차·명도</li><li>건설하자</li><li>가압류·가처분</li>
-          </ul>
-          <span class="pcard__more"><a href="practice.html#civil">자세히 보기 →</a></span>
-        </article>
-
-        <article class="pcard reveal" data-delay="90">
-          <span class="pcard__no">02</span>
-          <h3 class="pcard__title">형사</h3>
-          <p class="pcard__desc">피의자 단계부터 변호인으로 피의자신문에 참여하고 영장실질심사에 관여합니다. 관련 민사소송도 병행합니다.</p>
-          <ul class="pcard__tags">
-            <li>수사단계 변론</li><li>조사 참여</li><li>영장실질심사</li><li>공판</li>
-          </ul>
-          <span class="pcard__more"><a href="practice.html#criminal">자세히 보기 →</a></span>
-        </article>
-
-        <article class="pcard reveal" data-delay="180">
-          <span class="pcard__no">03</span>
-          <h3 class="pcard__title">기업법무</h3>
-          <p class="pcard__desc">신한은행·신한캐피탈 등 금융기관 자문변호사로서 사해행위소송, 가처분, PF계약서 검토를 수행합니다.</p>
-          <ul class="pcard__tags">
-            <li>금융 자문</li><li>PF계약 검토</li><li>법인등기</li><li>사해행위</li>
-          </ul>
-          <span class="pcard__more"><a href="corporate.html">자세히 보기 →</a></span>
-        </article>
-
-        <article class="pcard reveal" data-delay="270">
-          <span class="pcard__no">04</span>
-          <h3 class="pcard__title">상속 · 이혼 · 조세</h3>
-          <p class="pcard__desc">대표변호사의 공인회계사 실무경험을 바탕으로 조세심판원 단계부터 대응하며, 상속재산분할·유류분 소송을 진행합니다.</p>
-          <ul class="pcard__tags">
-            <li>조세심판</li><li>상속재산분할</li><li>유류분</li><li>이혼</li>
-          </ul>
-          <span class="pcard__more"><a href="practice.html#tax">자세히 보기 →</a></span>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ LAWYERS ============ -->
   <section class="section">
     <div class="container">
       <div class="sec-head reveal">
-        <p class="sec-label">People</p>
-        <h2 class="sec-title">제이엘 변호사단<span class="en">Our Lawyers</span></h2>
-        <p class="sec-desc">검사 출신 변호사와 전담 분야별 실무진이 다양한 경험과 시스템으로 결과를 준비합니다.</p>
+        <h2 class="sec-title"><span class="en">JL LAWYER</span>구성원 소개</h2>
+        <p class="sec-desc">공인회계사 겸 부장검사 출신 대표변호사와 4인의 구성원 변호사가 사건을 직접 지휘합니다.</p>
       </div>
 
-      <div class="lawyer-grid">
-        <article class="lawyer reveal">
-          <div class="lawyer__photo"><span class="initial">朴</span></div>
-          <div class="lawyer__body">
-            <p class="lawyer__role">대표변호사 / 공인회계사</p>
-            <h3 class="lawyer__name">박종일<span class="en">PARK JONG IL</span></h3>
-            <ul class="lawyer__career">
-              <li><strong>1999</strong> 사법연수원 제28기 수료</li>
-              <li><strong>2012</strong> 서울중앙지검 조사부 부부장검사</li>
+      <article class="leader reveal">
+        <div class="leader__photo"><span class="initial">朴</span></div>
+        <div class="leader__body">
+          <p class="leader__role">REPRESENTATIVE ATTORNEY</p>
+          <h3 class="leader__name">박종일<span class="en">PARK JONG IL</span></h3>
+          <p class="leader__tagline">
+            제21회 공인회계사시험과 제38회 사법시험에 모두 합격한 부장검사 출신.
+            회계와 수사 양쪽을 아는 시각으로 사건의 구조를 먼저 봅니다.
+          </p>
+          <div class="leader__cols">
+            <h4>주요 경력</h4>
+            <ul>
+              <li><strong>1999</strong> 사법연수원 수료 (제28기)</li>
+              <li><strong>2012</strong> 서울중앙지방검찰청 부부장검사</li>
+              <li><strong>2013</strong> 광주지검 목포지청 부장검사</li>
+            </ul>
+            <ul>
               <li><strong>2014</strong> 부산지검 형사5부장검사</li>
-              <li><strong>2020</strong> 제이비금융지주 사외이사</li>
+              <li><strong>2015</strong> 수원지검 평택지청 부장검사</li>
+              <li><strong>2019</strong> 제이비금융지주 사외이사</li>
             </ul>
           </div>
-        </article>
+          <p style="margin-top:30px">
+            <a class="btn" href="lawyers.html">구성원 전체 보기 <span class="arrow">→</span></a>
+          </p>
+        </div>
+      </article>
 
-        <article class="lawyer reveal" data-delay="90">
+      <div class="lawyer-grid" style="margin-top:clamp(24px,3vw,40px)">
+        <article class="lawyer reveal">
           <div class="lawyer__photo"><span class="initial">李</span></div>
           <div class="lawyer__body">
             <p class="lawyer__role">변호사</p>
-            <h3 class="lawyer__name">이지훈<span class="en">LEE JI HUN</span></h3>
+            <h3 class="lawyer__name">이지훈</h3>
             <ul class="lawyer__career">
-              <li><strong>2013</strong> 사법연수원 제42기 수료</li>
-              <li><strong>2014</strong> 서울고등검찰청 공익법무관</li>
-              <li><strong>2017</strong> 법무법인 태환 변호사</li>
-              <li><strong>2020</strong> 법무법인 제이엘 변호사</li>
+              <li>사법연수원 제42기</li>
+              <li>서울고등검찰청 송무부</li>
+              <li>국가소송 · 행정소송 수행</li>
             </ul>
           </div>
         </article>
-
-        <article class="lawyer reveal" data-delay="180">
+        <article class="lawyer reveal" data-delay="80">
+          <div class="lawyer__photo"><span class="initial">張</span></div>
+          <div class="lawyer__body">
+            <p class="lawyer__role">변호사</p>
+            <h3 class="lawyer__name">장우진</h3>
+            <ul class="lawyer__career">
+              <li>사법연수원 제42기</li>
+              <li>서울중앙지방법원 민사조정위원</li>
+              <li>서울지방변호사회 조세연수원 수료</li>
+            </ul>
+          </div>
+        </article>
+        <article class="lawyer reveal" data-delay="160">
           <div class="lawyer__photo"><span class="initial">林</span></div>
           <div class="lawyer__body">
             <p class="lawyer__role">변호사 / 형사법 전문</p>
-            <h3 class="lawyer__name">임준규<span class="en">LIM JUN KYU</span></h3>
+            <h3 class="lawyer__name">임준규</h3>
             <ul class="lawyer__career">
-              <li>대한변호사협회 형사법 전문변호사</li>
-              <li>법무부 국가송무과 공익법무관</li>
+              <li>대한변협 형사법 전문변호사</li>
               <li>서울지방국세청 송무국</li>
               <li>EY한영회계법인 세무본부 Manager</li>
             </ul>
           </div>
         </article>
+        <article class="lawyer reveal" data-delay="240">
+          <div class="lawyer__photo"><span class="initial">河</span></div>
+          <div class="lawyer__body">
+            <p class="lawyer__role">변호사</p>
+            <h3 class="lawyer__name">하혜용</h3>
+            <ul class="lawyer__career">
+              <li>제10회 변호사시험 합격</li>
+              <li>법무법인(유) 세한</li>
+              <li>법무법인 태성</li>
+            </ul>
+          </div>
+        </article>
       </div>
-
-      <p style="margin-top:44px" class="reveal">
-        <a class="btn" href="lawyers.html">구성원 전체 보기 <span class="arrow">→</span></a>
-      </p>
     </div>
   </section>
 
@@ -235,8 +334,7 @@
   <section class="section section--dark">
     <div class="container split">
       <div class="reveal">
-        <p class="sec-label">Group Registration</p>
-        <h2 class="sec-title">공동주택 단체등기<span class="en">Move-in &amp; Registration</span></h2>
+        <h2 class="sec-title"><span class="en">GROUP REGISTRATION</span>공동주택 <strong>단체등기</strong></h2>
       </div>
       <div class="reveal prose" data-delay="120" style="color:rgba(255,255,255,.72)">
         <p>
@@ -250,13 +348,83 @@
       </div>
     </div>
 
-    <div class="container" style="margin-top:clamp(40px,5vw,72px)">
-      <ul class="stats">
-        <li class="reveal"><span class="num">28<small>기</small></span><span class="lbl">대표변호사 사법연수원</span></li>
-        <li class="reveal" data-delay="80"><span class="num">5<small>인</small></span><span class="lbl">구성원 변호사</span></li>
-        <li class="reveal" data-delay="160"><span class="num">2<small>개소</small></span><span class="lbl">서울 본사 · 동탄 분사무소</span></li>
-        <li class="reveal" data-delay="240"><span class="num">8<small>+</small></span><span class="lbl">주요 자문 고객사</span></li>
-      </ul>
+    <div class="container steps grid grid--3" style="margin-top:clamp(40px,5vw,72px)">
+      <div class="step reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)">
+        <span class="step__no">01</span>
+        <h3 class="step__title" style="color:#fff">입주준비 · 사전점검</h3>
+        <ul>
+          <li style="color:rgba(255,255,255,.66)">입주예정자협의회 활동 지원</li>
+          <li style="color:rgba(255,255,255,.66)">대출은행 협약 · 현장 법률상담</li>
+        </ul>
+      </div>
+      <div class="step reveal" data-delay="90" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)">
+        <span class="step__no">02</span>
+        <h3 class="step__title" style="color:#fff">보존 · 개별등기</h3>
+        <ul>
+          <li style="color:rgba(255,255,255,.66)">검인 · 취득세 신고 대행</li>
+          <li style="color:rgba(255,255,255,.66)">소유권이전 · 근저당권설정등기</li>
+        </ul>
+      </div>
+      <div class="step reveal" data-delay="180" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)">
+        <span class="step__no">03</span>
+        <h3 class="step__title" style="color:#fff">권리증 교부 · 정산</h3>
+        <ul>
+          <li style="color:rgba(255,255,255,.66)">등기권리증 교부</li>
+          <li style="color:rgba(255,255,255,.66)">국민주택채권 정산 · 영수증 발급</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MAGAZINE ============ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">JL MAGAZINE</span>제이엘 <strong>매거진</strong></h2>
+        <p class="sec-desc">제이엘이 입주예정자 관점에서 직접 작성한 분양공고 검토보고서와 법률 이슈 분석입니다.</p>
+      </div>
+
+      <div class="maggrid">
+        <article class="magcard reveal">
+          <div class="magcard__thumb" style="background:linear-gradient(150deg,#1d2a4d,#42639f)">
+            <span class="magcard__cat">민간임대</span>
+          </div>
+          <div class="magcard__body">
+            <h3 class="magcard__title">동탄 파라곤 3차 민간임대 검토보고서</h3>
+            <p class="magcard__desc">확정분양가·유주택 청약·무상옵션이 실제로 무엇을 뜻하는지 공고문 원문과 대조해 정리.</p>
+            <ul class="magcard__tags"><li>민간임대</li><li>확정분양가</li><li>동탄</li></ul>
+            <p class="magcard__meta"><span>법무법인 제이엘</span><span class="more">보고서 보기 →</span></p>
+          </div>
+        </article>
+
+        <article class="magcard reveal" data-delay="90">
+          <div class="magcard__thumb" style="background:linear-gradient(150deg,#1b2b57,#4b6bab)">
+            <span class="magcard__cat">분양공고 검토</span>
+          </div>
+          <div class="magcard__body">
+            <h3 class="magcard__title">힐스테이트 광명 11 검토보고서</h3>
+            <p class="magcard__desc">동별 내진설계 편차와 개선사항을 원문 인용 기준으로 전수 점검.</p>
+            <ul class="magcard__tags"><li>동별 유의사항</li><li>내진설계</li><li>광명</li></ul>
+            <p class="magcard__meta"><span>법무법인 제이엘</span><span class="more">보고서 보기 →</span></p>
+          </div>
+        </article>
+
+        <article class="magcard reveal" data-delay="180">
+          <div class="magcard__thumb" style="background:linear-gradient(150deg,#2a2f4d,#5a6a9c)">
+            <span class="magcard__cat">하자 · 개선요구</span>
+          </div>
+          <div class="magcard__body">
+            <h3 class="magcard__title">엘리프 한신더휴 수원 — 입예협 개선요구사항</h3>
+            <p class="magcard__desc">입주자예정자협의회 명의로 시공사에 제출할 개선요구사항을 항목별 근거와 함께 정리.</p>
+            <ul class="magcard__tags"><li>입예협</li><li>개선요구</li><li>수원</li></ul>
+            <p class="magcard__meta"><span>법무법인 제이엘</span><span class="more">보고서 보기 →</span></p>
+          </div>
+        </article>
+      </div>
+
+      <p style="margin-top:44px" class="reveal">
+        <a class="btn" href="magazine.html">매거진 전체 보기 <span class="arrow">&#8594;</span></a>
+      </p>
     </div>
   </section>
 
@@ -291,9 +459,11 @@
         <a href="practice.html">업무분야</a>
         <a href="corporate.html">기업법무</a>
         <a href="registry.html">단체등기</a>
+        <a href="magazine.html">제이엘 매거진</a>
         <a href="contact.html">오시는 길</a>
       </nav>
       <div class="footer__links">
+        <a href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">단체등기 진행조회</a>
         <a href="https://www.scourt.go.kr/portal/information/events/search/search.jsp" target="_blank" rel="noopener">나의 사건검색</a>
         <a href="https://ecfs.scourt.go.kr/ecf/index.jsp" target="_blank" rel="noopener">전자소송</a>
         <a href="http://www.iros.go.kr/PMainJ.jsp" target="_blank" rel="noopener">인터넷등기소</a>
