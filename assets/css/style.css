@@ -1023,3 +1023,78 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   .dtable thead th:first-child { width: 96px; }
   .legal h2 { margin-top: 42px; }
 }
+
+/* =========================================================
+   변호사 개인 페이지 (lawyers/<slug>.html)
+   ========================================================= */
+.lwp-profile {
+  display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  border: 1px solid var(--line); background: #fff; overflow: hidden;
+}
+.lwp-profile__photo {
+  position: relative; min-height: 440px;
+  background: radial-gradient(circle at 50% 28%, var(--navy-soft), #dde2ed);
+  display: flex; align-items: center; justify-content: center;
+}
+.lwp-profile__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.lwp-profile__photo .initial {
+  font-size: clamp(110px, 14vw, 200px); font-weight: 800;
+  color: rgba(13,33,98,.12); letter-spacing: -.05em; line-height: 1;
+}
+.lwp-profile__body { padding: clamp(32px, 4.5vw, 64px); display: flex; flex-direction: column; justify-content: center; }
+.lwp-profile__role { font-size: 12px; letter-spacing: .2em; color: var(--navy); font-weight: 700; }
+.lwp-profile__name { margin-top: 12px; font-size: clamp(30px, 4vw, 52px); font-weight: 800; letter-spacing: -.045em; }
+.lwp-profile__name .en { margin-left: 12px; font-size: 14px; font-weight: 400; color: var(--gray-300); letter-spacing: .08em; }
+.lwp-profile__tagline { margin-top: 18px; max-width: 620px; font-size: clamp(15px, 1.5vw, 17.5px); color: var(--gray-700); }
+.lwp-profile__acts { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+.lwp-focus { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.lwp-focus__card {
+  padding: 30px 28px; background: #fff; border: 1px solid var(--line);
+  border-top: 3px solid var(--navy);
+}
+.lwp-focus__card h3 { font-size: 18px; font-weight: 700; }
+.lwp-focus__card p { margin-top: 12px; font-size: 14.5px; color: var(--gray-500); line-height: 1.8; }
+
+.lwp-career__list { max-height: none; }
+
+.lwp-cols { display: grid; gap: 14px; }
+.lwp-col {
+  display: grid; gap: 6px; padding: 28px 30px;
+  background: #fff; border: 1px solid var(--line);
+  transition: border-color .35s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.lwp-col:hover {
+  border-color: var(--navy); transform: translateY(-3px);
+  box-shadow: 0 18px 40px -26px rgba(13, 33, 98, .5);
+}
+.lwp-col__cate { font-size: 11.5px; letter-spacing: .16em; color: var(--gold); font-weight: 700; }
+.lwp-col__title { font-size: clamp(17px, 1.8vw, 21px); font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
+.lwp-col__desc { font-size: 14.5px; color: var(--gray-500); }
+.lwp-col__src { margin-top: 6px; font-size: 12.5px; color: var(--gray-300); font-weight: 600; }
+
+.lwp-others { display: grid; gap: 12px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.lwp-other {
+  padding: 22px 20px; text-align: center;
+  background: #fff; border: 1px solid var(--line);
+  transition: border-color .3s var(--ease), background .3s var(--ease);
+}
+.lwp-other strong { display: block; font-size: 16.5px; font-weight: 700; color: var(--ink); }
+.lwp-other span { display: block; margin-top: 5px; font-size: 12.5px; color: var(--gray-500); }
+.lwp-other:hover { border-color: var(--navy); }
+.lwp-other.is-cur { background: var(--navy); border-color: var(--navy); pointer-events: none; }
+.lwp-other.is-cur strong, .lwp-other.is-cur span { color: #fff; }
+
+.breadcrumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* 슬라이드쇼 → 개인 페이지 링크 */
+.lwslide__more { margin-top: 26px; }
+.lwslide__more .btn { height: 48px; padding-inline: 24px; font-size: 14px; }
+a.lwslide__photolink { display: contents; }
+
+@media (max-width: 900px) {
+  .lwp-profile { grid-template-columns: 1fr; }
+  .lwp-profile__photo { min-height: 300px; }
+  .lwp-focus { grid-template-columns: 1fr; }
+  .lwp-others { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

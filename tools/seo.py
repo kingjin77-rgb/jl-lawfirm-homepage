@@ -221,7 +221,15 @@ def branch_nodes():
     return out
 
 
-def crumbs_node(rel):
+def crumbs_node(rel, title=""):
+    if rel.startswith("lawyers/"):
+        leaf = title.split("|")[0].strip() or rel
+        return {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "홈", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": "구성원",
+             "item": SITE + "/lawyers.html"},
+            {"@type": "ListItem", "position": 3, "name": leaf, "item": SITE + "/" + rel},
+        ]}
     names = CRUMBS.get(rel)
     if not names:
         return None
@@ -242,26 +250,43 @@ def crumbs_node(rel):
     return {"@type": "BreadcrumbList", "itemListElement": items}
 
 
-def person_nodes():
-    """구성원 변호사 — 검색결과에 사람 정보로 잡히게 한다."""
+def _lawyers_data():
     path = os.path.join(BASE, "data", "lawyers.json")
     if not os.path.exists(path):
         return []
     with open(path, encoding="utf-8") as f:
-        data = json.load(f)
-    out = []
-    for L in data.get("lawyers", []):
-        out.append({
-            "@type": "Person",
-            "@id": SITE + "/#person-" + L["en"].replace(" ", "-").lower(),
-            "name": L["name"],
-            "alternateName": L["en"],
-            "jobTitle": L["role"],
-            "description": re.sub(r"<[^>]+>", "", L.get("tagline", "")),
-            "worksFor": {"@id": SITE + "/#organization"},
-            "knowsAbout": SERVICES,
-        })
-    return out
+        return json.load(f).get("lawyers", [])
+
+
+def _person(L):
+    slug = L.get("slug") or L["en"].replace(" ", "-").lower()
+    node = {
+        "@type": "Person",
+        "@id": SITE + "/#person-" + slug,
+        "name": L["name"],
+        "alternateName": L["en"],
+        "jobTitle": L["role"],
+        "description": re.sub(r"<[^>]+>", "", L.get("tagline", "")),
+        "worksFor": {"@id": SITE + "/#organization"},
+        "knowsAbout": [f["title"] for f in L.get("focus", [])] or SERVICES,
+    }
+    if L.get("slug"):
+        node["url"] = SITE + "/lawyers/" + L["slug"] + ".html"
+    return node
+
+
+def person_nodes():
+    """구성원 변호사 — 검색결과에 사람 정보로 잡히게 한다."""
+    return [_person(L) for L in _lawyers_data()]
+
+
+def person_node_for(rel):
+    """개인 페이지 — 해당 변호사 1인의 노드만 붙인다."""
+    slug = os.path.splitext(os.path.basename(rel))[0]
+    for L in _lawyers_data():
+        if L.get("slug") == slug:
+            return _person(L)
+    return None
 
 
 def graph_for(rel, title, desc):
@@ -296,8 +321,12 @@ def graph_for(rel, title, desc):
         graph.extend(branch_nodes())
     elif rel == "lawyers.html":
         graph.extend(person_nodes())
+    elif rel.startswith("lawyers/"):
+        p = person_node_for(rel)
+        if p:
+            graph.append(p)
 
-    c = crumbs_node(rel)
+    c = crumbs_node(rel, title)
     if c:
         graph.append(c)
     return {"@context": "https://schema.org", "@graph": graph}
@@ -348,6 +377,8 @@ def pages():
     out = []
     for p in sorted(glob.glob(os.path.join(BASE, "*.html"))):
         out.append(p)
+    for p in sorted(glob.glob(os.path.join(BASE, "lawyers", "*.html"))):
+        out.append(p)
     for p in sorted(glob.glob(os.path.join(BASE, "admin", "*.html"))):
         out.append(p)
     return out
@@ -369,7 +400,7 @@ def build_sitemap(rels):
             "  </url>" % (
                 loc, today,
                 "daily" if rel == "law.html" else "monthly",
-                PRIORITY.get(rel, "0.6"),
+                PRIORITY.get(rel, "0.8" if rel.startswith("lawyers/") else "0.6"),
             )
         )
     xml = (

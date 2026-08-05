@@ -37,18 +37,27 @@
       var photo = p.photo
         ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + ' 변호사">'
         : '<span class="initial">' + esc(p.initial || p.name.charAt(0)) + '</span>';
+      // 개인 페이지가 있으면 사진·이름을 클릭해 이동할 수 있다
+      var page = p.slug ? 'lawyers/' + esc(p.slug) + '.html' : '';
+      var photoBox = page
+        ? '<a class="lwslide__photolink" href="' + page + '" aria-label="' + esc(p.name) + ' 변호사 프로필 보기"><div class="lwslide__photo">' + photo + '</div></a>'
+        : '<div class="lwslide__photo">' + photo + '</div>';
+      var nameHtml = esc(p.name) + (p.en ? '<span class="en">' + esc(p.en) + '</span>' : '');
       return '' +
       '<article class="lwslide' + (i === 0 ? ' is-on' : '') + '" data-i="' + i + '"' +
               ' role="tabpanel" aria-label="' + esc(p.name) + ' 변호사">' +
-        '<div class="lwslide__photo">' + photo + '</div>' +
+        photoBox +
         '<div class="lwslide__body">' +
           '<p class="lwslide__role">' + esc(p.role) + '</p>' +
-          '<h3 class="lwslide__name">' + esc(p.name) +
-            (p.en ? '<span class="en">' + esc(p.en) + '</span>' : '') + '</h3>' +
+          '<h3 class="lwslide__name">' +
+            (page ? '<a href="' + page + '">' + nameHtml + '</a>' : nameHtml) + '</h3>' +
           (p.tagline ? '<p class="lwslide__tagline">' + esc(p.tagline) + '</p>' : '') +
           '<ul class="lwslide__career">' +
             (p.career || []).map(function (c) { return '<li>' + careerHtml(c) + '</li>'; }).join('') +
           '</ul>' +
+          (page
+            ? '<p class="lwslide__more"><a class="btn" href="' + page + '">프로필 전체 보기 <span class="arrow">→</span></a></p>'
+            : '') +
         '</div>' +
       '</article>';
     }).join('');
