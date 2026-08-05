@@ -2,7 +2,7 @@
    1인 단독 화면을 자동으로 전환한다.
    - 자동 재생(기본 7초), 호버/포커스 시 정지
    - 탭·화살표·키보드(←/→)로 수동 이동
-   - prefers-reduced-motion 이면 자동 재생하지 않는다
+   - prefers-reduced-motion 이면 전환 간격을 늘리고 진행바 애니메이션만 끈다
 */
 (function () {
   'use strict';
@@ -95,8 +95,8 @@
   }
 
   function play() {
-    if (reduced || timer) return;
-    timer = setInterval(function () { show(idx + 1); }, interval);
+    if (timer) return;
+    timer = setInterval(function () { show(idx + 1); }, reduced ? interval * 2 : interval);
     root.classList.add('is-playing');
     restartBar();
   }

@@ -216,6 +216,15 @@
       renderDocs();
       renderTimeline();
       renderComplexes();
+
+      // 접수 위저드(registry-apply.js)가 같은 기준으로 계산할 수 있게 노출
+      window.JLRegCalc = {
+        cfg: CFG,
+        acqRate: acqRate,
+        bondRate: bondRate,
+        stampDuty: stampDuty
+      };
+      document.dispatchEvent(new CustomEvent('jlreg:ready'));
     })
     .catch(function (err) {
       console.error('[portal]', err);

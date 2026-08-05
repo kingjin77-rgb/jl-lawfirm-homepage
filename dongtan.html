@@ -6,7 +6,7 @@
 <title>단체등기센터 · 동탄 분사무소 | 법무법인 제이엘</title>
 <meta name="description" content="공동주택 단체등기 원스톱 처리 — 입주 아파트 소유권이전, 분양전환, 대지권 등기. 비대면 접수와 진행조회까지 법무법인 제이엘 동탄 분사무소 단체등기센터.">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css?v=6">
+<link rel="stylesheet" href="assets/css/style.css?v=7">
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/dongtan.html">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -121,6 +121,147 @@
         법무법인 제이엘 동탄 분사무소가 전담합니다.
       </p>
       <p class="breadcrumb"><span>HOME</span><span>단체등기</span><span>단체등기센터</span></p>
+    </div>
+  </section>
+
+  <!-- 포털 퀵메뉴 -->
+  <nav class="pquick" aria-label="단체등기센터 바로가기">
+    <div class="container pquick__inner">
+      <a href="#apply"><strong>온라인 접수</strong><span>등기 신청 시작</span></a>
+      <a href="#calc"><strong>비용 계산</strong><span>취득세 · 채권 포함</span></a>
+      <a href="#docs"><strong>준비 서류</strong><span>조건별 체크리스트</span></a>
+      <a href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener"><strong>진행 조회</strong><span>내 등기 단계 확인 ↗</span></a>
+    </div>
+  </nav>
+
+  <!-- 온라인 접수 위저드 -->
+  <section class="section section--tint" id="apply" data-portal>
+    <div class="container">
+      <div class="sec-head sec-head--center reveal">
+        <h2 class="sec-title"><span class="en">ONLINE APPLICATION</span>단체등기 <strong>온라인 접수</strong></h2>
+        <p class="sec-desc">
+          네 단계면 접수가 끝납니다. 입력하신 내용은 담당자가 확인 후
+          당일 중 연락드립니다. 협의회(단지 단위) 문의는 전화가 빠릅니다 — 1899-4252
+        </p>
+      </div>
+
+      <div class="apw reveal" data-apply>
+        <ol class="apw__steps" aria-hidden="true">
+          <li class="apw__dot is-on">1<span>유형</span></li>
+          <li class="apw__dot">2<span>정보</span></li>
+          <li class="apw__dot">3<span>비용</span></li>
+          <li class="apw__dot">4<span>접수</span></li>
+        </ol>
+
+        <!-- 1단계: 등기유형 -->
+        <div class="apw__panel" data-step="1">
+          <p class="apw__q">어떤 등기가 필요하신가요?</p>
+          <div class="apw__types">
+            <button type="button" class="apw__type" data-type="newhome">
+              <strong>입주 아파트</strong>
+              <span>신축 입주 — 소유권이전 · 근저당권설정</span>
+            </button>
+            <button type="button" class="apw__type" data-type="conversion">
+              <strong>분양전환</strong>
+              <span>임대 후 분양전환 — 소유권 취득</span>
+            </button>
+            <button type="button" class="apw__type" data-type="landright">
+              <strong>대지권</strong>
+              <span>대지권 미등기 해소</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2단계: 정보 -->
+        <div class="apw__panel" data-step="2" hidden>
+          <p class="apw__q">단지와 연락처를 알려주세요.</p>
+          <div class="apw__grid">
+            <div class="fld">
+              <label for="aComplex">단지명 <em>필수</em></label>
+              <input type="text" id="aComplex" placeholder="예) OO아파트 1단지">
+            </div>
+            <div class="fld">
+              <label for="aUnit">동 · 호수</label>
+              <input type="text" id="aUnit" placeholder="예) 101동 1001호">
+            </div>
+            <div class="fld">
+              <label for="aName">성함 <em>필수</em></label>
+              <input type="text" id="aName" autocomplete="name" placeholder="홍길동">
+            </div>
+            <div class="fld">
+              <label for="aTel">연락처 <em>필수</em></label>
+              <input type="tel" id="aTel" autocomplete="tel" placeholder="010-0000-0000">
+            </div>
+            <div class="fld">
+              <label for="aPrice">분양가</label>
+              <div class="unit"><input type="number" id="aPrice" step="0.01" min="0" placeholder="예) 6"><span>억원</span></div>
+            </div>
+            <div class="fld">
+              <label for="aArea">전용면적</label>
+              <div class="unit"><input type="number" id="aArea" step="0.01" min="0" placeholder="예) 84.98"><span>㎡</span></div>
+            </div>
+            <div class="fld">
+              <label for="aRegion">지역</label>
+              <select id="aRegion">
+                <option value="metro">서울 · 광역시</option>
+                <option value="other" selected>그 밖의 지역</option>
+              </select>
+            </div>
+            <div class="fld">
+              <label for="aLoan">대출 여부</label>
+              <select id="aLoan">
+                <option value="loan">대출 실행 예정</option>
+                <option value="none">대출 없음 (자납)</option>
+              </select>
+            </div>
+          </div>
+          <div class="fld" style="margin-top:14px">
+            <label for="aNote">요청사항</label>
+            <textarea id="aNote" rows="3" placeholder="예) 생애최초 취득세 감면 대상입니다 / 공동명의 예정입니다"></textarea>
+          </div>
+          <div class="apw__acts">
+            <button type="button" class="btn apw__back">← 이전</button>
+            <button type="button" class="btn btn--fill" data-apply-next2>다음 — 예상비용 확인 <span class="arrow">→</span></button>
+          </div>
+        </div>
+
+        <!-- 3단계: 예상비용 -->
+        <div class="apw__panel" data-step="3" hidden>
+          <p class="apw__q">예상 비용입니다.</p>
+          <div data-apply-estimate></div>
+          <div class="apw__acts">
+            <button type="button" class="btn apw__back">← 이전</button>
+            <button type="button" class="btn btn--fill" data-apply-next3>다음 — 접수하기 <span class="arrow">→</span></button>
+          </div>
+        </div>
+
+        <!-- 4단계: 접수 -->
+        <div class="apw__panel" data-step="4" hidden>
+          <p class="apw__q">접수 내용을 확인해 주세요.</p>
+          <div data-apply-summary></div>
+          <div class="cform__agree" style="margin-top:18px">
+            <label class="chk">
+              <input type="checkbox" id="aAgree">
+              <span>
+                <strong>개인정보 수집·이용에 동의합니다.</strong>
+                수집 항목은 성함·연락처·단지 정보이며 접수 확인과 회신에만 사용합니다.
+                자세한 내용은 <a href="privacy.html">개인정보처리방침</a>을 확인해 주세요.
+              </span>
+            </label>
+          </div>
+          <p class="cform__notice" style="margin-top:14px">
+            이 접수는 별도 서버에 저장되지 않습니다. <strong>접수 메일 보내기</strong>를 누르면
+            정리된 내용이 메일 프로그램에서 열리고, 보내기를 눌러야 접수가 완료됩니다.
+          </p>
+          <div class="apw__acts">
+            <button type="button" class="btn apw__back">← 이전</button>
+            <button type="button" class="btn btn--fill" data-apply-send>접수 메일 보내기 <span class="arrow">→</span></button>
+            <button type="button" class="btn" data-apply-copy>내용 복사</button>
+          </div>
+        </div>
+
+        <p class="cform__result" data-apply-msg role="status" aria-live="polite"></p>
+      </div>
     </div>
   </section>
 
@@ -529,8 +670,9 @@
   <a class="is-alt" href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">진행조회 ↗</a>
 </div>
 
-<script src="assets/js/main.js?v=6"></script>
-<script src="assets/js/map.js?v=6"></script>
-<script src="assets/js/registry-portal.js?v=6"></script>
+<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/map.js?v=7"></script>
+<script src="assets/js/registry-portal.js?v=7"></script>
+<script src="assets/js/registry-apply.js?v=7"></script>
 </body>
 </html>
