@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="법무법인 제이엘">
+  <!-- 실제 로고(JL 모노그램)를 작은 크기에서도 읽히도록 옮긴 것.
+       원본 로고 파일을 받으면 assets/img/logo.svg 와 함께 교체한다. -->
+  <rect width="64" height="64" rx="10" fill="#fff"/>
+  <g fill="#152744">
+    <path d="M31.4 12.5h9.1v25.9c0 7.9-5.3 13.1-13.4 13.1-7.6 0-12.8-4.5-13.6-11.6l8.8-1.1c.4 3.2 2.1 4.9 4.6 4.9 2.8 0 4.5-2 4.5-5.6V12.5Z"/>
+    <path d="M44.2 12.5h9.1v30.2h11.3v8.1H44.2z" transform="translate(-3 0)"/>
+  </g>
+</svg>

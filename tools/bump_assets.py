@@ -13,6 +13,13 @@ import os
 import re
 import sys
 
+# Windows 콘솔(cp949)에서도 한글 로그가 깨지지 않도록
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -28,7 +35,7 @@ def main():
         s = io.open(p, encoding='utf-8').read()
         orig = s
         s = re.sub(r'(href="assets/css/style\.css)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
-        s = re.sub(r'(src="assets/js/([a-z]+)\.js)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
+        s = re.sub(r'(src="assets/js/([a-z-]+)\.js)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
         if s != orig:
             io.open(p, 'w', encoding='utf-8').write(s)
             print('갱신', p)
