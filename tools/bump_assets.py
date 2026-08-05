@@ -31,11 +31,11 @@ def main():
 
     os.chdir(BASE)
     changed = 0
-    for p in sorted(glob.glob('*.html')):
+    for p in sorted(glob.glob('*.html') + glob.glob('lawyers/*.html') + glob.glob('magazine/*.html')):
         s = io.open(p, encoding='utf-8').read()
         orig = s
-        s = re.sub(r'(href="assets/css/style\.css)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
-        s = re.sub(r'(src="assets/js/([a-z-]+)\.js)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
+        s = re.sub(r'(href="(?:\.\./)?assets/css/style\.css)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
+        s = re.sub(r'(src="(?:\.\./)?assets/js/([a-z-]+)\.js)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
         if s != orig:
             io.open(p, 'w', encoding='utf-8').write(s)
             print('갱신', p)

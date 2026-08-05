@@ -89,7 +89,7 @@
     {
       "slug": "jang-woo-jin",
       "initial": "張",
-      "photo": "",
+      "photo": "assets/img/lawyers/jang-woo-jin.jpg",
       "role": "변호사",
       "name": "장우진",
       "en": "JANG WOO JIN",
@@ -120,7 +120,7 @@
     {
       "slug": "lim-jun-kyu",
       "initial": "林",
-      "photo": "",
+      "photo": "assets/img/lawyers/lim-jun-kyu.jpg",
       "role": "변호사 / 대한변협 형사법 전문",
       "name": "임준규",
       "en": "LIM JUN KYU",

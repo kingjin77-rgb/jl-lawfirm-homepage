@@ -130,15 +130,14 @@ def page_html(L, all_lawyers):
 <title>%(name)s %(rolePlain)s | 법무법인 제이엘</title>
 <meta name="description" content="%(metaDesc)s">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="../assets/css/style.css?v=4">
+<link rel="stylesheet" href="../assets/css/style.css?v=6">
 </head>
 <body>
 
 <header class="header is-sub">
   <div class="container header__inner">
     <a class="logo" href="../index.html">
-      <span class="logo__mark">JL<span class="dot">.</span></span>
-      <span class="logo__name">법무법인 제이엘</span>
+      <img class="logo__img logo__img--white" src="../assets/img/logo-white.png" alt="법무법인 제이엘"><img class="logo__img logo__img--color" src="../assets/img/logo.png" alt="">
     </a>
     <nav class="gnb" aria-label="주메뉴">
       <a href="../about.html">법인소개</a>
@@ -227,7 +226,7 @@ def page_html(L, all_lawyers):
   <div class="container">
     <div class="footer__body">
       <div>
-        <p class="footer__logo">JL<span class="dot">.</span><span class="ko">법무법인 제이엘</span></p>
+        <p class="footer__logo"><img class="footer__logoimg" src="../assets/img/logo-white.png" alt="법무법인 제이엘"></p>
       </div>
       <div class="footer__offices">
         <address>
@@ -255,7 +254,7 @@ def page_html(L, all_lawyers):
   <a class="is-alt" href="tel:18994252">동탄 1899-4252</a>
 </div>
 
-<script src="../assets/js/main.js?v=4"></script>
+<script src="../assets/js/main.js?v=6"></script>
 </body>
 </html>
 ''' % {
