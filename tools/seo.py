@@ -46,7 +46,7 @@ BEGIN = "<!-- SEO:AUTO -->"
 END = "<!-- /SEO:AUTO -->"
 
 # 검색에 걸릴 필요가 없는 경로 (admin/ 하위는 전부)
-NOINDEX = {"admin/index.html", "admin/registry.html", "404.html"}
+NOINDEX = {"admin/index.html", "admin/registry.html", "admin/qna.html", "404.html"}
 
 # sitemap 우선순위 — 적을수록 후순위. 없으면 0.6
 PRIORITY = {
@@ -60,6 +60,7 @@ PRIORITY = {
     "corporate.html": "0.8",
     "magazine.html": "0.7",
     "law.html": "0.7",
+    "qna.html": "0.9",
 }
 
 # 이동경로(빵부스러기) — 검색결과에 "홈 > 업무분야" 형태로 노출된다
@@ -69,8 +70,9 @@ CRUMBS = {
     "practice.html": ["업무분야"],
     "corporate.html": ["업무분야", "기업법무"],
     "registry.html": ["단체등기"],
-    "dongtan.html": ["단체등기", "단체등기센터"],
+    "dongtan.html": ["단체등기", "제이엘 등기센터"],
     "law.html": ["법률정보"],
+    "qna.html": ["질의응답"],
     "magazine.html": ["제이엘 매거진"],
     "contact.html": ["오시는 길"],
     "privacy.html": ["개인정보처리방침"],

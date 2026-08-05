@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>질의응답 관리 | 법무법인 제이엘</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  body { background: var(--paper-alt); }
+  .adm { max-width: 1080px; margin-inline: auto; padding: 40px 24px 80px; }
+  .adm__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 22px; border-bottom: 2px solid var(--navy); }
+  .adm__head h1 { font-size: 26px; font-weight: 800; }
+  .adm__head .sub { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+  .adm__state { font-size: 13px; font-weight: 600; padding: 7px 14px; background: #fff; border: 1px solid var(--line); }
+  .adm__state.ok { color: #1d6b3a; border-color: #b7ddc4; background: #eefaf1; }
+  .panel { background: #fff; border: 1px solid var(--line); padding: 26px; margin-top: 22px; }
+  .panel h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .panel .hint { font-size: 13px; color: var(--gray-500); line-height: 1.7; }
+  .row { display: grid; gap: 12px; margin-top: 16px; }
+  .row.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  label.f { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  input[type=text], input[type=password], input[type=date], textarea, select {
+    width: 100%; padding: 11px 13px; font: inherit; font-size: 14px; color: var(--ink);
+    border: 1px solid var(--line); background: #fff; box-sizing: border-box;
+  }
+  input:focus, textarea:focus, select:focus { outline: 0; border-color: var(--navy); }
+  textarea { resize: vertical; line-height: 1.7; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .b { height: 44px; padding-inline: 20px; font-size: 14px; font-weight: 600; border: 1px solid var(--navy); background: #fff; color: var(--navy); cursor: pointer; }
+  .b:hover { background: var(--navy-soft); }
+  .b.pri { background: var(--navy); color: #fff; }
+  .b.pri:hover { background: var(--navy-deep); }
+  .items { margin-top: 18px; border-top: 1px solid var(--line); }
+  .item { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  .item__top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .item__top .idx { font-size: 13px; font-weight: 700; color: var(--gray-300); min-width: 24px; }
+  .item__top .ttl { flex: 1; min-width: 200px; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .item__top .cat { font-size: 12px; padding: 4px 10px; background: var(--navy-soft); color: var(--navy); }
+  .item__body { margin-top: 14px; display: none; }
+  .item.open .item__body { display: block; }
+  .mini { height: 32px; padding-inline: 12px; font-size: 12.5px; border: 1px solid var(--line); background: #fff; color: var(--gray-700); cursor: pointer; }
+  .mini:hover { border-color: var(--navy); color: var(--navy); }
+  .log { margin-top: 18px; padding: 16px; background: #0d1220; color: #cfe0ff; font-size: 12.5px; line-height: 1.75; font-family: ui-monospace, Consolas, monospace; max-height: 240px; overflow: auto; }
+  .log .ok { color: #7fe0a0; }
+  .log .bad { color: #ff9d92; }
+  .log .dim { color: #7f8db0; }
+</style>
+<!-- SEO:AUTO -->
+<link rel="canonical" href="https://www.jllawfirm.co.kr/admin/qna.html">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="법무법인 제이엘">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://www.jllawfirm.co.kr/admin/qna.html">
+<meta property="og:title" content="질의응답 관리 | 법무법인 제이엘">
+<meta property="og:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="법무법인 제이엘">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="질의응답 관리 | 법무법인 제이엘">
+<meta name="twitter:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
+<meta name="author" content="법무법인 제이엘">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.jllawfirm.co.kr/#website",
+      "url": "https://www.jllawfirm.co.kr/",
+      "name": "법무법인 제이엘",
+      "publisher": {
+        "@id": "https://www.jllawfirm.co.kr/#organization"
+      },
+      "inLanguage": "ko-KR"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.jllawfirm.co.kr/admin/qna.html#webpage",
+      "url": "https://www.jllawfirm.co.kr/admin/qna.html",
+      "name": "질의응답 관리 | 법무법인 제이엘",
+      "isPartOf": {
+        "@id": "https://www.jllawfirm.co.kr/#website"
+      },
+      "about": {
+        "@id": "https://www.jllawfirm.co.kr/#organization"
+      },
+      "inLanguage": "ko-KR"
+    }
+  ]
+}
+</script>
+<!-- /SEO:AUTO -->
+</head>
+<body>
+
+<div class="adm">
+  <div class="adm__head">
+    <div>
+      <h1>질의응답 관리</h1>
+      <p class="sub">들어온 질문에 답변을 달아 홈페이지 질의응답 목록에 게시합니다</p>
+    </div>
+    <span class="adm__state" id="state">GitHub 미연결</span>
+  </div>
+
+  <section class="panel">
+    <h2>1. GitHub 연결</h2>
+    <p class="hint">
+      저장하면 <code>data/qna.json</code> 이 커밋됩니다. 토큰은 이 브라우저에만 보관됩니다.
+      <b>공용 PC에서는 사용하지 마세요.</b>
+    </p>
+    <div class="row c3">
+      <div><label class="f" for="ghRepo">저장소</label><input type="text" id="ghRepo" placeholder="kingjin77-rgb/jl-lawfirm-homepage"></div>
+      <div><label class="f" for="ghBranch">브랜치</label><input type="text" id="ghBranch" placeholder="main"></div>
+      <div><label class="f" for="ghToken">토큰</label><input type="password" id="ghToken" placeholder="github_pat_..."></div>
+    </div>
+    <div class="acts">
+      <button class="b pri" id="btnSaveGh">연결 정보 저장</button>
+      <button class="b" id="btnClearGh">연결 해제</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>2. 질문 · 답변</h2>
+    <p class="hint">
+      맨 위에 있는 항목이 목록 상단에 노출됩니다.
+      <b>실명·연락처·동호수 등 개인정보는 절대 넣지 마세요.</b> 받은 질문을 일반화해 옮겨 적는 편이 안전합니다.
+    </p>
+    <div class="items" id="qnaList"></div>
+    <div class="acts"><button class="b" id="btnAdd">질문 추가</button></div>
+  </section>
+
+  <section class="panel">
+    <h2>3. 저장</h2>
+    <div class="acts">
+      <button class="b pri" id="btnPublish">GitHub에 저장</button>
+      <button class="b" id="btnReload">다시 불러오기</button>
+    </div>
+    <div class="log" id="log"><span class="dim">대기 중…</span></div>
+  </section>
+</div>
+
+<script src="../assets/js/admin-gate.js" data-gate="home"></script>
+<script src="qna-admin.js"></script>
+</body>
+</html>
