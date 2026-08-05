@@ -41,7 +41,7 @@
     if (cnt) cnt.textContent = items.length;
 
     if (!items.length) {
-      listEl.innerHTML = '<p class="board-empty">해당하는 질문이 없습니다. 아래에서 직접 질문해 주세요.</p>';
+      listEl.innerHTML = '<p class="board-empty">찾으시는 물음이 없습니다. 위에서 직접 남겨주세요.</p>';
       return;
     }
 
@@ -54,7 +54,7 @@
           '<span class="qa__mark" aria-hidden="true"></span>' +
         '</button>' +
         '<div class="qa__a"><div class="qa__inner">' + nl2br(it.a) +
-          (it.date ? '<p class="qa__date">답변 ' + esc(it.date) + ' · 법무법인 제이엘</p>' : '') +
+          (it.date ? '<p class="qa__date">' + esc(it.date) + ' · 법무법인 제이엘</p>' : '') +
         '</div></div>' +
       '</article>';
     }).join('');

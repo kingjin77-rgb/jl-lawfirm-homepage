@@ -1,6 +1,7 @@
 /* 변호사 슬라이드쇼 — data/lawyers.json
    1인 단독 화면을 자동으로 전환한다.
-   - 자동 재생(기본 7초), 호버/포커스 시 정지
+   - 화면에 들어왔을 때부터 자동 재생 (스크롤로 내려오면 항상 첫 번째부터)
+   - 호버/포커스 시 정지
    - 탭·화살표·키보드(←/→)로 수동 이동
    - prefers-reduced-motion 이면 전환 간격을 늘리고 진행바 애니메이션만 끈다
 */
@@ -31,6 +32,7 @@
   var idx = 0;
   var timer = null;
   var interval = 7000;
+  var inView = false;   // 화면 밖에서는 돌리지 않는다
 
   function render(items) {
     stage.innerHTML = items.map(function (p, i) {
@@ -95,7 +97,7 @@
   }
 
   function play() {
-    if (timer) return;
+    if (timer || !inView) return;
     timer = setInterval(function () { show(idx + 1); }, reduced ? interval * 2 : interval);
     root.classList.add('is-playing');
     restartBar();
@@ -138,6 +140,26 @@
     if (document.hidden) pause(); else play();
   });
 
+  /* 화면에 보일 때만 돌린다.
+     스크롤해서 내려오는 동안 대표변호사가 지나가 버리는 것을 막기 위해,
+     처음 들어온 시점에 첫 번째 슬라이드부터 다시 시작한다. */
+  var seen = false;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        inView = e.isIntersecting;
+        if (inView) {
+          if (!seen) { seen = true; if (list.length) show(0); }
+          play();
+        } else {
+          pause();
+        }
+      });
+    }, { threshold: 0.35 }).observe(root);
+  } else {
+    inView = true;   // 미지원 브라우저는 종전대로
+  }
+
   fetch('data/lawyers.json', { cache: 'no-cache' })
     .then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -149,7 +171,7 @@
       interval = d.interval || 7000;
       root.style.setProperty('--dur', (interval / 1000) + 's');
       render(list);
-      play();
+      play();   // 이미 화면 안이면 즉시 시작, 아니면 관찰자가 깨운다
     })
     .catch(function (err) {
       console.error('[lawyers]', err);
