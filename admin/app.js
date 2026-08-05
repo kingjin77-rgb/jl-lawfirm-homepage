@@ -5,7 +5,7 @@
   'use strict';
 
   var LS_GH = 'jladmin.gh';
-  var DATA_PATH = 'jl-homepage/data/magazine.json';
+  var DATA_PATH = 'data/magazine.json';
 
   var data = { updatedAt: '', issues: [], reports: [] };
   var dirty = false;
@@ -262,7 +262,7 @@
     var a = document.createElement('a');
     a.href = u; a.download = 'magazine.json'; a.click();
     setTimeout(function () { URL.revokeObjectURL(u); }, 2000);
-    log('magazine.json 을 내려받았습니다. jl-homepage/data/ 에 덮어쓰세요.', 'ok');
+    log('magazine.json 을 내려받았습니다. data/ 에 덮어쓰세요.', 'ok');
   });
 
   $('btnReload').addEventListener('click', function () {
@@ -323,7 +323,7 @@
     $('ghBranch').value = gh.branch || 'main';
     $('ghToken').value = gh.token || '';
   } else {
-    $('ghRepo').value = 'kingjin77-rgb/apartment-notice-analyzer';
+    $('ghRepo').value = 'kingjin77-rgb/jl-lawfirm-homepage';
     $('ghBranch').value = 'main';
   }
   paintState();

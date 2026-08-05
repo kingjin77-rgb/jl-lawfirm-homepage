@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """법제처 국가법령정보 Open API로 법률정보 피드를 생성한다.
 
-출력: jl-homepage/data/law-feed.json
+출력: data/law-feed.json
 실행: python tools/fetch_law_feed.py
 환경변수: LAW_GO_KR_OC (없으면 --oc 인자)
 

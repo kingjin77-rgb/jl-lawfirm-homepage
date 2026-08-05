@@ -1,0 +1,67 @@
+name: 홈페이지 점검
+
+# 홈페이지 파일이 바뀐 PR에서 기본적인 실수를 잡는다.
+# - JSON 문법 오류
+# - 사이트 내부 링크 깨짐
+# - 참조하는 이미지·문서 파일 누락
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: JSON 문법 검사
+        run: |
+          python - <<'PY'
+          import json, glob, sys
+          bad = 0
+          for p in sorted(glob.glob('data/*.json')):
+              try:
+                  json.load(open(p, encoding='utf-8'))
+                  print('OK  ', p)
+              except Exception as e:
+                  print('FAIL', p, '-', e)
+                  bad += 1
+          sys.exit(1 if bad else 0)
+          PY
+
+      - name: 내부 링크 · 자산 검사
+        run: |
+          python - <<'PY'
+          import glob, os, re, sys
+          from urllib.parse import urlparse, unquote
+
+          base = '.'
+          missing = []
+
+          # href/src 중 사이트 내부 경로만 검사한다
+          pat = re.compile(r'(?:href|src)="([^"#][^"]*)"')
+          for p in glob.glob(base + '/**/*.html', recursive=True):
+              d = os.path.dirname(p)
+              for m in pat.finditer(open(p, encoding='utf-8').read()):
+                  u = m.group(1)
+                  if u.startswith(('http://', 'https://', 'mailto:', 'tel:', 'data:', '//')):
+                      continue
+                  target = unquote(urlparse(u).path)
+                  if not target:
+                      continue
+                  full = os.path.normpath(os.path.join(d, target))
+                  if not os.path.exists(full):
+                      missing.append('%s -> %s' % (p, u))
+
+          if missing:
+              print('없는 대상 %d건:' % len(missing))
+              for x in missing:
+                  print(' -', x)
+              sys.exit(1)
+          print('내부 링크·자산 이상 없음')
+          PY

@@ -5,7 +5,7 @@
 ## 로컬 미리보기
 
 ```bash
-python -m http.server 5180 --directory jl-homepage
+python -m http.server 5180
 ```
 
 http://localhost:5180
@@ -13,7 +13,6 @@ http://localhost:5180
 ## 구조
 
 ```
-jl-homepage/
 ├── index.html        메인 — 도시전경 영상 히어로 / 숫자 / 주요업무 아코디언 / 구성원 / 단체등기 / 매거진 / CTA
 ├── about.html        법인소개 — 소통·공감·신뢰, 법인 개요
 ├── lawyers.html      구성원 — 대표변호사 단독 배치 + 구성원 4인
@@ -66,7 +65,7 @@ GitHub 토큰을 한 번 등록하면 브라우저에서 바로 커밋됩니다.
 법제처 국가법령정보 공동활용 Open API(law.go.kr)에서 법령 개정 현황과 판례를 가져온다.
 
 ```bash
-LAW_GO_KR_OC=<OC코드> python jl-homepage/tools/fetch_law_feed.py
+LAW_GO_KR_OC=<OC코드> python tools/fetch_law_feed.py
 ```
 
 - 추적 법령 12종 — 집합건물법 · 공동주택관리법 · 주택법 · 부동산등기법 · 민간임대특별법 ·

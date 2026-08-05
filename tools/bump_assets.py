@@ -2,7 +2,7 @@
 """CSS/JS 참조에 버전 쿼리를 붙여 배포 후 브라우저 캐시가 남지 않게 한다.
 
 사용법:
-    python jl-homepage/tools/bump_assets.py 4
+    python tools/bump_assets.py 4
 
 스타일이나 스크립트를 고쳤는데 화면에 반영되지 않으면 이 스크립트로 숫자를 올리고
 다시 배포하세요.

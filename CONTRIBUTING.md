@@ -1,6 +1,6 @@
 # 홈페이지 공동작업 가이드
 
-법무법인 제이엘 홈페이지(`jl-homepage/`) 작업 규칙입니다.
+법무법인 제이엘 홈페이지 작업 규칙입니다.
 **코드를 몰라도 콘텐츠는 바꿀 수 있습니다.** 아래 A안부터 보세요.
 
 ---
@@ -51,7 +51,7 @@ git switch -c fix/모바일-메뉴              # 버그 수정
 ### 로컬 확인
 
 ```bash
-python -m http.server 5180 --directory jl-homepage
+python -m http.server 5180
 ```
 
 http://localhost:5180 에서 확인한 뒤 커밋합니다. **확인 없이 올리지 않습니다.**
@@ -81,7 +81,6 @@ PR 본문에는 **바뀐 화면 스크린샷**을 넣어주세요. 리뷰가 훨
 ## C. 파일 구조 — 어디를 고쳐야 하나
 
 ```
-jl-homepage/
 ├── index.html          메인
 ├── about.html          법인소개 · 지명원 다운로드
 ├── lawyers.html        구성원 (슬라이드쇼)
