@@ -61,7 +61,30 @@
     return 0;
   }
 
+  // 취득 원인에 따라 안 쓰는 입력칸을 감춘다
+  function syncCalcFields() {
+    var cause = $('#cCause') ? $('#cCause').value : 'purchase_house';
+    $$('[data-c-when]').forEach(function (el) {
+      el.style.display =
+        el.getAttribute('data-c-when').split(' ').indexOf(cause) >= 0 ? '' : 'none';
+    });
+    var pl = $('[data-c-pricelabel]');
+    if (pl) {
+      pl.textContent = {
+        purchase_house: '취득가액 (분양가)',
+        purchase_other: '취득가액 (매매가)',
+        original: '신축 건물 시가표준액',
+        inherit: '시가표준액 (공시가격)',
+        gift: '시가표준액 (공시가격)',
+        mortgage: '채권최고액',
+        landright: '대지권 시가표준액'
+      }[cause] || '취득가액';
+    }
+  }
+
   function calc() {
+    var T = CFG.tax;
+    var cause = $('#cCause') ? $('#cCause').value : 'purchase_house';
     var price = parseFloat($('#cPrice').value) * 100000000;      // 억 단위 입력
     var stdRaw = $('#cStd').value.trim();
     var area = parseFloat($('#cArea').value) || 0;
@@ -70,60 +93,153 @@
 
     var out = $('#calcOut');
     if (!price || price <= 0) {
-      out.innerHTML = '<p class="calc__empty">분양가를 입력하면 예상 비용이 계산됩니다.</p>';
+      out.innerHTML = '<p class="calc__empty">금액을 입력하면 예상 비용이 계산됩니다.</p>';
       return;
     }
 
-    // 시가표준액: 입력이 없으면 분양가의 70%로 추정
     var estimated = !stdRaw;
     var std = estimated ? price * 0.7 : parseFloat(stdRaw) * 100000000;
-
-    // 취득세
-    var aRate = acqRate(price);
-    var acq = price * aRate / 100;
-    var edu = acq * CFG.acquisitionTax.eduTaxRatio;
-    var rural = (area > CFG.acquisitionTax.ruralTaxExemptArea)
-      ? price * CFG.acquisitionTax.ruralTaxRate / 100 : 0;
-    var taxTotal = acq + edu + rural;
-
-    // 국민주택채권
-    var bRate = bondRate(std, isMetro);
-    var bondBuy = std * bRate / 100;
-    var bondLoss = bondBuy * discount / 100;   // 즉시매도 시 실부담
-
-    // 부대비용
-    var stamp = stampDuty(price);
-    var fee = CFG.misc.registrationFee + CFG.misc.certFee;
-
-    var total = taxTotal + bondLoss + stamp + fee;
-
-    out.innerHTML =
-      '<table class="calc__table">' +
-        '<tbody>' +
-          row('취득세', aRate + '%', acq) +
-          row('지방교육세', '취득세의 10%', edu) +
-          (rural ? row('농어촌특별세', '전용 ' + area + '㎡ · 0.2%', rural)
-                 : row('농어촌특별세', '전용 85㎡ 이하 비과세', 0)) +
-          '<tr class="sum"><th>세금 소계</th><td></td><td>' + won(taxTotal) + '</td></tr>' +
-          row('국민주택채권 매입', (bRate ? bRate + '% · 시가표준액 ' + eok(std) : '매입 면제'), bondBuy) +
-          row('채권 즉시매도 손실', '할인율 ' + discount + '%', bondLoss) +
-          row('인지세', stampDuty(price) ? '' : '주택 1억 이하 비과세', stamp) +
-          row('등기신청수수료 · 증명서', '', fee) +
-          '<tr class="total"><th>예상 합계</th><td></td><td>' + won(total) + '</td></tr>' +
-        '</tbody>' +
-      '</table>' +
-      '<p class="calc__note">' +
-        (estimated
-          ? '시가표준액을 입력하지 않아 <b>분양가의 70%</b>로 추정했습니다. 공시가격을 넣으면 정확해집니다.<br>'
-          : '') +
-        '채권 할인율은 매일 변동합니다. 기준일 <b>' + esc(CFG.bond.rateDate) + '</b>.<br>' +
-        '<b>1주택 유상취득 기준</b>이며 다주택·법인·조정대상지역 중과는 반영하지 않았습니다. ' +
-        '법무 수수료는 별도이며, 실제 납부액과 다를 수 있는 <b>참고용 추정치</b>입니다.' +
-      '</p>';
+    var rows = [];
+    var notes = [];
+    var total = 0;
 
     function row(label, memo, amount) {
-      return '<tr><th>' + esc(label) + '</th><td>' + esc(memo || '') + '</td><td>' +
-             (amount ? won(amount) : '—') + '</td></tr>';
+      rows.push('<tr><th>' + esc(label) + '</th><td>' + esc(memo || '') + '</td><td>' +
+                (amount ? won(amount) : '—') + '</td></tr>');
+    }
+
+    /* ---- 근저당권설정 · 대지권: 등록면허세 계열 ---- */
+    if (cause === 'mortgage' || cause === 'landright') {
+      var m = cause === 'mortgage' ? T.mortgage : T.landRight;
+      var reg = price * m.rate / 100;
+      var regEdu = reg * m.eduRatio;
+      var fee0 = CFG.misc.registrationFee + CFG.misc.certFee;
+      total = reg + regEdu + fee0;
+      row('등록면허세', m.rate + '%' + (cause === 'mortgage' ? ' · 채권최고액 기준' : ''), reg);
+      row('지방교육세', '등록면허세의 20%', regEdu);
+      row('등기신청수수료 · 증명서', '', fee0);
+      if (cause === 'mortgage') {
+        var bR = bondRate(price, isMetro) / 2;  // 저당권은 주택채권 매입률 별도 — 안내만
+        notes.push('근저당권설정 시 국민주택채권 매입 의무가 별도로 있을 수 있습니다(채권최고액 2천만원 이상). 정확한 매입액은 담당자가 안내합니다.');
+      }
+      if (cause === 'landright' && T.landRight.note) notes.push(T.landRight.note);
+      render();
+      return;
+    }
+
+    /* ---- 취득세 계열 ---- */
+    var c = T.causes[cause];
+    var aRate, rateMemo;
+
+    if (cause === 'purchase_house') {
+      var houses = $('#cHouses') ? $('#cHouses').value : '1';
+      var adjusted = $('#cAdjusted') && $('#cAdjusted').value === 'yes';
+      var heavy = c.heavy[adjusted ? 'adjusted' : 'normal'][houses];
+      if (heavy != null) {
+        aRate = heavy;
+        rateMemo = (adjusted ? '조정대상지역 · ' : '') +
+                   (houses === 'corp' ? '법인' : houses + '주택') + ' 중과 ' + aRate + '%';
+        notes.push('다주택·법인 중과세율이 적용된 추정입니다. 일시적 2주택 등 예외는 반영되지 않았습니다.');
+      } else {
+        aRate = acqRate(price);
+        rateMemo = aRate + '%';
+      }
+    } else if (cause === 'inherit') {
+      var reduced = $('#cInheritReduced') && $('#cInheritReduced').value === 'yes';
+      aRate = reduced ? c.reducedRate : c.rate;
+      rateMemo = aRate + '%' + (reduced ? ' · ' + c.reducedLabel : '');
+      if (estimated) { std = price; }           // 상속·증여는 입력값 자체가 시가표준액
+      price = std;
+    } else if (cause === 'gift') {
+      var adjG = $('#cAdjusted') && $('#cAdjusted').value === 'yes';
+      var heavyGift = adjG && price >= 300000000;
+      aRate = heavyGift ? c.heavyRate : c.rate;
+      rateMemo = aRate + '%' + (heavyGift ? ' · ' + c.heavyLabel : '');
+      if (estimated) { std = price; }
+      price = std;
+    } else {
+      aRate = c.rate;
+      rateMemo = aRate + '%';
+      if (cause === 'original' && estimated) { std = price; price = std; }
+    }
+
+    var acq = price * aRate / 100;
+
+    /* 감면 */
+    var reliefAmt = 0, reliefMemo = '';
+    if (cause === 'purchase_house') {
+      var rSel = $('#cRelief') ? $('#cRelief').value : '';
+      if (rSel === 'firstHome' && price <= T.relief.firstHome.priceLimit) {
+        reliefAmt = Math.min(acq, T.relief.firstHome.maxAmount);
+        reliefMemo = T.relief.firstHome.label;
+      } else if (rSel === 'smallHouse' &&
+                 area <= T.relief.smallHouse.areaLimit &&
+                 price <= T.relief.smallHouse.priceLimit) {
+        reliefAmt = acq;
+        reliefMemo = T.relief.smallHouse.label;
+      } else if (rSel) {
+        notes.push('선택하신 감면의 금액·면적 요건을 충족하지 않아 감면을 적용하지 않았습니다.');
+      }
+    }
+    var acqAfter = acq - reliefAmt;
+
+    var edu;
+    if (c.eduMode === 'house') {
+      edu = acqAfter * CFG.acquisitionTax.eduTaxRatio;
+    } else {
+      edu = acqAfter * 0.1;
+    }
+    var rural = 0;
+    if (c.kind === 'house') {
+      rural = (area > T.ruralTaxExemptArea) ? price * T.ruralTaxRate / 100 : 0;
+    } else if (c.ruralAlways) {
+      rural = price * T.ruralTaxRate / 100;
+    }
+    if (reliefAmt > 0) {
+      rural += reliefAmt * 0.2;                 // 감면분 농특세 20%
+      notes.push('감면받은 취득세의 20%는 농어촌특별세로 부과됩니다.');
+    }
+    var taxTotal = acqAfter + edu + rural;
+
+    var bRate = bondRate(std, isMetro);
+    var bondBuy = std * bRate / 100;
+    var bondLoss = bondBuy * discount / 100;
+
+    var stamp = (cause === 'inherit' || cause === 'gift') ? 0 : stampDuty(price);
+    var fee = CFG.misc.registrationFee + CFG.misc.certFee;
+
+    total = taxTotal + bondLoss + stamp + fee;
+
+    row('취득세', rateMemo, acq);
+    if (reliefAmt) row('감면 (−)', reliefMemo, -reliefAmt);
+    row('지방교육세', '', edu);
+    if (c.kind === 'house') {
+      rows.push(rural && !(reliefAmt)
+        ? '' : '');
+      row('농어촌특별세', rural ? '' : '전용 85㎡ 이하 비과세', rural);
+    } else {
+      row('농어촌특별세', '', rural);
+    }
+    rows.push('<tr class="sum"><th>세금 소계</th><td></td><td>' + won(taxTotal) + '</td></tr>');
+    row('국민주택채권 매입', (bRate ? bRate + '% · 시가표준액 ' + eok(std) : '매입 면제'), bondBuy);
+    row('채권 즉시매도 손실', '할인율 ' + discount + '%', bondLoss);
+    row('인지세', stamp ? '' : (cause === 'inherit' || cause === 'gift' ? '계약서 없음 · 비과세' : '주택 1억 이하 비과세'), stamp);
+    row('등기신청수수료 · 증명서', '', fee);
+
+    if (estimated && (cause === 'purchase_house' || cause === 'purchase_other')) {
+      notes.unshift('시가표준액을 입력하지 않아 <b>취득가액의 70%</b>로 추정했습니다. 공시가격을 넣으면 정확해집니다.');
+    }
+    notes.push('채권 할인율은 매일 변동합니다. 기준일 <b>' + esc(CFG.bond.rateDate) + '</b>.');
+    notes.push('법무 수수료는 별도이며, 실제 납부액과 다를 수 있는 <b>참고용 추정치</b>입니다. 정확한 금액은 상담 시 안내해 드립니다.');
+
+    render();
+
+    function render() {
+      out.innerHTML =
+        '<table class="calc__table"><tbody>' + rows.join('') +
+        '<tr class="total"><th>예상 합계</th><td></td><td>' + won(total) + '</td></tr>' +
+        '</tbody></table>' +
+        '<p class="calc__note">' + notes.join('<br>') + '</p>';
     }
   }
 
@@ -205,6 +321,11 @@
         el.addEventListener('input', calc);
         el.addEventListener('change', calc);
       });
+      var causeSel = $('#cCause');
+      if (causeSel) {
+        causeSel.addEventListener('change', function () { syncCalcFields(); calc(); });
+        syncCalcFields();
+      }
       $$('#docsForm select').forEach(function (el) {
         el.addEventListener('change', renderDocs);
       });
