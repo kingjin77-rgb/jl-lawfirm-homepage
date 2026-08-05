@@ -130,9 +130,9 @@ SDK가 로드되지 않으면 아무것도 하지 않고, HTML에 적힌 "카카
 ## 교체 대기 항목
 
 - [ ] 히어로 영상 — 자사 촬영본 또는 서초/동탄 사옥 전경
-- [ ] 변호사 프로필 사진 5인 (현재 성씨 한자 플레이스홀더 — `.leader__photo` / `.lawyer__photo` 안에 `<img>` 삽입)
-- [ ] 주요업무 아코디언 배경 이미지 5장 (현재 네이비 그라디언트, `.acc__bg`)
-- [ ] 매거진 카드 썸네일 (현재 그라디언트, `.magcard__thumb`)
+- [ ] 변호사 프로필 사진 5인 — `assets/img/lawyers/<slug>.jpg` 로 저장 후 `python tools/link_photos.py` → `python tools/make_lawyer_pages.py`
+- [x] 주요업무 아코디언 배경 — 절차 생성 그래픽 적용 (`tools/make_artwork.py`). 실사 확보 시 같은 파일명으로 교체
+- [x] 매거진 카드 썸네일 — 절차 생성 그래픽 적용 (`tools/make_artwork.py`)
 - [ ] 검토보고서 9건 열람 방식 — 현재 "준비 중" 표기. PDF 배포 / 상세 페이지 / 회원 열람 중 결정 필요
 - [ ] THE ASSET 1호 — 2호만 확보됨. 1호 발행 여부 확인 필요
 - [ ] 카카오 개발자 콘솔 도메인 등록 (등록 전까지 지도 대신 링크 노출)

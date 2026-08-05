@@ -67,6 +67,7 @@
         '<article class="magcard reveal" data-cat="' + esc(r.cat) + '"' +
                 (i % 3 ? ' data-delay="' + (i % 3) * 80 + '"' : '') + '>' +
           '<div class="magcard__thumb" style="background:' + esc(r.gradient || '#1b2b57') + '">' +
+            (r.thumb ? '<img src="' + esc(r.thumb) + '" alt="" loading="lazy">' : '') +
             '<span class="magcard__cat">' + esc(catLabel(r.cat)) + '</span>' +
           '</div>' +
           '<div class="magcard__body">' +
