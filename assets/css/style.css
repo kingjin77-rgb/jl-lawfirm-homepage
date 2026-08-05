@@ -1184,3 +1184,8 @@ a.lwslide__photolink { display: contents; }
   .apw__grid { grid-template-columns: 1fr; }
   .apw__acts .btn { width: 100%; justify-content: center; }
 }
+
+/* 푸터 관리자 링크 — 눈에 띄지 않게 */
+.footer__adm { font-size: 12px; color: rgba(255,255,255,.28); }
+.footer__adm a { color: inherit; }
+.footer__adm a:hover { color: rgba(255,255,255,.6); }

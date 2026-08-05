@@ -45,8 +45,8 @@ SITE_NAME = "법무법인 제이엘"
 BEGIN = "<!-- SEO:AUTO -->"
 END = "<!-- /SEO:AUTO -->"
 
-# 검색에 걸릴 필요가 없는 경로
-NOINDEX = {"admin/index.html", "404.html"}
+# 검색에 걸릴 필요가 없는 경로 (admin/ 하위는 전부)
+NOINDEX = {"admin/index.html", "admin/registry.html", "404.html"}
 
 # sitemap 우선순위 — 적을수록 후순위. 없으면 0.6
 PRIORITY = {

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>등기센터 관리 | 법무법인 제이엘</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  body { background: var(--paper-alt); }
+  .adm { max-width: 1080px; margin-inline: auto; padding: 40px 24px 80px; }
+  .adm__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 22px; border-bottom: 2px solid var(--navy); }
+  .adm__head h1 { font-size: 26px; font-weight: 800; }
+  .adm__head .sub { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+  .adm__state { font-size: 13px; font-weight: 600; padding: 7px 14px; background: #fff; border: 1px solid var(--line); }
+  .adm__state.ok { color: #1d6b3a; border-color: #b7ddc4; background: #eefaf1; }
+  .adm__state.bad { color: #9c2b22; border-color: #f0c4bf; background: #fdf0ee; }
+  .panel { background: #fff; border: 1px solid var(--line); padding: 26px; margin-top: 22px; }
+  .panel h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .panel .hint { font-size: 13px; color: var(--gray-500); line-height: 1.7; }
+  .row { display: grid; gap: 12px; margin-top: 16px; }
+  .row.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  label.f { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  input[type=text], input[type=password], input[type=number], input[type=date], textarea {
+    width: 100%; padding: 11px 13px; font: inherit; font-size: 14px; color: var(--ink);
+    border: 1px solid var(--line); background: #fff; box-sizing: border-box;
+  }
+  input:focus, textarea:focus { outline: 0; border-color: var(--navy); }
+  textarea { resize: vertical; min-height: 200px; line-height: 1.7; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .b { height: 44px; padding-inline: 20px; font-size: 14px; font-weight: 600; border: 1px solid var(--navy); background: #fff; color: var(--navy); cursor: pointer; }
+  .b:hover { background: var(--navy-soft); }
+  .b.pri { background: var(--navy); color: #fff; }
+  .b.pri:hover { background: var(--navy-deep); }
+  .log { margin-top: 18px; padding: 16px; background: #0d1220; color: #cfe0ff; font-size: 12.5px; line-height: 1.75; font-family: ui-monospace, Consolas, monospace; max-height: 240px; overflow: auto; }
+  .log .ok { color: #7fe0a0; }
+  .log .bad { color: #ff9d92; }
+  .log .dim { color: #7f8db0; }
+</style>
+<!-- SEO:AUTO -->
+<link rel="canonical" href="https://www.jllawfirm.co.kr/admin/registry.html">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="법무법인 제이엘">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://www.jllawfirm.co.kr/admin/registry.html">
+<meta property="og:title" content="등기센터 관리 | 법무법인 제이엘">
+<meta property="og:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="법무법인 제이엘">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="등기센터 관리 | 법무법인 제이엘">
+<meta name="twitter:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
+<meta name="author" content="법무법인 제이엘">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.jllawfirm.co.kr/#website",
+      "url": "https://www.jllawfirm.co.kr/",
+      "name": "법무법인 제이엘",
+      "publisher": {
+        "@id": "https://www.jllawfirm.co.kr/#organization"
+      },
+      "inLanguage": "ko-KR"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.jllawfirm.co.kr/admin/registry.html#webpage",
+      "url": "https://www.jllawfirm.co.kr/admin/registry.html",
+      "name": "등기센터 관리 | 법무법인 제이엘",
+      "isPartOf": {
+        "@id": "https://www.jllawfirm.co.kr/#website"
+      },
+      "about": {
+        "@id": "https://www.jllawfirm.co.kr/#organization"
+      },
+      "inLanguage": "ko-KR"
+    }
+  ]
+}
+</script>
+<!-- /SEO:AUTO -->
+</head>
+<body>
+
+<div class="adm">
+  <div class="adm__head">
+    <div>
+      <h1>등기센터 관리</h1>
+      <p class="sub">단체등기센터 · 채권 할인율 / 진행 단지 / 세율 기준</p>
+    </div>
+    <span class="adm__state" id="state">GitHub 미연결</span>
+  </div>
+
+  <!-- 1. 연결 -->
+  <section class="panel">
+    <h2>1. GitHub 연결</h2>
+    <p class="hint">
+      저장하면 GitHub 저장소의 <code>data/registry.json</code> 이 바로 커밋됩니다.
+      토큰은 이 브라우저에만 보관됩니다. <b>공용 PC에서는 사용하지 마세요.</b>
+    </p>
+    <div class="row c3">
+      <div>
+        <label class="f" for="ghRepo">저장소</label>
+        <input type="text" id="ghRepo" placeholder="kingjin77-rgb/jl-lawfirm-homepage">
+      </div>
+      <div>
+        <label class="f" for="ghBranch">브랜치</label>
+        <input type="text" id="ghBranch" placeholder="main">
+      </div>
+      <div>
+        <label class="f" for="ghToken">토큰</label>
+        <input type="password" id="ghToken" placeholder="github_pat_...">
+      </div>
+    </div>
+    <div class="acts">
+      <button class="b pri" id="btnSaveGh">연결 정보 저장</button>
+      <button class="b" id="btnClearGh">연결 해제</button>
+    </div>
+  </section>
+
+  <!-- 2. 채권 할인율 -->
+  <section class="panel">
+    <h2>2. 채권 할인율 (매일 갱신)</h2>
+    <p class="hint">
+      주택도시기금 제1종 국민주택채권 <b>즉시매도 할인율</b>입니다. 계산기와 접수 위저드의
+      예상 비용에 바로 반영됩니다.
+    </p>
+    <div class="row c2">
+      <div>
+        <label class="f" for="bondRate">할인율 (%)</label>
+        <input type="number" id="bondRate" step="0.01" min="0">
+      </div>
+      <div>
+        <label class="f" for="bondDate">기준일</label>
+        <input type="date" id="bondDate">
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 진행 단지 -->
+  <section class="panel">
+    <h2>3. 진행 단지 목록</h2>
+    <p class="hint">
+      한 줄에 하나씩 <code>코드,단지명</code> 형식입니다. 코드는 기존 진행조회 시스템의
+      단지 번호와 같아야 조회가 연결됩니다. 실적 표시와 진행조회 선택지에 함께 쓰입니다.
+    </p>
+    <textarea id="complexList" spellcheck="false"></textarea>
+  </section>
+
+  <!-- 4. 저장 -->
+  <section class="panel">
+    <h2>4. 저장</h2>
+    <p class="hint">
+      <b>GitHub에 저장</b>은 <code>data/registry.json</code> 을 커밋합니다.
+      세율 등 나머지 항목은 그대로 유지됩니다.
+    </p>
+    <div class="acts">
+      <button class="b pri" id="btnPublish">GitHub에 저장</button>
+      <button class="b" id="btnReload">서버 내용 다시 불러오기</button>
+    </div>
+    <div class="log" id="log"><span class="dim">대기 중…</span></div>
+  </section>
+</div>
+
+<script src="../assets/js/admin-gate.js" data-gate="registry"></script>
+<script>
+(function () {
+  'use strict';
+  var LS = 'jladmin.gh';                 // 콘텐츠 관리자와 연결 정보 공유
+  var PATH = 'data/registry.json';
+  var data = null, sha = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+  function log(msg, kind) {
+    var el = $('log'), line = document.createElement('div');
+    line.className = kind || 'dim';
+    line.textContent = msg;
+    if (el.firstChild && el.firstChild.className === 'dim' && el.children.length === 1) el.innerHTML = '';
+    el.appendChild(line);
+    el.scrollTop = el.scrollHeight;
+  }
+  function gh() { try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; } }
+  function paint() {
+    var g = gh(), el = $('state');
+    if (g && g.repo && g.token) { el.textContent = '연결됨 · ' + g.repo; el.className = 'adm__state ok'; }
+    else { el.textContent = 'GitHub 미연결'; el.className = 'adm__state'; }
+    if (g) { $('ghRepo').value = g.repo || ''; $('ghBranch').value = g.branch || 'main'; }
+    else { $('ghRepo').value = 'kingjin77-rgb/jl-lawfirm-homepage'; $('ghBranch').value = 'main'; }
+  }
+
+  $('btnSaveGh').onclick = function () {
+    var repo = $('ghRepo').value.trim(), tok = $('ghToken').value.trim();
+    if (!repo || !tok) { log('저장소와 토큰을 모두 입력하세요.', 'bad'); return; }
+    localStorage.setItem(LS, JSON.stringify({ repo: repo, token: tok, branch: $('ghBranch').value.trim() || 'main' }));
+    $('ghToken').value = '';
+    paint(); log('연결 정보를 저장했습니다.', 'ok');
+  };
+  $('btnClearGh').onclick = function () { localStorage.removeItem(LS); paint(); log('연결을 해제했습니다.', 'ok'); };
+
+  function fill() {
+    $('bondRate').value = data.bond.rate;
+    $('bondDate').value = data.bond.rateDate;
+    var t = (data.tracking && data.tracking.complexes) || [];
+    $('complexList').value = t.map(function (c) { return c.id + ',' + c.name; }).join('\n');
+  }
+
+  function load() {
+    var g = gh();
+    var headers = { Accept: 'application/vnd.github+json' };
+    if (g && g.token) headers.Authorization = 'Bearer ' + g.token;
+    var repo = (g && g.repo) || 'kingjin77-rgb/jl-lawfirm-homepage';
+    var branch = (g && g.branch) || 'main';
+    fetch('https://api.github.com/repos/' + repo + '/contents/' + PATH + '?ref=' + branch, { headers: headers })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) {
+        sha = j.sha;
+        data = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, '')))));
+        fill();
+        log('불러오기 완료 — 할인율 ' + data.bond.rate + '% (' + data.bond.rateDate + '), 단지 ' +
+            ((data.tracking && data.tracking.complexes) || []).length + '곳', 'ok');
+      })
+      .catch(function (e) {
+        log('GitHub에서 불러오지 못해 로컬 파일로 시도합니다. (' + e.message + ')');
+        fetch('../data/registry.json', { cache: 'no-cache' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) { data = d; sha = null; fill(); log('로컬 파일 불러옴 (저장은 GitHub 연결 필요)', 'ok'); })
+          .catch(function (e2) { log('불러오기 실패: ' + e2.message, 'bad'); });
+      });
+  }
+
+  $('btnReload').onclick = load;
+
+  $('btnPublish').onclick = function () {
+    var g = gh();
+    if (!g || !g.token) { log('먼저 GitHub 연결 정보를 저장하세요.', 'bad'); return; }
+    if (!data) { log('불러온 데이터가 없습니다.', 'bad'); return; }
+
+    data.bond.rate = parseFloat($('bondRate').value) || data.bond.rate;
+    data.bond.rateDate = $('bondDate').value || data.bond.rateDate;
+    var lines = $('complexList').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    var cx = [];
+    for (var i = 0; i < lines.length; i++) {
+      var m = lines[i].split(',');
+      if (m.length < 2) { log((i + 1) + '번째 줄 형식 오류: ' + lines[i], 'bad'); return; }
+      cx.push({ id: m[0].trim(), name: m.slice(1).join(',').trim() });
+    }
+    data.tracking = data.tracking || {};
+    data.tracking.complexes = cx;
+    data.complexes = cx.map(function (c) { return c.name; });
+    data.updatedAt = new Date().toISOString().slice(0, 10);
+
+    if (!confirm(g.repo + ' 에 registry.json 을 커밋합니다. 진행할까요?')) return;
+
+    var body = {
+      message: '등기센터 기준정보 갱신 — 할인율 ' + data.bond.rate + '% · 단지 ' + cx.length + '곳',
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n'))),
+      branch: g.branch || 'main'
+    };
+    if (sha) body.sha = sha;
+
+    fetch('https://api.github.com/repos/' + g.repo + '/contents/' + PATH, {
+      method: 'PUT',
+      headers: { Authorization: 'Bearer ' + g.token, Accept: 'application/vnd.github+json' },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) { sha = j.content.sha; log('커밋 완료 — ' + j.commit.sha.slice(0, 7), 'ok'); })
+      .catch(function (e) { log('저장 실패: ' + e.message, 'bad'); });
+  };
+
+  paint();
+  load();
+})();
+</script>
+</body>
+</html>
