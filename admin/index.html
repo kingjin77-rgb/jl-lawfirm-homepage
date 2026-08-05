@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>콘텐츠 관리 | 법무법인 제이엘</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  body { background: var(--paper-alt); }
+  .adm { max-width: 1080px; margin-inline: auto; padding: 40px 24px 80px; }
+  .adm__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 22px; border-bottom: 2px solid var(--navy); }
+  .adm__head h1 { font-size: 26px; font-weight: 800; }
+  .adm__head .sub { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+  .adm__state { font-size: 13px; font-weight: 600; padding: 7px 14px; background: #fff; border: 1px solid var(--line); }
+  .adm__state.ok { color: #1d6b3a; border-color: #b7ddc4; background: #eefaf1; }
+  .adm__state.bad { color: #9c2b22; border-color: #f0c4bf; background: #fdf0ee; }
+
+  .panel { background: #fff; border: 1px solid var(--line); padding: 26px; margin-top: 22px; }
+  .panel h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .panel .hint { font-size: 13px; color: var(--gray-500); line-height: 1.7; }
+
+  .row { display: grid; gap: 12px; margin-top: 16px; }
+  .row.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  label.f { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  input[type=text], input[type=password], textarea, select {
+    width: 100%; padding: 11px 13px; font: inherit; font-size: 14px; color: var(--ink);
+    border: 1px solid var(--line); background: #fff;
+  }
+  input:focus, textarea:focus, select:focus { outline: 0; border-color: var(--navy); }
+  textarea { resize: vertical; min-height: 78px; line-height: 1.6; }
+
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .b { height: 44px; padding-inline: 20px; font-size: 14px; font-weight: 600; border: 1px solid var(--navy); background: #fff; color: var(--navy); }
+  .b:hover { background: var(--navy-soft); }
+  .b.pri { background: var(--navy); color: #fff; }
+  .b.pri:hover { background: var(--navy-deep); }
+  .b.warn { border-color: #c9564a; color: #c9564a; }
+  .b.warn:hover { background: #fdf0ee; }
+  .b:disabled { opacity: .45; cursor: default; }
+
+  .items { margin-top: 18px; border-top: 1px solid var(--line); }
+  .item { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  .item__top { display: flex; align-items: center; gap: 12px; }
+  .item__top .idx { font-size: 13px; font-weight: 700; color: var(--gray-300); min-width: 26px; }
+  .item__top .ttl { flex: 1; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .item__top .cat { font-size: 12px; padding: 4px 10px; background: var(--navy-soft); color: var(--navy); }
+  .item__body { margin-top: 14px; display: none; }
+  .item.open .item__body { display: block; }
+  .mini { height: 32px; padding-inline: 12px; font-size: 12.5px; border: 1px solid var(--line); background: #fff; color: var(--gray-700); }
+  .mini:hover { border-color: var(--navy); color: var(--navy); }
+
+  .log { margin-top: 18px; padding: 16px; background: #0d1220; color: #cfe0ff; font-size: 12.5px; line-height: 1.75; font-family: ui-monospace, Menlo, Consolas, monospace; max-height: 240px; overflow: auto; }
+  .log .ok { color: #7fe0a0; }
+  .log .bad { color: #ff9d92; }
+  .log .dim { color: #7f8db0; }
+</style>
+</head>
+<body>
+
+<div class="adm">
+  <div class="adm__head">
+    <div>
+      <h1>콘텐츠 관리</h1>
+      <p class="sub">법무법인 제이엘 홈페이지 · 매거진 / 검토보고서</p>
+    </div>
+    <span class="adm__state" id="state">GitHub 미연결</span>
+  </div>
+
+  <!-- 1. 연결 -->
+  <section class="panel">
+    <h2>1. GitHub 연결</h2>
+    <p class="hint">
+      저장하면 GitHub 저장소에 바로 커밋됩니다. 토큰은 이 브라우저에만 보관되며 서버로 전송되지 않습니다.<br>
+      토큰 발급: GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens →
+      대상 저장소 선택 → Repository permissions에서 <b>Contents: Read and write</b> 부여.
+      <b>공용 PC에서는 사용하지 마세요.</b>
+    </p>
+    <div class="row c3">
+      <div>
+        <label class="f" for="ghRepo">저장소</label>
+        <input type="text" id="ghRepo" placeholder="kingjin77-rgb/apartment-notice-analyzer">
+      </div>
+      <div>
+        <label class="f" for="ghBranch">브랜치</label>
+        <input type="text" id="ghBranch" placeholder="main">
+      </div>
+      <div>
+        <label class="f" for="ghToken">토큰</label>
+        <input type="password" id="ghToken" placeholder="github_pat_...">
+      </div>
+    </div>
+    <div class="acts">
+      <button class="b pri" id="btnSaveGh">연결 정보 저장</button>
+      <button class="b" id="btnTest">연결 확인</button>
+      <button class="b warn" id="btnClearGh">연결 해제</button>
+    </div>
+  </section>
+
+  <!-- 2. 검토보고서 -->
+  <section class="panel">
+    <h2>2. 검토보고서</h2>
+    <p class="hint">매거진 페이지 하단 카드 목록입니다. 링크를 비워두면 “준비 중”으로 표시됩니다.</p>
+    <div class="items" id="reportList"></div>
+    <div class="acts">
+      <button class="b" id="btnAddReport">보고서 추가</button>
+    </div>
+  </section>
+
+  <!-- 3. 발행호 -->
+  <section class="panel">
+    <h2>3. 매거진 발행호</h2>
+    <p class="hint">가장 위에 있는 호가 최신호로 노출됩니다.</p>
+    <div class="items" id="issueList"></div>
+  </section>
+
+  <!-- 4. 저장 -->
+  <section class="panel">
+    <h2>4. 저장</h2>
+    <p class="hint">
+      <b>GitHub에 저장</b>은 <code>jl-homepage/data/magazine.json</code> 을 커밋합니다.
+      연결 전이라면 <b>파일로 내려받기</b>로 받아 직접 올릴 수 있습니다.
+    </p>
+    <div class="acts">
+      <button class="b pri" id="btnPublish">GitHub에 저장</button>
+      <button class="b" id="btnDownload">파일로 내려받기</button>
+      <button class="b" id="btnReload">서버 내용 다시 불러오기</button>
+    </div>
+    <div class="log" id="log"><span class="dim">대기 중…</span></div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

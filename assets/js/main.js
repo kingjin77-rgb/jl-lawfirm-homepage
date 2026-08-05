@@ -34,24 +34,31 @@
     });
   }
 
-  /* ---------- 스크롤 리빌 ---------- */
-  var targets = document.querySelectorAll('.reveal');
-  if (targets.length) {
-    if (!('IntersectionObserver' in window)) {
-      targets.forEach(function (el) { el.classList.add('is-in'); });
-    } else {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var el = entry.target;
-          var delay = parseInt(el.dataset.delay || '0', 10);
-          setTimeout(function () { el.classList.add('is-in'); }, delay);
-          io.unobserve(el);
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-      targets.forEach(function (el) { io.observe(el); });
-    }
+  /* ---------- 스크롤 리빌 ----------
+     동적으로 추가된 요소도 살릴 수 있도록 window.JLReveal 로 노출한다.
+     (매거진 카드처럼 JSON에서 그려지는 콘텐츠가 여기에 해당) */
+  var io = null;
+  if ('IntersectionObserver' in window) {
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var delay = parseInt(el.dataset.delay || '0', 10);
+        setTimeout(function () { el.classList.add('is-in'); }, delay);
+        io.unobserve(el);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
   }
+
+  window.JLReveal = function (nodes) {
+    var list = nodes || document.querySelectorAll('.reveal');
+    Array.prototype.forEach.call(list, function (el) {
+      if (io) io.observe(el);
+      else el.classList.add('is-in');
+    });
+  };
+
+  window.JLReveal();
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

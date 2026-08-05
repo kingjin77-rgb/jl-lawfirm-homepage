@@ -11,7 +11,7 @@
 <meta property="og:description" content="늘 고객의 입장에서, 신뢰와 진리의 길을 함께 갑니다.">
 <meta property="og:locale" content="ko_KR">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=3">
 </head>
 <body>
 
@@ -250,84 +250,26 @@
         <p class="sec-desc">공인회계사 겸 부장검사 출신 대표변호사와 4인의 구성원 변호사가 사건을 직접 지휘합니다.</p>
       </div>
 
-      <article class="leader reveal">
-        <div class="leader__photo"><span class="initial">朴</span></div>
-        <div class="leader__body">
-          <p class="leader__role">REPRESENTATIVE ATTORNEY</p>
-          <h3 class="leader__name">박종일<span class="en">PARK JONG IL</span></h3>
-          <p class="leader__tagline">
-            제21회 공인회계사시험과 제38회 사법시험에 모두 합격한 부장검사 출신.
-            회계와 수사 양쪽을 아는 시각으로 사건의 구조를 먼저 봅니다.
-          </p>
-          <div class="leader__cols">
-            <h4>주요 경력</h4>
-            <ul>
-              <li><strong>1999</strong> 사법연수원 수료 (제28기)</li>
-              <li><strong>2012</strong> 서울중앙지방검찰청 부부장검사</li>
-              <li><strong>2013</strong> 광주지검 목포지청 부장검사</li>
-            </ul>
-            <ul>
-              <li><strong>2014</strong> 부산지검 형사5부장검사</li>
-              <li><strong>2015</strong> 수원지검 평택지청 부장검사</li>
-              <li><strong>2019</strong> 제이비금융지주 사외이사</li>
-            </ul>
-          </div>
-          <p style="margin-top:30px">
-            <a class="btn" href="lawyers.html">구성원 전체 보기 <span class="arrow">→</span></a>
-          </p>
+      <div class="lwshow reveal" data-lawyer-show role="region" aria-roledescription="슬라이드쇼"
+           aria-label="구성원 변호사 소개" tabindex="0">
+        <div class="lwshow__stage" data-lw-stage>
+          <div class="board-empty">구성원 정보를 불러오는 중입니다…</div>
         </div>
-      </article>
-
-      <div class="lawyer-grid" style="margin-top:clamp(24px,3vw,40px)">
-        <article class="lawyer reveal">
-          <div class="lawyer__photo"><span class="initial">李</span></div>
-          <div class="lawyer__body">
-            <p class="lawyer__role">변호사</p>
-            <h3 class="lawyer__name">이지훈</h3>
-            <ul class="lawyer__career">
-              <li>사법연수원 제42기</li>
-              <li>서울고등검찰청 송무부</li>
-              <li>국가소송 · 행정소송 수행</li>
-            </ul>
+        <div class="lwshow__bar"><i></i></div>
+        <div class="lwshow__nav">
+          <div class="lwshow__tabs" data-lw-tabs role="tablist"
+               style="display:flex;flex-wrap:wrap;gap:8px"></div>
+          <div class="lwshow__util">
+            <button type="button" class="lwshow__arrow" data-lw-move="-1" aria-label="이전 변호사">&#8592;</button>
+            <span class="lwshow__count"><b data-lw-cur>1</b> / <span data-lw-total>5</span></span>
+            <button type="button" class="lwshow__arrow" data-lw-move="1" aria-label="다음 변호사">&#8594;</button>
           </div>
-        </article>
-        <article class="lawyer reveal" data-delay="80">
-          <div class="lawyer__photo"><span class="initial">張</span></div>
-          <div class="lawyer__body">
-            <p class="lawyer__role">변호사</p>
-            <h3 class="lawyer__name">장우진</h3>
-            <ul class="lawyer__career">
-              <li>사법연수원 제42기</li>
-              <li>서울중앙지방법원 민사조정위원</li>
-              <li>서울지방변호사회 조세연수원 수료</li>
-            </ul>
-          </div>
-        </article>
-        <article class="lawyer reveal" data-delay="160">
-          <div class="lawyer__photo"><span class="initial">林</span></div>
-          <div class="lawyer__body">
-            <p class="lawyer__role">변호사 / 형사법 전문</p>
-            <h3 class="lawyer__name">임준규</h3>
-            <ul class="lawyer__career">
-              <li>대한변협 형사법 전문변호사</li>
-              <li>서울지방국세청 송무국</li>
-              <li>EY한영회계법인 세무본부 Manager</li>
-            </ul>
-          </div>
-        </article>
-        <article class="lawyer reveal" data-delay="240">
-          <div class="lawyer__photo"><span class="initial">河</span></div>
-          <div class="lawyer__body">
-            <p class="lawyer__role">변호사</p>
-            <h3 class="lawyer__name">하혜용</h3>
-            <ul class="lawyer__career">
-              <li>제10회 변호사시험 합격</li>
-              <li>법무법인(유) 세한</li>
-              <li>법무법인 태성</li>
-            </ul>
-          </div>
-        </article>
+        </div>
       </div>
+
+      <p style="margin-top:34px" class="reveal">
+        <a class="btn" href="lawyers.html">구성원 전체 보기 <span class="arrow">&#8594;</span></a>
+      </p>
     </div>
   </section>
 
@@ -385,23 +327,7 @@
         <p class="sec-desc">집단등기 · 재건축 · 하자소송을 중심으로 판례와 등기 실무를 정리해 발행합니다.</p>
       </div>
 
-      <article class="magfeature reveal">
-        <div class="magfeature__thumb">
-          <img src="assets/img/magazine/issue-02-cover.jpg" alt="THE ASSET 제2호 표지">
-        </div>
-        <div class="magfeature__body">
-          <p class="magfeature__cat">ISSUE NO. 02 · 최신호</p>
-          <h3 class="magfeature__title">내 자산을 지키는<br>집단등기 · 재건축 · 하자소송의 절대 공식</h3>
-          <p class="magfeature__desc">
-            대법원 하자배상 판결 브리핑, 보존등기 지연 실무, 전유·공용 하자 경합 책임,
-            하혜용 변호사의 하자소송 Q&amp;A까지 16면 구성.
-          </p>
-          <p style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
-            <a class="btn btn--ghost" href="magazine/issue-02.html" target="_blank" rel="noopener">2호 보기 &#8594;</a>
-            <a class="btn btn--ghost" href="magazine.html">매거진 전체 &#8594;</a>
-          </p>
-        </div>
-      </article>
+      <article class="magfeature reveal" data-mag-feature></article>
     </div>
   </section>
 
@@ -436,11 +362,13 @@
         <a href="practice.html">업무분야</a>
         <a href="corporate.html">기업법무</a>
         <a href="registry.html">단체등기</a>
+        <a href="dongtan.html">단체등기센터</a>
         <a href="law.html">법률정보</a>
         <a href="magazine.html">제이엘 매거진</a>
         <a href="contact.html">오시는 길</a>
       </nav>
       <div class="footer__links">
+        <a href="docs/jl-lawfirm-profile.pdf" download="법무법인_제이엘_지명원.pdf" class="is-dl">지명원 내려받기</a>
         <a href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">단체등기 진행조회</a>
         <a href="https://www.scourt.go.kr/portal/information/events/search/search.jsp" target="_blank" rel="noopener">나의 사건검색</a>
         <a href="https://ecfs.scourt.go.kr/ecf/index.jsp" target="_blank" rel="noopener">전자소송</a>
@@ -480,6 +408,8 @@
   <a class="is-alt" href="tel:18994252">동탄 1899-4252</a>
 </div>
 
-<script src="assets/js/main.js"></script>
+<script src="assets/js/main.js?v=3"></script>
+<script src="assets/js/lawyers.js?v=3"></script>
+<script src="assets/js/magazine.js?v=3"></script>
 </body>
 </html>

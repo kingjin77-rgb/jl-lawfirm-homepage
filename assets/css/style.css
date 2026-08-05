@@ -361,6 +361,93 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 /* =========================================================
    Lawyers
    ========================================================= */
+/* =========================================================
+   변호사 슬라이드쇼 — 1인 단독 화면 자동 전환
+   ========================================================= */
+.lwshow { position: relative; }
+.lwshow__stage {
+  position: relative; overflow: hidden;
+  background: #fff; border: 1px solid var(--line);
+  min-height: 560px;
+}
+.lwslide {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+  opacity: 0; visibility: hidden;
+  transition: opacity 1s var(--ease), visibility 1s;
+}
+.lwslide.is-on { opacity: 1; visibility: visible; position: relative; }
+.lwslide__photo {
+  position: relative; overflow: hidden;
+  background: radial-gradient(circle at 50% 28%, var(--navy-soft), #dde2ed);
+  display: flex; align-items: center; justify-content: center;
+}
+.lwslide__photo img { width: 100%; height: 100%; object-fit: cover; }
+.lwslide__photo .initial {
+  font-size: clamp(96px, 13vw, 190px); font-weight: 800;
+  color: rgba(13,33,98,.12); letter-spacing: -.05em; line-height: 1;
+  transform: translateY(0); transition: transform 1.4s var(--ease);
+}
+.lwslide.is-on .lwslide__photo .initial { animation: lwfloat 1.4s var(--ease); }
+@keyframes lwfloat { from { transform: translateY(18px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.lwslide__body {
+  padding: clamp(32px, 4vw, 60px);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.lwslide__role { font-size: 12px; letter-spacing: .2em; color: var(--navy); font-weight: 700; }
+.lwslide__name { margin-top: 12px; font-size: clamp(28px, 3.6vw, 46px); font-weight: 800; letter-spacing: -.045em; }
+.lwslide__name .en { margin-left: 12px; font-size: 14px; font-weight: 400; color: var(--gray-300); letter-spacing: .08em; }
+.lwslide__tagline { margin-top: 16px; font-size: clamp(14.5px, 1.45vw, 17px); color: var(--gray-700); }
+.lwslide__career {
+  margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px clamp(20px, 2.6vw, 44px);
+  max-height: 260px; overflow: hidden;
+}
+.lwslide__career li { position: relative; padding-left: 14px; font-size: 14.5px; color: var(--gray-500); line-height: 1.75; }
+.lwslide__career li::before { content: ""; position: absolute; left: 0; top: 11px; width: 4px; height: 4px; background: var(--gray-300); border-radius: 50%; }
+.lwslide__career li strong { color: var(--gray-900); font-weight: 600; }
+
+/* 컨트롤 */
+.lwshow__nav {
+  margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+}
+.lwshow__tab {
+  height: 46px; padding-inline: 20px; font-size: 14.5px; font-weight: 600;
+  color: var(--gray-700); background: #fff; border: 1px solid var(--line);
+  transition: all .3s var(--ease);
+}
+.lwshow__tab:hover { border-color: var(--navy); color: var(--navy); }
+.lwshow__tab.is-on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.lwshow__tab small { display: block; font-size: 11px; font-weight: 500; opacity: .72; margin-top: 1px; }
+
+.lwshow__util { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.lwshow__arrow {
+  width: 46px; height: 46px; border: 1px solid var(--line); background: #fff;
+  color: var(--navy); font-size: 15px; transition: all .3s var(--ease);
+}
+.lwshow__arrow:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
+.lwshow__count { font-size: 13px; color: var(--gray-500); min-width: 52px; text-align: center; }
+.lwshow__count b { color: var(--navy); font-weight: 700; }
+
+/* 진행 바 */
+.lwshow__bar { height: 2px; background: var(--line); overflow: hidden; }
+.lwshow__bar i { display: block; height: 100%; width: 0; background: var(--navy); }
+.lwshow.is-playing .lwshow__bar i { animation: lwbar var(--dur, 7s) linear forwards; }
+@keyframes lwbar { from { width: 0; } to { width: 100%; } }
+
+@media (max-width: 900px) {
+  .lwshow__stage { min-height: 0; }
+  .lwslide { grid-template-columns: 1fr; }
+  .lwslide__photo { aspect-ratio: 3 / 2; }
+  .lwslide__career { grid-template-columns: 1fr; max-height: none; }
+  .lwshow__util { margin-left: 0; width: 100%; justify-content: space-between; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lwshow.is-playing .lwshow__bar i { animation: none; width: 100%; }
+  .lwslide.is-on .lwslide__photo .initial { animation: none; }
+}
+
 /* 대표변호사 단독 배치 */
 .leader {
   display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
@@ -468,6 +555,47 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .magfeature__cat { font-size: 12px; letter-spacing: .18em; color: #cbb27e; font-weight: 700; }
 .magfeature__title { margin-top: 14px; color: #fff; font-size: clamp(22px, 2.8vw, 34px); font-weight: 800; letter-spacing: -.04em; line-height: 1.35; }
 .magfeature__desc { margin-top: 18px; font-size: 15.5px; color: rgba(255,255,255,.74); line-height: 1.8; }
+
+/* =========================================================
+   자료 다운로드 (지명원 등)
+   ========================================================= */
+.dlcard {
+  display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+  gap: clamp(24px, 3.4vw, 52px); align-items: center;
+  padding: clamp(26px, 3vw, 44px);
+  background: #fff; border: 1px solid var(--line);
+}
+.dlcard__thumb {
+  position: relative; box-shadow: 0 18px 44px rgba(13,33,98,.16);
+  transition: transform .5s var(--ease);
+}
+.dlcard:hover .dlcard__thumb { transform: translateY(-5px); }
+.dlcard__thumb img { width: 100%; height: auto; display: block; }
+.dlcard__cat { font-size: 12px; letter-spacing: .18em; color: var(--navy); font-weight: 700; }
+.dlcard__title { margin-top: 12px; font-size: clamp(22px, 2.6vw, 32px); font-weight: 800; letter-spacing: -.04em; }
+.dlcard__desc { margin-top: 16px; font-size: clamp(14.5px, 1.4vw, 16px); color: var(--gray-700); }
+.dlcard__list { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 6px; }
+.dlcard__list li {
+  padding: 5px 11px; font-size: 12.5px; font-weight: 500;
+  color: var(--navy); background: var(--navy-soft); border-radius: 999px;
+}
+.dlcard__meta { margin-top: 18px; font-size: 13px; color: var(--gray-500); }
+.dlcard__actions { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+.btn-dl {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 56px; padding-inline: 30px;
+  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  background: var(--navy); color: #fff;
+  transition: background .35s var(--ease);
+}
+.btn-dl:hover { background: var(--navy-deep); }
+.btn-dl svg { flex: 0 0 auto; }
+
+@media (max-width: 720px) {
+  .dlcard { grid-template-columns: 1fr; }
+  .dlcard__thumb { max-width: 220px; }
+}
 
 /* =========================================================
    법률정보 게시판
@@ -606,6 +734,8 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .footer__nav { display: flex; flex-wrap: wrap; gap: 8px 26px; font-size: 15px; font-weight: 500; color: #fff; }
 .footer__links { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; }
 .footer__links a::after { content: " ↗"; color: #cbb27e; font-size: 11px; }
+.footer__links a.is-dl { color: #fff; font-weight: 600; }
+.footer__links a.is-dl::after { content: " ↓"; }
 .footer__body { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); padding-top: 36px; }
 .footer__logo { color: #fff; font-size: 22px; font-weight: 800; letter-spacing: .06em; }
 .footer__logo .dot { color: #cbb27e; }

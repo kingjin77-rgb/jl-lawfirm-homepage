@@ -20,15 +20,22 @@ jl-homepage/
 ├── practice.html     업무분야 — 민사·형사 / 하자소송 / 재건축·재개발 / 상속·이혼·조세 + 소송절차
 ├── corporate.html    기업법무 — 기업법률자문 · 법인등기 · 자문 고객사
 ├── registry.html     단체등기 — 입주아파트 / 분양전환 / 대지권 + 6단계 절차 + 준비서류
+├── dongtan.html      단체등기센터 — 동탄 분사무소 원스톱 포털
 ├── law.html          법률정보 — 법제처 API 자동 수집 목록 (필터·검색·페이지네이션)
 ├── magazine.html     제이엘 매거진 — THE ASSET 발행호 + 검토보고서 카드
-├── contact.html      오시는 길 — 서울 본사 / 동탄 분사무소 (카카오맵)
+├── contact.html      오시는 길 — 서울 본사 / 동탄 분사무소 (지도)
+├── admin/            관리자 페이지 — 매거진·검토보고서 편집 후 GitHub 커밋
 ├── magazine/
 │   └── issue-02.html         THE ASSET 제2호 (16면, 1.1MB, 이미지 base64 내장)
+├── docs/
+│   └── jl-lawfirm-profile.pdf  지명원 (19면)
 ├── data/
+│   ├── magazine.json         매거진 발행호 · 검토보고서 (관리자 페이지가 편집)
+│   ├── lawyers.json          변호사 프로필 (슬라이드쇼 원본)
 │   └── law-feed.json         법률정보 피드 (자동 생성물, 직접 수정 금지)
 ├── tools/
-│   └── fetch_law_feed.py     법제처 Open API 수집 스크립트
+│   ├── fetch_law_feed.py     법제처 Open API 수집 스크립트
+│   └── bump_assets.py        CSS/JS 캐시 버전 올리기
 └── assets/
     ├── css/style.css
     ├── js/main.js            공통 (헤더·내비·리빌·히어로·아코디언·매거진 필터)
@@ -39,6 +46,20 @@ jl-homepage/
     ├── img/magazine/         매거진 표지
     └── video/hero.mp4        도시 전경 (Pexels, 15초, 877KB)
 ```
+
+## 콘텐츠 편집
+
+코드를 몰라도 매거진·검토보고서는 **관리자 페이지(`/admin/`)** 에서 편집합니다.
+GitHub 토큰을 한 번 등록하면 브라우저에서 바로 커밋됩니다.
+자세한 절차와 팀 작업 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md) 참고.
+
+데이터 파일과 화면의 대응:
+
+| 파일 | 반영되는 곳 |
+|---|---|
+| `data/magazine.json` | 매거진 페이지, 메인 매거진 배너 |
+| `data/lawyers.json` | 구성원 슬라이드쇼(구성원 페이지·메인) |
+| `data/law-feed.json` | 법률정보 목록 — **자동 생성이므로 손대지 말 것** |
 
 ## 법률정보 자동 수집
 
