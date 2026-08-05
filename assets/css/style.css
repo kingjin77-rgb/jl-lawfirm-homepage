@@ -557,6 +557,70 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .magfeature__desc { margin-top: 18px; font-size: 15.5px; color: rgba(255,255,255,.74); line-height: 1.8; }
 
 /* =========================================================
+   단체등기 포털 — 계산기 · 체크리스트 · 타임라인 · 단지목록
+   ========================================================= */
+.tool { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 0; border: 1px solid var(--line); background: #fff; }
+.tool__form { padding: clamp(24px, 2.8vw, 36px); background: var(--paper-alt); border-right: 1px solid var(--line); }
+.tool__out { padding: clamp(24px, 2.8vw, 36px); min-width: 0; }
+.tool__form h3, .tool__out h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.tool__form .hint, .tool__out .hint { font-size: 12.5px; color: var(--gray-500); line-height: 1.7; }
+
+.fld { margin-top: 16px; }
+.fld label { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.fld input, .fld select {
+  width: 100%; height: 44px; padding: 0 13px; font: inherit; font-size: 14px; color: var(--ink);
+  border: 1px solid var(--line); background: #fff;
+}
+.fld input:focus, .fld select:focus { outline: 0; border-color: var(--navy); }
+.fld .unit { display: flex; align-items: center; gap: 8px; }
+.fld .unit span { font-size: 13px; color: var(--gray-500); white-space: nowrap; }
+
+.calc__table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--navy); }
+.calc__table th, .calc__table td { padding: 12px 10px; border-bottom: 1px solid var(--line); font-size: 14px; text-align: left; }
+.calc__table th { font-weight: 600; color: var(--ink); width: 40%; }
+.calc__table td:last-child { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.calc__table td:nth-child(2) { font-size: 12.5px; color: var(--gray-500); }
+.calc__table tr.sum th, .calc__table tr.sum td { background: var(--paper-alt); font-weight: 700; color: var(--navy); }
+.calc__table tr.total th, .calc__table tr.total td { background: var(--navy); color: #fff; font-weight: 800; font-size: 16px; border-bottom: 0; }
+.calc__note { margin-top: 16px; padding: 14px 16px; background: var(--paper-alt); border-left: 3px solid var(--gold); font-size: 12.5px; color: var(--gray-500); line-height: 1.75; }
+.calc__note b { color: var(--navy); }
+.calc__empty { padding: 40px 0; text-align: center; color: var(--gray-500); font-size: 14px; }
+
+.docs__group { margin-bottom: 22px; }
+.docs__group h4 { font-size: 13px; letter-spacing: .1em; color: var(--navy); padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+.docs__group li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; }
+.docs__group input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--navy); flex: 0 0 auto; }
+.docs__group label { font-size: 14px; color: var(--gray-700); cursor: pointer; }
+.docs__group label b { color: var(--ink); font-weight: 600; }
+.docs__group label span { display: block; font-size: 12.5px; color: var(--gray-500); margin-top: 2px; }
+
+.tl { counter-reset: tl; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.tl__item { display: flex; align-items: center; gap: 16px; padding: 18px 22px; background: #fff; }
+.tl__no { font-size: 13px; font-weight: 800; color: var(--gold); letter-spacing: .06em; flex: 0 0 auto; }
+.tl__body b { font-size: 15.5px; color: var(--ink); font-weight: 600; }
+.tl__body span { display: block; font-size: 13.5px; color: var(--gray-500); margin-top: 2px; }
+
+.cplx { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.cplx li { background: #fff; padding: 16px 14px; font-size: 14px; font-weight: 500; color: var(--gray-900); text-align: center; letter-spacing: -.02em; }
+
+@media (max-width: 900px) {
+  .tool { grid-template-columns: 1fr; }
+  .tool__form { border-right: 0; border-bottom: 1px solid var(--line); }
+  .cplx { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .cplx { grid-template-columns: 1fr; }
+  .calc__table th { width: auto; }
+  .calc__table td:nth-child(2) { display: none; }
+}
+@media print {
+  .header, .footer, .quick, .subhero, .tool__form, .cta, .board-note { display: none !important; }
+  .section { padding-block: 0 !important; }
+  .tool { border: 0; }
+  .docs__group input[type=checkbox] { -webkit-appearance: none; appearance: none; border: 1px solid #333; }
+}
+
+/* =========================================================
    자료 다운로드 (지명원 등)
    ========================================================= */
 .dlcard {

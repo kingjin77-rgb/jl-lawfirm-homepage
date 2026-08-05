@@ -161,6 +161,126 @@
     </div>
   </section>
 
+  <!-- 등기비용 계산기 -->
+  <section class="section section--alt" id="calc" data-portal>
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">FEE CALCULATOR</span>등기비용 <strong>계산기</strong></h2>
+        <p class="sec-desc">분양가를 넣으면 취득세와 국민주택채권을 포함한 예상 비용이 나옵니다.</p>
+      </div>
+
+      <div class="tool reveal">
+        <form class="tool__form" id="calcForm" onsubmit="return false">
+          <h3>조건 입력</h3>
+          <p class="hint">모르는 항목은 비워두셔도 됩니다.</p>
+
+          <div class="fld">
+            <label for="cPrice">분양가 (취득가액)</label>
+            <div class="unit"><input type="number" id="cPrice" step="0.01" min="0" value="6" placeholder="6"><span>억원</span></div>
+          </div>
+          <div class="fld">
+            <label for="cStd">시가표준액 (공시가격)</label>
+            <div class="unit"><input type="number" id="cStd" step="0.01" min="0" placeholder="모르면 비워두세요"><span>억원</span></div>
+          </div>
+          <div class="fld">
+            <label for="cArea">전용면적</label>
+            <div class="unit"><input type="number" id="cArea" step="0.01" min="0" value="84.98" placeholder="84.98"><span>㎡</span></div>
+          </div>
+          <div class="fld">
+            <label for="cRegion">지역</label>
+            <select id="cRegion">
+              <option value="metro">서울 · 광역시</option>
+              <option value="other">그 밖의 지역</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label for="cDiscount">채권 할인율</label>
+            <div class="unit"><input type="number" id="cDiscount" step="0.01" min="0"><span>%</span></div>
+          </div>
+        </form>
+
+        <div class="tool__out">
+          <h3>예상 비용</h3>
+          <p class="hint">아래 금액에 법무 수수료는 포함되지 않았습니다.</p>
+          <div id="calcOut" style="margin-top:18px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 준비서류 체크리스트 -->
+  <section class="section" id="docs" data-portal>
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">CHECKLIST</span>준비서류 <strong>체크리스트</strong></h2>
+        <p class="sec-desc">신청 방식과 대출 여부에 따라 필요한 서류가 달라집니다. 해당 조건을 고르면 목록이 바뀝니다.</p>
+      </div>
+
+      <div class="tool reveal">
+        <form class="tool__form" id="docsForm" onsubmit="return false">
+          <h3>내 조건</h3>
+          <p class="hint">고른 조건에 맞는 서류만 표시됩니다.</p>
+
+          <div class="fld">
+            <label for="dType">등기 종류</label>
+            <select id="dType">
+              <option value="newhome">입주 아파트</option>
+              <option value="conversion">분양전환</option>
+              <option value="landright">대지권 등기</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label for="dWho">신청 방식</label>
+            <select id="dWho">
+              <option value="self">본인이 직접</option>
+              <option value="agent">대리인이 신청</option>
+              <option value="couple">부부 공동명의</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label for="dLoan">대출 여부</label>
+            <select id="dLoan">
+              <option value="loan">대출 실행</option>
+              <option value="none">대출 없음 (자납)</option>
+            </select>
+          </div>
+
+          <div class="acts" style="margin-top:22px">
+            <button type="button" class="btn" id="btnPrintDocs" style="height:44px;padding-inline:20px">체크리스트 인쇄</button>
+          </div>
+        </form>
+
+        <div class="tool__out">
+          <h3>필요 서류 <span style="color:var(--navy)"><b id="docsCount">0</b>건</span></h3>
+          <p class="hint">준비한 서류에 표시해 두시면 빠뜨리지 않습니다.</p>
+          <div id="docsOut" style="margin-top:18px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 진행 타임라인 -->
+  <section class="section section--alt" data-portal>
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">TIMELINE</span>접수부터 <strong>권리증 교부</strong>까지</h2>
+        <p class="sec-desc">세대별 실제 진행 상태는 진행조회에서 확인하실 수 있습니다.</p>
+      </div>
+      <ul class="tl reveal" data-timeline></ul>
+    </div>
+  </section>
+
+  <!-- 진행 단지 -->
+  <section class="section" data-portal>
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">TRACK RECORD</span>진행 단지 <strong data-complex-count>0</strong>곳</h2>
+        <p class="sec-desc">법무법인 제이엘 단체등기센터가 진행 중이거나 완료한 공동주택입니다.</p>
+      </div>
+      <ul class="cplx reveal" data-complexes></ul>
+    </div>
+  </section>
+
   <!-- 입주 단계별 지원 -->
   <section class="section section--alt">
     <div class="container">
@@ -341,5 +461,6 @@
 
 <script src="assets/js/main.js?v=3"></script>
 <script src="assets/js/map.js?v=3"></script>
+<script src="assets/js/registry-portal.js?v=3"></script>
 </body>
 </html>
