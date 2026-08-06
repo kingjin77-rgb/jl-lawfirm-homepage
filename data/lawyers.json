@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-05",
+  "updatedAt": "2026-08-06",
   "interval": 5000,
   "lawyers": [
     {
@@ -87,6 +87,47 @@
       ]
     },
     {
+      "slug": "ha-hye-yong",
+      "initial": "河",
+      "photo": "assets/img/lawyers/ha-hye-yong.jpg",
+      "role": "변호사",
+      "name": "하혜용",
+      "en": "HA HYE YONG",
+      "short": "변호사",
+      "focus": [
+        {
+          "title": "하자소송",
+          "desc": "공동주택 하자보수 청구·하자보수보증금 소송 실무를 전담합니다. 하자감정 절차 대응까지 직접 수행합니다."
+        },
+        {
+          "title": "단체등기",
+          "desc": "입주 아파트 단체등기와 입주예정자협의회 법률지원에 깊이 관여합니다."
+        },
+        {
+          "title": "집필 · 연재",
+          "desc": "제이엘 리걸 매거진 THE ASSET에 하자소송 Q&A를 연재하고 있습니다."
+        }
+      ],
+      "columns": [
+        {
+          "cate": "Q&A 연재",
+          "title": "하자는 '발견'이 아니라 '통지'로 지켜진다",
+          "desc": "하자소송 Q&A 제2회. 기록과 통지, 증거 확보의 실무 포인트.",
+          "source": "THE ASSET 2호 · 14 – 16면",
+          "link": "../magazine/issue-02.html"
+        }
+      ],
+      "tagline": "하자소송 실무를 담당합니다. 제이엘 매거진에 하자소송 Q&A를 연재하고 있습니다.",
+      "career": [
+        "인하대학교 법학과 졸업",
+        "충북대학교 법학전문대학원 졸업",
+        "제10회 변호사시험 합격",
+        "<strong>2021</strong> 법무법인(유) 세한",
+        "<strong>2022</strong> 법무법인 태성",
+        "<strong>2022</strong> 법무법인 제이엘"
+      ]
+    },
+    {
       "slug": "jang-woo-jin",
       "initial": "張",
       "photo": "assets/img/lawyers/jang-woo-jin.jpg",
@@ -147,47 +188,6 @@
         "병무청 규제개혁법무 담당관실",
         "서울지방국세청 송무국",
         "EY한영회계법인 세무본부 Manager"
-      ]
-    },
-    {
-      "slug": "ha-hye-yong",
-      "initial": "河",
-      "photo": "assets/img/lawyers/ha-hye-yong.jpg",
-      "role": "변호사",
-      "name": "하혜용",
-      "en": "HA HYE YONG",
-      "short": "변호사",
-      "focus": [
-        {
-          "title": "하자소송",
-          "desc": "공동주택 하자보수 청구·하자보수보증금 소송 실무를 전담합니다. 하자감정 절차 대응까지 직접 수행합니다."
-        },
-        {
-          "title": "단체등기",
-          "desc": "입주 아파트 단체등기와 입주예정자협의회 법률지원에 깊이 관여합니다."
-        },
-        {
-          "title": "집필 · 연재",
-          "desc": "제이엘 리걸 매거진 THE ASSET에 하자소송 Q&A를 연재하고 있습니다."
-        }
-      ],
-      "columns": [
-        {
-          "cate": "Q&A 연재",
-          "title": "하자는 '발견'이 아니라 '통지'로 지켜진다",
-          "desc": "하자소송 Q&A 제2회. 기록과 통지, 증거 확보의 실무 포인트.",
-          "source": "THE ASSET 2호 · 14 – 16면",
-          "link": "../magazine/issue-02.html"
-        }
-      ],
-      "tagline": "하자소송 실무를 담당합니다. 제이엘 매거진에 하자소송 Q&A를 연재하고 있습니다.",
-      "career": [
-        "인하대학교 법학과 졸업",
-        "충북대학교 법학전문대학원 졸업",
-        "제10회 변호사시험 합격",
-        "<strong>2021</strong> 법무법인(유) 세한",
-        "<strong>2022</strong> 법무법인 태성",
-        "<strong>2022</strong> 법무법인 제이엘"
       ]
     },
     {
