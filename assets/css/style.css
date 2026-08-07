@@ -1350,3 +1350,31 @@ a.lwslide__photolink { display: contents; }
   .aptf__side { min-height: 96px; border-left: 0; border-top: 1px solid var(--line); }
   .aptf__acts .btn { width: 100%; justify-content: center; }
 }
+
+/* =========================================================
+   담보책임기간 계산기 — 하자소송
+   ========================================================= */
+.warr { margin-top: 30px; border: 1px solid var(--line); background: #fff; }
+.warr__head { padding: 22px 26px 0; }
+.warr__head h3 { font-size: 17px; font-weight: 700; }
+.warr__head p { margin-top: 7px; font-size: 14px; color: var(--gray-500); }
+.warr__form { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; padding: 18px 26px 22px; }
+.warr__fld label { display: block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--navy); }
+.warr__fld input, .warr__fld select {
+  width: 100%; padding: 11px 13px; font: inherit; font-size: 14.5px; color: var(--ink);
+  border: 1px solid var(--line); background: #fff;
+}
+.warr__fld input:focus, .warr__fld select:focus { outline: 0; border-color: var(--navy); }
+.warr__out { border-top: 1px solid var(--line); padding: 22px 26px; background: var(--paper-alt); }
+.warr__empty { font-size: 14px; color: var(--gray-500); }
+.warr__result { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.warr__label { font-size: 12.5px; font-weight: 700; letter-spacing: .04em; color: var(--gold); flex-basis: 100%; }
+.warr__date { font-size: clamp(21px, 2.4vw, 29px); font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
+.warr__state { font-size: 14px; font-weight: 600; }
+.warr__result.is-ok .warr__state { color: #1d6b3a; }
+.warr__result.is-soon .warr__state { color: #8a5f0c; }
+.warr__result.is-over .warr__date { color: var(--gray-500); }
+.warr__result.is-over .warr__state { color: #a3312a; }
+.warr__note { margin-top: 14px; font-size: 13px; line-height: 1.75; color: var(--gray-500); }
+.warr__note b { color: var(--gray-700); }
+@media (max-width: 640px) { .warr__form { grid-template-columns: 1fr; } }

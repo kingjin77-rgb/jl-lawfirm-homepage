@@ -6,7 +6,7 @@
 <title>업무분야 | 법무법인 제이엘</title>
 <meta name="description" content="민사·부동산·건설하자, 형사, 기업법무, 상속·이혼·조세 — 법무법인 제이엘의 전담 업무분야와 소송절차 안내.">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css?v=15">
+<link rel="stylesheet" href="assets/css/style.css?v=16">
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/practice.html">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -228,6 +228,30 @@
             <tr><th scope="row">사전 대응</th><td>사전점검 기록 확보, 입주자예정자협의회 명의 개선요구사항 정리</td></tr>
           </tbody>
         </table>
+        <div class="warr reveal" data-warranty>
+          <div class="warr__head">
+            <h3>담보책임기간 계산기</h3>
+            <p>사용검사일과 하자 유형을 넣으면 하자보수를 청구할 수 있는 기한이 나옵니다.</p>
+          </div>
+          <div class="warr__form">
+            <div class="warr__fld">
+              <label for="wDate">사용검사(승인)일</label>
+              <input type="date" id="wDate">
+            </div>
+            <div class="warr__fld">
+              <label for="wType">하자 유형</label>
+              <select id="wType">
+                <option value="2">마감공사 — 미장 · 도장 · 타일 · 도배</option>
+                <option value="3">설비공사 — 전기 · 소방 · 승강기</option>
+                <option value="4">방수공사</option>
+                <option value="5">지붕 · 옥상 방수</option>
+                <option value="10">내력구조부 — 균열 · 침하 · 파손</option>
+              </select>
+            </div>
+          </div>
+          <div class="warr__out" data-warranty-out></div>
+        </div>
+
         <div class="pfeed" data-prec-feed="하자소송" data-prec-limit="5"></div>
       </div>
     </div>
@@ -385,7 +409,8 @@
   <a class="is-alt" href="tel:18994252">동탄 1899-4252</a>
 </div>
 
-<script src="assets/js/main.js?v=15"></script>
-<script src="assets/js/practice-feed.js?v=15"></script>
+<script src="assets/js/main.js?v=16"></script>
+<script src="assets/js/practice-feed.js?v=16"></script>
+<script src="assets/js/warranty.js?v=16"></script>
 </body>
 </html>
