@@ -1308,3 +1308,45 @@ a.lwslide__photolink { display: contents; }
   .gnb a { font-size: 13.5px; }
   .header__tel .num { font-size: 17px; }
 }
+
+/* GNB 외부 링크 — 사이트를 벗어난다는 표시 */
+.gnb a.gnb__ext::before {
+  content: "↗"; margin-right: 3px; font-size: .78em; vertical-align: 1px; opacity: .65;
+}
+/* 항목이 9개가 되어 좁은 데스크톱에서 더 일찍 줄인다 */
+@media (max-width: 1320px) and (min-width: 1025px) {
+  .gnb { gap: 13px; }
+  .gnb a { font-size: 13.2px; }
+  .header__tel .num { font-size: 17px; }
+  .btn-track { padding-inline: 14px; font-size: 13px; }
+}
+
+/* =========================================================
+   아파트친구 — 메인 소개 블록
+   ========================================================= */
+.aptf {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(200px, 300px);
+  border: 1px solid var(--line); background: #fff;
+}
+.aptf__body { padding: clamp(30px, 3.6vw, 54px); }
+.aptf__en { font-size: 12px; letter-spacing: .2em; font-weight: 700; color: var(--gold); }
+.aptf h3 { margin-top: 12px; font-size: clamp(24px, 2.8vw, 34px); font-weight: 800; }
+.aptf__lead { margin-top: 16px; max-width: 62ch; font-size: clamp(14.5px, 1.4vw, 16px); color: var(--gray-700); }
+.aptf__list { margin-top: 22px; display: grid; gap: 7px; }
+.aptf__list li { position: relative; padding-left: 15px; font-size: 14.5px; color: var(--gray-700); }
+.aptf__list li::before { content: ""; position: absolute; left: 0; top: 13px; width: 6px; height: 1px; background: var(--gold); }
+.aptf__acts { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
+.aptf__side {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(150deg, var(--navy-deep), var(--navy));
+  border-left: 1px solid var(--line);
+}
+.aptf__mark {
+  font-size: clamp(26px, 2.8vw, 38px); font-weight: 800; line-height: 1.2;
+  letter-spacing: .04em; text-align: center; color: rgba(255,255,255,.16);
+}
+@media (max-width: 860px) {
+  .aptf { grid-template-columns: 1fr; }
+  .aptf__side { min-height: 96px; border-left: 0; border-top: 1px solid var(--line); }
+  .aptf__acts .btn { width: 100%; justify-content: center; }
+}
