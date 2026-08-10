@@ -860,10 +860,38 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
    Client list
    ========================================================= */
 .clients { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-.clients li {
-  display: flex; align-items: center; justify-content: center; text-align: center;
-  min-height: 108px; padding: 20px 14px; background: #fff;
-  font-size: 15px; font-weight: 600; color: var(--gray-900); letter-spacing: -.02em;
+.clients__lead { margin-bottom: 26px; font-size: clamp(15px, 1.4vw, 17px); color: var(--gray-700); }
+.clients__sub { font-size: clamp(19px, 2vw, 24px); font-weight: 700; color: var(--navy); letter-spacing: -.02em; }
+.sec-head--sub { margin-top: 46px; margin-bottom: 18px; }
+
+.cli {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  min-height: 150px; padding: 26px 18px; background: #fff;
+  transition: background .35s var(--ease);
+}
+.cli:hover { background: var(--paper-alt); }
+.cli__mark {
+  display: flex; align-items: center; justify-content: center;
+  height: 44px; margin-bottom: 14px;
+}
+.cli__mark img { max-height: 44px; max-width: 150px; width: auto; object-fit: contain; }
+/* 로고 파일이 아직 없을 때 쓰는 글자 표식 */
+.cli__mark > span {
+  font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--navy);
+  padding: 7px 13px; border: 1px solid var(--line); border-radius: 2px;
+}
+.cli__name { font-size: 15.5px; font-weight: 700; color: var(--gray-900); letter-spacing: -.02em; line-height: 1.5; }
+.cli__cat { margin-top: 5px; font-size: 12.5px; color: var(--gray-500); }
+
+/* 주요 자문 고객사 — 상시 자문 관계라 한 단계 강조한다 */
+.clients--lead .cli { min-height: 168px; }
+.clients--lead .cli__mark > span { color: var(--gold); border-color: var(--gold); }
+.clients--lead .cli__name { font-size: 16.5px; }
+
+@media (max-width: 860px) { .clients { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 460px) {
+  .clients { grid-template-columns: 1fr; }
+  .cli, .clients--lead .cli { min-height: 0; padding: 22px 16px; }
 }
 
 /* =========================================================
