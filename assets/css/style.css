@@ -870,23 +870,16 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   transition: background .35s var(--ease);
 }
 .cli:hover { background: var(--paper-alt); }
-.cli__mark {
-  display: flex; align-items: center; justify-content: center;
-  height: 44px; margin-bottom: 14px;
-}
+/* 로고 자리 — 로고 파일이 들어오면 이 안에 img 를 넣는다. 없으면 자리도 차지하지 않는다 */
+.cli__mark { display: flex; align-items: center; justify-content: center; height: 44px; margin-bottom: 14px; }
 .cli__mark img { max-height: 44px; max-width: 150px; width: auto; object-fit: contain; }
-/* 로고 파일이 아직 없을 때 쓰는 글자 표식 */
-.cli__mark > span {
-  font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--navy);
-  padding: 7px 13px; border: 1px solid var(--line); border-radius: 2px;
-}
-.cli__name { font-size: 15.5px; font-weight: 700; color: var(--gray-900); letter-spacing: -.02em; line-height: 1.5; }
-.cli__cat { margin-top: 5px; font-size: 12.5px; color: var(--gray-500); }
+.cli__name { font-size: 16px; font-weight: 700; color: var(--gray-900); letter-spacing: -.02em; line-height: 1.5; }
+.cli__cat { margin-top: 7px; font-size: 12.5px; color: var(--gray-500); }
 
 /* 주요 자문 고객사 — 상시 자문 관계라 한 단계 강조한다 */
-.clients--lead .cli { min-height: 168px; }
-.clients--lead .cli__mark > span { color: var(--gold); border-color: var(--gold); }
-.clients--lead .cli__name { font-size: 16.5px; }
+.clients--lead .cli { min-height: 150px; border-top: 2px solid var(--gold); }
+.clients--lead .cli__name { font-size: 17.5px; }
+.clients--lead .cli__cat { color: var(--navy); font-weight: 600; }
 
 @media (max-width: 860px) { .clients { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 460px) {
