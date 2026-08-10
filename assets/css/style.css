@@ -129,10 +129,12 @@ body.nav-open .logo__img--color { display: block; }
 .logo__mark .dot { color: var(--gold); }
 .logo__name { font-size: 14px; font-weight: 500; letter-spacing: -.02em; opacity: .8; }
 
-.gnb { display: flex; gap: clamp(14px, 1.9vw, 34px); flex: 0 1 auto; min-width: 0; }
+/* 간격·글자를 vw 로 두면 컨테이너(1280px)는 그대로인데 항목만 커져
+   넓은 화면에서 오히려 헤더 밖으로 넘친다. 고정값으로 잡는다. */
+.gnb { display: flex; gap: 24px; flex: 0 1 auto; min-width: 0; }
 .gnb a {
   position: relative; padding-block: 8px; white-space: nowrap;
-  font-size: clamp(14px, 1.15vw, 16px); font-weight: 600; letter-spacing: -.01em;
+  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
   color: rgba(255,255,255,.9); transition: color .3s var(--ease);
 }
 .gnb a::after {
@@ -143,55 +145,41 @@ body.nav-open .logo__img--color { display: block; }
 
 /* ── 상단 메뉴 펼침 ──────────────────────────────────────── */
 .gnb--drop { align-items: center; }
-.gnb__item { position: static; display: flex; align-items: center; }
-/* 펼침판은 헤더 전체 너비를 쓴다 — 항목이 6개까지 있어 좁으면 읽기 어렵다 */
+.gnb__item { position: relative; display: flex; align-items: center; }
+/* 펼침판은 해당 메뉴 아래에만 뜬다. 화면 전체를 덮으면 뒤 내용을 가려
+   무엇을 보고 있었는지 놓치게 된다. */
 .gnbdrop {
-  position: absolute; left: 0; right: 0; top: 100%;
-  background: #fff; border-top: 1px solid var(--line);
-  box-shadow: 0 24px 48px rgba(9, 20, 60, .10);
-  opacity: 0; transform: translateY(-8px); pointer-events: none;
-  transition: opacity .26s var(--ease), transform .26s var(--ease);
+  position: absolute; left: 50%; top: calc(100% + 10px);
+  width: max-content; max-width: 340px;
+  background: #fff; border: 1px solid var(--line);
+  box-shadow: 0 18px 36px rgba(9, 20, 60, .13);
+  opacity: 0; transform: translate(-50%, -6px); pointer-events: none;
+  transition: opacity .22s var(--ease), transform .22s var(--ease);
   z-index: 60;
 }
-.gnb__item.is-open .gnbdrop { opacity: 1; transform: none; pointer-events: auto; }
-.gnbdrop__in {
-  max-width: var(--container); margin: 0 auto;
-  padding: 34px var(--gutter) 38px;
-  display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 64px);
-}
-.gnbdrop__lead { border-right: 1px solid var(--line); padding-right: clamp(20px, 3vw, 40px); }
-.gnbdrop__t { font-size: 19px; font-weight: 800; letter-spacing: -.04em; color: var(--navy); }
-.gnbdrop__d { margin-top: 8px; font-size: 13.5px; line-height: 1.7; color: var(--gray-500); word-break: keep-all; }
-.gnbdrop__all {
-  display: inline-flex; align-items: center; gap: 6px; margin-top: 16px;
-  font-size: 13px; font-weight: 700; color: var(--navy);
-}
-.gnbdrop__all span { transition: transform .3s var(--ease); }
-.gnbdrop__all:hover span { transform: translateX(4px); }
-.gnbdrop__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 10px; }
+.gnb__item.is-open .gnbdrop { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+/* 메뉴와 펼침판 사이 빈틈으로 마우스가 빠지지 않게 한다 */
+.gnbdrop::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+.gnbdrop__in { padding: 8px; }
+/* 소개글은 화면을 키우는 값에 비해 얻는 게 적어 감춘다 */
+.gnbdrop__lead { display: none; }
+.gnbdrop__list { display: grid; grid-template-columns: 1fr; gap: 1px; }
 .gnbdrop__list a {
-  display: flex; flex-direction: column; gap: 3px; padding: 12px 14px;
-  border: 1px solid transparent; transition: all .25s var(--ease);
+  display: flex; flex-direction: column; gap: 2px; padding: 9px 12px;
+  transition: background .2s var(--ease);
 }
 .gnbdrop__list a::after { display: none; }
-.gnbdrop__list a:hover { border-color: var(--line); background: var(--gray-50, #f7f7f5); }
-.gnbdrop__list b { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 700; letter-spacing: -.03em; color: var(--gray-900); }
-.gnbdrop__list small { font-size: 12.5px; color: var(--gray-500); letter-spacing: -.01em; word-break: keep-all; }
+.gnbdrop__list a:hover { background: var(--gray-50, #f7f7f5); }
+.gnbdrop__list b { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; letter-spacing: -.03em; color: var(--gray-900); white-space: nowrap; }
+.gnbdrop__list small { font-size: 12px; color: var(--gray-500); letter-spacing: -.01em; word-break: keep-all; }
 .gnbdrop__list a.is-hot b { color: var(--navy); }
 .gnbdrop__tag {
-  padding: 2px 7px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em;
+  padding: 1px 6px; font-size: 10px; font-weight: 700; letter-spacing: .02em;
   color: #fff; background: var(--gold);
 }
-/* 헤더가 투명한 메인 상단에서도 펼침이 열리면 흰 배경으로 바꾼다 */
-.header.has-drop { background: rgba(255,255,255,.98); border-bottom-color: var(--line); }
-.header.has-drop .logo, .header.has-drop .header__tel { color: var(--navy); }
-.header.has-drop .gnb a { color: var(--gray-900); }
-.header.has-drop .logo__img--white { display: none; }
-.header.has-drop .logo__img--color { display: block; }
-@media (max-width: 1180px) {
-  .gnbdrop__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+/* 오른쪽 끝 메뉴는 펼침판이 화면 밖으로 나가지 않도록 오른쪽에 맞춘다 */
+.gnb__item:nth-last-child(-n+2) .gnbdrop { left: auto; right: 0; transform: translate(0, -6px); }
+.gnb__item:nth-last-child(-n+2).is-open .gnbdrop { transform: translate(0, 0); }
 
 .header__util { display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px); }
 .btn-track {
@@ -234,9 +222,11 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 /* =========================================================
    Hero — eulaw 방식: 검정 배경 위 영상 opacity .75, 고정 높이
    ========================================================= */
+/* 첫 화면은 브라우저 높이를 꽉 채운다.
+   dvh 는 모바일에서 주소창이 접힐 때 생기는 높이 변화를 흡수한다. */
 .hero {
   position: relative; display: flex; align-items: center;
-  height: clamp(560px, 78vh, 760px);
+  height: 100vh; height: 100dvh; min-height: 620px;
   background: #000; overflow: hidden;
 }
 .hero__media { position: absolute; inset: 0; }
@@ -246,7 +236,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   object-fit: cover; opacity: 0;
   transition: opacity 1.4s var(--ease);
 }
-.hero__video.is-ready { opacity: .75; }
+.hero__video.is-ready { opacity: .82; }
 
 /* 영상 없을 때 노출되는 이미지 슬라이드 (7초 체류 / 2초 크로스페이드 + 켄번스) */
 .hero__slide {
@@ -1401,23 +1391,27 @@ a.lwslide__photolink { display: contents; }
 /* 표 안의 한글도 어절 단위로 */
 .dtable td, .dtable th, .calc__table td, .calc__table th { word-break: keep-all; }
 
-/* 좁은 화면에서 메뉴가 두 줄로 깨지지 않도록 폰트를 먼저 줄인다 */
-@media (max-width: 1180px) and (min-width: 1025px) {
-  .gnb { gap: 14px; }
-  .gnb a { font-size: 13.5px; }
+/* 메뉴 9개 · 데스크톱 폭에 맞춰 단계적으로 줄인다.
+   1024px 아래는 햄버거 메뉴로 바뀌므로 여기서 다루지 않는다. */
+@media (max-width: 1340px) and (min-width: 1201px) {
+  .gnb { gap: 19px; }
+  .gnb a { font-size: 14.2px; }
+}
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .gnb { gap: 13px; }
+  .gnb a { font-size: 13.2px; }
   .header__tel .num { font-size: 17px; }
+  .btn-track { height: 36px; padding-inline: 13px; font-size: 13px; }
+}
+/* 여기부터는 메뉴 9개와 전화번호가 함께 들어가지 않는다.
+   번호는 각 페이지 본문과 하단에도 있으므로 헤더에서만 뺀다. */
+@media (max-width: 1120px) and (min-width: 1025px) {
+  .header__tel { display: none; }
 }
 
 /* GNB 외부 링크 — 사이트를 벗어난다는 표시 */
 .gnb a.gnb__ext::before {
   content: "↗"; margin-right: 3px; font-size: .78em; vertical-align: 1px; opacity: .65;
-}
-/* 항목이 9개가 되어 좁은 데스크톱에서 더 일찍 줄인다 */
-@media (max-width: 1320px) and (min-width: 1025px) {
-  .gnb { gap: 13px; }
-  .gnb a { font-size: 13.2px; }
-  .header__tel .num { font-size: 17px; }
-  .btn-track { padding-inline: 14px; font-size: 13px; }
 }
 
 /* =========================================================
