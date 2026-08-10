@@ -11,13 +11,17 @@
   --ink:        #111418;
   --gray-900:   #222222;
   --gray-700:   #4b515a;
-  --gray-500:   #767c86;
+  /* 흰 바탕에서 4.5:1 을 넘겨야 본문 크기로 써도 읽힌다 (기존 #767c86 은 4.2:1) */
+  --gray-500:   #6d727b;
   --gray-300:   #b6bbc2;
   --line:       #e3e5e9;
   --line-dark:  rgba(255, 255, 255, .16);
   --paper:      #ffffff;
   --paper-alt:  #f4f5f8;
   --gold:       #b08d4f;
+  /* 흰 바탕 위 글자용 금색. 원래 금색은 흰 바탕에서 대비가 3.1:1 이라
+     작은 글자로 쓰면 안 읽힌다. 선·아이콘·어두운 바탕에는 위의 --gold 를 그대로 쓴다. */
+  --gold-ink:   #8f7033;
 
   /* 화면 폭을 그대로 쓴다. 큰 모니터에서 가운데만 좁게 쓰면 양옆이 비어 보인다.
      대신 본문 글줄은 아래에서 읽기 좋은 길이로 따로 제한한다. */
@@ -236,7 +240,10 @@ body.nav-open .logo__img--color { display: block; }
 .btn-track:hover { background: #97763d; }
 
 .header__tel { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.35; color: #fff; transition: color .4s var(--ease); }
+/* 헤더는 메인에서 영상 위(어두움), 하위 페이지에서 흰 바탕이다. 바탕에 맞춰 금색을 나눈다 */
 .header__tel .lbl { font-size: 11px; letter-spacing: .16em; color: var(--gold); }
+.header.is-solid .header__tel .lbl,
+.header.is-sub .header__tel .lbl { color: var(--gold-ink); }
 .header__tel .num { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
 
 .header.is-solid, .header.is-sub {
@@ -546,7 +553,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .lwgrade--associate { border-top-color: var(--line); }
 .lwgrade__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
 .lwgrade__head h3 { font-size: clamp(19px, 2vw, 24px); font-weight: 800; letter-spacing: -.035em; }
-.lwgrade__n { margin-left: 8px; font-size: 13px; font-weight: 600; color: var(--gold); letter-spacing: 0; }
+.lwgrade__n { margin-left: 8px; font-size: 13px; font-weight: 600; color: var(--gold-ink); letter-spacing: 0; }
 .lwgrade__head p { font-size: 14px; color: var(--gray-500); word-break: keep-all; }
 .lwgrade__list { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .lwgrade__list a, .lwgrade__no {
@@ -734,7 +741,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 
 .tl { counter-reset: tl; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
 .tl__item { display: flex; align-items: center; gap: 16px; padding: 18px 22px; background: #fff; }
-.tl__no { font-size: 13px; font-weight: 800; color: var(--gold); letter-spacing: .06em; flex: 0 0 auto; }
+.tl__no { font-size: 13px; font-weight: 800; color: var(--gold-ink); letter-spacing: .06em; flex: 0 0 auto; }
 .tl__body b { font-size: 15.5px; color: var(--ink); font-weight: 600; }
 .tl__body span { display: block; font-size: 13.5px; color: var(--gray-500); margin-top: 2px; }
 
@@ -1127,7 +1134,7 @@ p > .s + .s { margin-top: .38em; }
   border-color: var(--navy); transform: translateY(-4px);
   box-shadow: 0 18px 40px -24px rgba(13, 33, 98, .5);
 }
-.errcard__en { display: block; font-size: 11.5px; letter-spacing: .18em; color: var(--gold); font-weight: 600; }
+.errcard__en { display: block; font-size: 11.5px; letter-spacing: .18em; color: var(--gold-ink); font-weight: 600; }
 .errcard strong { display: block; margin-top: 10px; font-size: 17px; font-weight: 700; color: var(--ink); }
 .errcard__desc { display: block; margin-top: 8px; font-size: 13.5px; color: var(--gray-500); line-height: 1.6; }
 .errpage__tel { margin-top: clamp(36px, 4vw, 52px); font-size: 15px; color: var(--gray-500); }
@@ -1246,7 +1253,7 @@ p > .s + .s { margin-top: .38em; }
   border-color: var(--navy); transform: translateY(-3px);
   box-shadow: 0 18px 40px -26px rgba(13, 33, 98, .5);
 }
-.lwp-col__cate { font-size: 11.5px; letter-spacing: .16em; color: var(--gold); font-weight: 700; }
+.lwp-col__cate { font-size: 11.5px; letter-spacing: .16em; color: var(--gold-ink); font-weight: 700; }
 .lwp-col__title { font-size: clamp(17px, 1.8vw, 21px); font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
 .lwp-col__desc { font-size: 14.5px; color: var(--gray-500); }
 .lwp-col__src { margin-top: 6px; font-size: 12.5px; color: var(--gray-300); font-weight: 600; }
@@ -1295,7 +1302,7 @@ a.lwslide__photolink { display: contents; }
 .cases__head { font-size: 15px; font-weight: 700; color: var(--navy); padding-bottom: 10px; border-bottom: 2px solid var(--navy); }
 .cases__grid { margin-top: 14px; display: grid; gap: 10px; }
 .casecard { border: 1px solid var(--line); background: #fff; padding: 18px 20px; }
-.casecard__meta { font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: .04em; }
+.casecard__meta { font-size: 12px; font-weight: 700; color: var(--gold-ink); letter-spacing: .04em; }
 .casecard__meta span { margin-right: 8px; color: var(--gray-500); font-weight: 500; }
 .casecard__title { margin-top: 6px; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.6; }
 .casecard__result { margin-top: 4px; font-size: 13.5px; font-weight: 600; color: var(--navy); }
@@ -1661,7 +1668,7 @@ a.lwslide__photolink { display: contents; }
 .warr__out { border-top: 1px solid var(--line); padding: 22px 26px; background: var(--paper-alt); }
 .warr__empty { font-size: 14px; color: var(--gray-500); }
 .warr__result { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
-.warr__label { font-size: 12.5px; font-weight: 700; letter-spacing: .04em; color: var(--gold); flex-basis: 100%; }
+.warr__label { font-size: 12.5px; font-weight: 700; letter-spacing: .04em; color: var(--gold-ink); flex-basis: 100%; }
 .warr__date { font-size: clamp(21px, 2.4vw, 29px); font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
 .warr__state { font-size: 14px; font-weight: 600; }
 .warr__result.is-ok .warr__state { color: #1d6b3a; }
@@ -1671,3 +1678,11 @@ a.lwslide__photolink { display: contents; }
 .warr__note { margin-top: 14px; font-size: 13px; line-height: 1.75; color: var(--gray-500); }
 .warr__note b { color: var(--gray-700); }
 @media (max-width: 640px) { .warr__form { grid-template-columns: 1fr; } }
+
+/* =========================================================
+   모바일 입력칸 — 글자가 16px 보다 작으면 iPhone 사파리가 입력할 때
+   화면을 제멋대로 확대한다. 확대되면 사용자가 손으로 다시 줄여야 한다.
+   ========================================================= */
+@media (max-width: 768px) {
+  input, select, textarea { font-size: 16px !important; }
+}
