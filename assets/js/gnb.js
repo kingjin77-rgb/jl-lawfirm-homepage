@@ -23,17 +23,6 @@
         { t: '오시는 길', h: 'contact.html', d: '서초 본사무소 · 동탄 분사무소' }
       ]
     },
-    'lawyers.html': {
-      lead: { t: '구성원', d: '구성원변호사 3인 · 소속변호사 3인' },
-      items: [
-        { t: '박종일', h: 'lawyers/park-jong-il.html', d: '대표변호사 · 공인회계사' },
-        { t: '이지훈', h: 'lawyers/lee-ji-hun.html', d: '구성원변호사 · 건설 · 하자' },
-        { t: '임준규', h: 'lawyers/lim-jun-kyu.html', d: '구성원변호사 · 형사법 전문' },
-        { t: '하혜용', h: 'lawyers/ha-hye-yong.html', d: '소속변호사 · 하자소송' },
-        { t: '장우진', h: 'lawyers/jang-woo-jin.html', d: '소속변호사 · 민사 · 조세' },
-        { t: '오현진', h: 'lawyers/oh-hyun-jin.html', d: '소속변호사 · 송무' }
-      ]
-    },
     'practice.html': {
       lead: { t: '업무분야', d: '여섯 개 분야를 나눠 맡되, 한 사건은 함께 봅니다.' },
       items: [
@@ -151,6 +140,8 @@
       clearTimeout(closeTimer);
       if (open && open !== wrap) hide(open);
       panel.hidden = false;
+      // 항목 수가 메뉴마다 달라 헤더가 늘어날 높이도 그때그때 재야 한다
+      header.style.setProperty('--drop-h', panel.offsetHeight + 26 + 'px');
       // hidden 해제 직후 전환이 먹도록 한 프레임 뒤에 상태를 준다
       requestAnimationFrame(function () { wrap.classList.add('is-open'); });
       a.setAttribute('aria-expanded', 'true');

@@ -148,49 +148,56 @@ body.nav-open .logo__img--color { display: block; }
 .gnb__item { position: relative; display: flex; align-items: center; }
 /* 펼침판은 해당 메뉴 아래에만 뜬다. 화면 전체를 덮으면 뒤 내용을 가려
    무엇을 보고 있었는지 놓치게 된다. */
+/* 펼침은 판을 두지 않는다. 흰 상자가 뜨면 그것 자체가 촌스럽다.
+   헤더가 아래로 늘어나면서 글자만 나타나는 방식으로 간다. */
 .gnbdrop {
-  position: absolute; left: 50%; top: calc(100% + 10px);
-  width: max-content; max-width: min(760px, calc(100vw - 40px));
-  background: #fff; border: 1px solid var(--line);
-  box-shadow: 0 18px 36px rgba(9, 20, 60, .13);
-  opacity: 0; transform: translate(-50%, -6px); pointer-events: none;
+  position: absolute; left: 50%; top: 100%;
+  width: max-content; padding-top: 12px;
+  opacity: 0; transform: translate(-50%, -4px); pointer-events: none;
   transition: opacity .22s var(--ease), transform .22s var(--ease);
   z-index: 60;
 }
 .gnb__item.is-open .gnbdrop { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-/* 메뉴와 펼침판 사이 빈틈으로 마우스가 빠지지 않게 한다 */
-.gnbdrop::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
-.gnbdrop__in { padding: 5px; }
-/* 소개글은 화면을 키우는 값에 비해 얻는 게 적어 감춘다 */
+.gnbdrop__in { padding: 0; }
 .gnbdrop__lead { display: none; }
-/* 세로로 길어지면 화면을 가린다. 항목이 늘면 옆으로 흐르게 한다.
-   한 열에 최대 3줄, 넘치면 다음 열로. */
-.gnbdrop__list {
-  display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, auto);
-  gap: 1px 4px;
-}
-.gnbdrop__list > li { max-width: 215px; }
-.gnbdrop__list a {
-  display: flex; flex-direction: column; gap: 1px; padding: 6px 10px;
-  transition: background .2s var(--ease);
-}
+.gnbdrop__list small { display: none; }
+.gnbdrop__list { display: block; }
+.gnbdrop__list a { display: block; padding: 4px 0; }
 .gnbdrop__list a::after { display: none; }
-.gnbdrop__list a:hover { background: var(--gray-50, #f7f7f5); }
-.gnbdrop__list b { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; line-height: 1.35; letter-spacing: -.03em; color: var(--gray-900); white-space: nowrap; }
-.gnbdrop__list small { font-size: 11.5px; line-height: 1.45; color: var(--gray-500); letter-spacing: -.01em; word-break: keep-all; }
-/* 하위 기능 — 한 단 들여 상하 관계를 보이게 한다 */
-.gnbdrop__list > li.has-sub { grid-row: span 3; }
-.gnbdrop__list > li.has-sub > a b { color: var(--navy); }
-.gnbdrop__sub { margin: 2px 0 4px 12px; padding-left: 10px; border-left: 1px solid var(--line); }
-.gnbdrop__sub a { padding: 6px 10px; }
-.gnbdrop__sub b { font-size: 13px; font-weight: 600; color: var(--gray-700); }
-.gnbdrop__sub small { font-size: 11.5px; }
-/* 사이트 밖으로 나가는 항목 */
-.gnbdrop__list a.is-ext b::after {
-  content: "↗"; margin-left: 4px; font-size: .78em; opacity: .55; font-weight: 400;
+.gnbdrop__list b {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13.5px; font-weight: 500; line-height: 1.5; letter-spacing: -.025em;
+  white-space: nowrap; transition: color .2s var(--ease);
 }
-/* 오른쪽 끝 메뉴는 펼침판이 화면 밖으로 나가지 않도록 오른쪽에 맞춘다 */
-.gnb__item:nth-last-child(-n+2) .gnbdrop { left: auto; right: 0; transform: translate(0, -6px); }
+.gnbdrop__list a:hover b { color: var(--gold); }
+/* 하위 기능은 한 단 들여 상하 관계만 보인다 */
+.gnbdrop__list > li.has-sub > a b { font-weight: 700; }
+.gnbdrop__sub { margin: 1px 0 5px 9px; }
+.gnbdrop__sub b { font-size: 13px; font-weight: 400; opacity: .9; }
+.gnbdrop__list a.is-ext b::after { content: "↗"; font-size: .78em; opacity: .55; }
+
+/* 글자만 두므로 배경이 밝을 때와 어두울 때 색을 각각 잡는다 */
+.gnbdrop__list b { color: #fff; }
+.header.is-solid .gnbdrop__list b,
+.header.is-sub .gnbdrop__list b,
+.header.has-drop .gnbdrop__list b { color: var(--gray-700); }
+
+/* 펼침이 열리면 헤더가 아래로 늘어나 글자가 놓일 자리를 만든다.
+   메인 첫 화면에서는 헤더가 투명해 글자가 사진에 묻히므로 배경을 깔아 준다. */
+.header.has-drop {
+  padding-bottom: var(--drop-h, 168px);
+  background: rgba(6, 14, 38, .97);
+  backdrop-filter: saturate(160%) blur(10px);
+  border-bottom-color: rgba(255, 255, 255, .10);
+  transition: padding-bottom .28s var(--ease), background .28s var(--ease);
+}
+.header.is-solid.has-drop, .header.is-sub.has-drop {
+  background: rgba(255, 255, 255, .98);
+  border-bottom-color: var(--line);
+}
+
+/* 오른쪽 끝 메뉴는 글자가 화면 밖으로 나가지 않도록 오른쪽에 맞춘다 */
+.gnb__item:nth-last-child(-n+2) .gnbdrop { left: auto; right: 0; transform: translate(0, -4px); }
 .gnb__item:nth-last-child(-n+2).is-open .gnbdrop { transform: translate(0, 0); }
 
 .header__util { display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px); }
