@@ -1382,6 +1382,27 @@ a.lwslide__photolink { display: contents; }
   .pcard:hover, .magcard:hover, .errcard:hover { transform: none; }
 }
 
+/* 수행 단지 목록 — 이름만 담백하게 늘어놓는다 */
+.trlist {
+  margin-top: clamp(26px, 3vw, 40px);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.trlist li {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 15px 18px; background: #fff;
+  font-size: 14.5px; font-weight: 600; letter-spacing: -.03em; color: var(--gray-900);
+  word-break: keep-all;
+}
+.trlist li em {
+  flex: 0 0 auto; font-style: normal; font-size: 11px; font-weight: 700;
+  color: var(--gold); letter-spacing: 0;
+}
+.trnote { margin-top: 14px; font-size: 13px; color: var(--gray-500); }
+@media (max-width: 1024px) { .trlist { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px)  { .trlist { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px)  { .trlist { grid-template-columns: 1fr; } }
+
 /* 직원용 안내 줄 — 페이지 맨 아래, 방문자 동선을 방해하지 않는 위치 */
 .staffbar { padding-block: clamp(30px, 3.4vw, 48px); background: var(--gray-50, #f7f7f5); border-top: 1px solid var(--line); }
 .staffbar__in {
