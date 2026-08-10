@@ -37,18 +37,25 @@
     /* 단체등기 아래에 등기센터가 있고, 계산기 · 개별등기 접수는
        등기센터 안의 기능이다. 같은 줄에 늘어놓지 않는다.
        단지 단위 단체등기 접수는 아파트친구에서 받는다. */
+    /* 단체등기 업무를 실제로 굴리는 플랫폼이 아파트친구다.
+       메뉴를 둘로 나누면 같은 사업이 두 개로 보인다. 하나로 묶는다. */
     'registry.html': {
-      lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기를 한 팀이 맡아 처리합니다.' },
+      lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기' },
       items: [
         { t: '업무 안내', h: 'registry.html', d: '범위 · 절차 · 기간' },
         { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황', children: [
           { t: '개별등기 신청', h: 'dongtan.html#apply', d: '소유권이전 · 근저당 · 상속' },
           { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 채권 · 보수액' },
           { t: '진행 현황', h: 'dongtan.html#track', d: '접수 ~ 등기필증 수령' },
-          { t: '구비서류', h: 'dongtan.html#docs', d: '매매 · 상속 · 증여별 목록' }
+          { t: '구비서류', h: 'dongtan.html#docs', d: '매매 · 상속 · 증여별' }
         ] },
-        { t: '단지 단위 신청', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html',
-          d: '아파트친구에서 접수', ext: true }
+        { t: '아파트친구', h: 'https://kingjin77-rgb.github.io/apt-friend/',
+          d: '입주예정자협의회 지원센터', ext: true, children: [
+          { t: '단체등기 접수', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html', d: '단지 단위', ext: true },
+          { t: '전 과정 26단계', h: 'https://kingjin77-rgb.github.io/apt-friend/roadmap.html', d: '발족 ~ 해체', ext: true },
+          { t: '위임장 접수', h: 'https://kingjin77-rgb.github.io/apt-friend/poa-system.html', d: '세대별 전자접수', ext: true },
+          { t: '서식 생성', h: 'https://kingjin77-rgb.github.io/apt-friend/document-center.html', d: '회칙 · 공고문', ext: true }
+        ] }
       ]
     },
     'law.html': {
