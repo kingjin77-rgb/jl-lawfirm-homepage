@@ -147,8 +147,14 @@
       clearTimeout(closeTimer);
       if (open && open !== wrap) hide(open);
       panel.hidden = false;
-      // 항목 수가 메뉴마다 달라 헤더가 늘어날 높이도 그때그때 재야 한다
-      header.style.setProperty('--drop-h', panel.offsetHeight + 14 + 'px');
+      // 판의 윗변을 메뉴 글자 밑줄에 맞춘다. 헤더 위쪽부터 잰 거리다
+      var hb = header.getBoundingClientRect();
+      var top = Math.round(wrap.getBoundingClientRect().bottom - hb.top);
+      wrap.style.setProperty('--gnb-top', top + 'px');
+      // 항목 수가 메뉴마다 달라 헤더가 늘어날 높이도 그때그때 재야 한다.
+      // 판이 헤더 아래로 삐져나가는 만큼만 늘린다
+      var over = top + panel.offsetHeight + 12 - Math.round(hb.height);
+      header.style.setProperty('--drop-h', Math.max(0, over) + 'px');
       // hidden 해제 직후 전환이 먹도록 한 프레임 뒤에 상태를 준다
       requestAnimationFrame(function () { wrap.classList.add('is-open'); });
       a.setAttribute('aria-expanded', 'true');
@@ -167,7 +173,8 @@
 
     wrap.addEventListener('mouseenter', show);
     wrap.addEventListener('mouseleave', function () {
-      closeTimer = setTimeout(function () { hide(); }, 140);
+      // 마우스가 잠깐 벗어났다 돌아오는 경우가 잦아 여유를 둔다
+      closeTimer = setTimeout(function () { hide(); }, 260);
     });
     wrap.addEventListener('focusin', show);
     wrap.addEventListener('focusout', function (e) {
