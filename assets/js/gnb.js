@@ -18,13 +18,13 @@
       lead: { t: '법인소개', d: '소통 · 공감 · 신뢰 세 가지 원칙으로 일합니다.' },
       items: [
         { t: '법인 개요', h: 'about.html#intro', d: '설립 배경과 운영 원칙' },
-        { t: '구성원 변호사', h: 'lawyers.html', d: '구성원변호사 3인 · 소속변호사 3인' },
+        { t: '구성원', h: 'lawyers.html', d: '구성원변호사 3인 · 소속변호사 3인' },
         { t: '지명원 내려받기', h: 'about.html#profile', d: 'PDF 회사소개서' },
         { t: '오시는 길', h: 'contact.html', d: '서초 본사무소 · 동탄 분사무소' }
       ]
     },
     'lawyers.html': {
-      lead: { t: '구성원', d: '각자의 분야를 맡고, 하나의 사건에서 팀으로 만납니다.' },
+      lead: { t: '구성원', d: '구성원변호사 3인 · 소속변호사 3인' },
       items: [
         { t: '박종일', h: 'lawyers/park-jong-il.html', d: '대표변호사 · 공인회계사' },
         { t: '이지훈', h: 'lawyers/lee-ji-hun.html', d: '구성원변호사 · 건설 · 하자' },
@@ -49,17 +49,17 @@
        등기센터 안의 기능이다. 같은 줄에 늘어놓지 않는다.
        단지 단위 단체등기 접수는 아파트친구에서 받는다. */
     'registry.html': {
-      lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기를 한 창구에서 처리합니다.' },
+      lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기를 한 팀이 맡아 처리합니다.' },
       items: [
-        { t: '단체등기 안내', h: 'registry.html', d: '업무 범위와 진행 절차' },
-        { t: '제이엘 등기센터', h: 'dongtan.html', d: '개별등기를 처리하는 창구', children: [
-          { t: '개별등기 접수', h: 'dongtan.html#apply', d: '등기 종류별 온라인 신청' },
-          { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 채권 · 수수료' },
-          { t: '진행 조회', h: 'dongtan.html#track', d: '접수한 등기의 현재 단계' },
-          { t: '필요 서류', h: 'dongtan.html#docs', d: '유형별 준비 서류' }
+        { t: '업무 안내', h: 'registry.html', d: '수행 범위 · 진행 절차 · 소요 기간' },
+        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황을 한 곳에서', children: [
+          { t: '개별등기 신청', h: 'dongtan.html#apply', d: '소유권이전 · 근저당 · 상속' },
+          { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 국민주택채권 · 보수액' },
+          { t: '진행 현황', h: 'dongtan.html#track', d: '접수부터 등기필증 수령까지' },
+          { t: '구비서류', h: 'dongtan.html#docs', d: '매매 · 상속 · 증여별 목록' }
         ] },
-        { t: '단체등기 접수', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html',
-          d: '입주예정자협의회 단위 — 아파트친구', ext: true }
+        { t: '단지 단위 신청', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html',
+          d: '입주예정자협의회 대상 · 아파트친구에서 접수', ext: true }
       ]
     },
     'law.html': {

@@ -17,17 +17,17 @@
   var CARDS = [
     {
       en: 'JL REGISTRATION CENTER',
-      title: '제이엘 등기센터',
-      desc: '등기 절차를 한 곳에서. 방문하지 않으셔도 됩니다.',
-      list: ['개별등기 온라인 접수', '등기 진행조회', '등기비용 계산'],
+      title: '등기센터',
+      desc: '신청부터 등기필증 수령까지 방문 없이 진행합니다.',
+      list: ['개별등기 신청', '진행 현황 조회', '등기비용 계산'],
       href: 'dongtan.html',
       cta: '등기센터 바로가기'
     },
     {
       en: 'APT FRIEND',
       title: '아파트친구',
-      desc: '입주예정자협의회를 위한 별도 창구입니다.',
-      list: ['단체등기 접수', '협의회 전 과정 26단계', '위임장 접수 · 서식 생성'],
+      desc: '입주예정자협의회를 위한 별도 사이트입니다.',
+      list: ['단지 단위 단체등기 신청', '협의회 전 과정 26단계', '위임장 접수 · 서식 생성'],
       href: 'https://kingjin77-rgb.github.io/apt-friend/',
       cta: '아파트친구 열기',
       ext: true
