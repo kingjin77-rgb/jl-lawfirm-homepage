@@ -19,8 +19,10 @@
   --paper-alt:  #f4f5f8;
   --gold:       #b08d4f;
 
-  --container:  1280px;
-  --gutter:     clamp(20px, 5vw, 60px);
+  /* 화면 폭을 그대로 쓴다. 큰 모니터에서 가운데만 좁게 쓰면 양옆이 비어 보인다.
+     대신 본문 글줄은 아래에서 읽기 좋은 길이로 따로 제한한다. */
+  --container:  100%;
+  --gutter:     clamp(20px, 4.5vw, 110px);
   --sec-pad:    clamp(72px, 8vw, 130px);
 
   --ff: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
@@ -1583,6 +1585,10 @@ a.lwslide__photolink { display: contents; }
 .prose p, .sec-desc, .magcard__desc, .pcard__desc, .qa__inner, .legal > p {
   word-break: keep-all; text-wrap: pretty;
 }
+
+/* 화면 폭을 다 쓰더라도 글줄까지 길어지면 눈이 다음 줄을 찾지 못한다.
+   틀은 넓게 두고 읽는 부분만 길이를 제한한다. */
+.prose, .legal, .board-note { max-width: 78ch; }
 
 /* 표 안의 한글도 어절 단위로 */
 .dtable td, .dtable th, .calc__table td, .calc__table th { word-break: keep-all; }
