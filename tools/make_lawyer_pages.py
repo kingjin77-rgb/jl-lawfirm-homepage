@@ -174,7 +174,7 @@ def page_html(L, all_lawyers):
       <div class="lwp-profile reveal">
         <div class="lwp-profile__photo">%(photo)s</div>
         <div class="lwp-profile__body">
-          <p class="lwp-profile__role">%(role)s</p>
+          <p class="lwp-profile__role"><span class="lwtier lwtier--%(tierMod)s">%(tierLabel)s</span>%(roleQual)s</p>
           <h2 class="lwp-profile__name">%(name)s<span class="en">%(en)s</span></h2>
           <p class="lwp-profile__tagline">%(tagline)s</p>
           <div class="lwp-profile__acts">
@@ -263,6 +263,10 @@ def page_html(L, all_lawyers):
         "en": esc(L.get("en", "")),
         "role": esc(L.get("role", "변호사")),
         "rolePlain": esc(L.get("short") or L.get("role", "변호사")),
+        # 법무법인은 구성원변호사(파트너)와 소속변호사를 구분해 표기한다
+        "tierMod": "partner" if L.get("tier") == "구성원" else "associate",
+        "tierLabel": esc(L.get("short") or ("구성원변호사" if L.get("tier") == "구성원" else "소속변호사")),
+        "roleQual": ('<span class="lwp-profile__qual">%s</span>' % esc(L["role"])) if L.get("role") else "",
         "metaDesc": esc(
             "법무법인 제이엘 %s %s — %s" % (
                 name, L.get("short") or "변호사",

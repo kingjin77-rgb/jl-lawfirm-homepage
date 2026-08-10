@@ -141,6 +141,58 @@ body.nav-open .logo__img--color { display: block; }
 }
 .gnb a:hover::after, .gnb a[aria-current="page"]::after { width: 100%; }
 
+/* ── 상단 메뉴 펼침 ──────────────────────────────────────── */
+.gnb--drop { align-items: center; }
+.gnb__item { position: static; display: flex; align-items: center; }
+/* 펼침판은 헤더 전체 너비를 쓴다 — 항목이 6개까지 있어 좁으면 읽기 어렵다 */
+.gnbdrop {
+  position: absolute; left: 0; right: 0; top: 100%;
+  background: #fff; border-top: 1px solid var(--line);
+  box-shadow: 0 24px 48px rgba(9, 20, 60, .10);
+  opacity: 0; transform: translateY(-8px); pointer-events: none;
+  transition: opacity .26s var(--ease), transform .26s var(--ease);
+  z-index: 60;
+}
+.gnb__item.is-open .gnbdrop { opacity: 1; transform: none; pointer-events: auto; }
+.gnbdrop__in {
+  max-width: var(--container); margin: 0 auto;
+  padding: 34px var(--gutter) 38px;
+  display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+.gnbdrop__lead { border-right: 1px solid var(--line); padding-right: clamp(20px, 3vw, 40px); }
+.gnbdrop__t { font-size: 19px; font-weight: 800; letter-spacing: -.04em; color: var(--navy); }
+.gnbdrop__d { margin-top: 8px; font-size: 13.5px; line-height: 1.7; color: var(--gray-500); word-break: keep-all; }
+.gnbdrop__all {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 16px;
+  font-size: 13px; font-weight: 700; color: var(--navy);
+}
+.gnbdrop__all span { transition: transform .3s var(--ease); }
+.gnbdrop__all:hover span { transform: translateX(4px); }
+.gnbdrop__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 10px; }
+.gnbdrop__list a {
+  display: flex; flex-direction: column; gap: 3px; padding: 12px 14px;
+  border: 1px solid transparent; transition: all .25s var(--ease);
+}
+.gnbdrop__list a::after { display: none; }
+.gnbdrop__list a:hover { border-color: var(--line); background: var(--gray-50, #f7f7f5); }
+.gnbdrop__list b { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 700; letter-spacing: -.03em; color: var(--gray-900); }
+.gnbdrop__list small { font-size: 12.5px; color: var(--gray-500); letter-spacing: -.01em; word-break: keep-all; }
+.gnbdrop__list a.is-hot b { color: var(--navy); }
+.gnbdrop__tag {
+  padding: 2px 7px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em;
+  color: #fff; background: var(--gold);
+}
+/* 헤더가 투명한 메인 상단에서도 펼침이 열리면 흰 배경으로 바꾼다 */
+.header.has-drop { background: rgba(255,255,255,.98); border-bottom-color: var(--line); }
+.header.has-drop .logo, .header.has-drop .header__tel { color: var(--navy); }
+.header.has-drop .gnb a { color: var(--gray-900); }
+.header.has-drop .logo__img--white { display: none; }
+.header.has-drop .logo__img--color { display: block; }
+@media (max-width: 1180px) {
+  .gnbdrop__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .header__util { display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px); }
 .btn-track {
   display: inline-flex; align-items: center; gap: 7px; height: 40px; padding-inline: 18px;
@@ -407,7 +459,16 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   padding: clamp(32px, 4vw, 60px);
   display: flex; flex-direction: column; justify-content: center;
 }
-.lwslide__role { font-size: 12px; letter-spacing: .2em; color: var(--navy); font-weight: 700; }
+.lwslide__role { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .2em; color: var(--navy); font-weight: 700; }
+.lwslide__qual { letter-spacing: .06em; color: var(--gray-500); font-weight: 600; }
+
+/* 등급 표기 — 구성원변호사(파트너) / 소속변호사 */
+.lwtier {
+  display: inline-flex; align-items: center; height: 24px; padding-inline: 10px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .04em; white-space: nowrap;
+}
+.lwtier--partner { color: var(--navy); background: rgba(13, 33, 98, .08); box-shadow: inset 0 0 0 1px rgba(13, 33, 98, .18); }
+.lwtier--associate { color: var(--gray-700); background: var(--gray-50, #f6f6f4); box-shadow: inset 0 0 0 1px var(--line); }
 .lwslide__name { margin-top: 12px; font-size: clamp(28px, 3.6vw, 46px); font-weight: 800; letter-spacing: -.045em; }
 .lwslide__name .en { margin-left: 12px; font-size: 14px; font-weight: 400; color: var(--gray-300); letter-spacing: .08em; }
 .lwslide__tagline { margin-top: 16px; font-size: clamp(14.5px, 1.45vw, 17px); color: var(--gray-700); }
@@ -432,6 +493,9 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .lwshow__tab:hover { border-color: var(--navy); color: var(--navy); }
 .lwshow__tab.is-on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .lwshow__tab small { display: block; font-size: 11px; font-weight: 500; opacity: .72; margin-top: 1px; }
+/* 구성원변호사는 탭에서도 한 눈에 구분되도록 왼쪽에 표시를 둔다 */
+.lwshow__tab.is-partner { border-left: 3px solid var(--gold); }
+.lwshow__tab.is-partner.is-on { border-left-color: var(--gold); }
 
 .lwshow__util { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .lwshow__arrow {
@@ -441,6 +505,34 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .lwshow__arrow:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
 .lwshow__count { font-size: 13px; color: var(--gray-500); min-width: 52px; text-align: center; }
 .lwshow__count b { color: var(--navy); font-weight: 700; }
+
+/* ── 등급별 명단 ─────────────────────────────────────────── */
+.lwroster { margin-top: clamp(48px, 6vw, 84px); display: grid; gap: clamp(28px, 3.4vw, 44px); }
+.lwgrade { border-top: 2px solid var(--navy); padding-top: 22px; }
+.lwgrade--associate { border-top-color: var(--line); }
+.lwgrade__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
+.lwgrade__head h3 { font-size: clamp(19px, 2vw, 24px); font-weight: 800; letter-spacing: -.035em; }
+.lwgrade__n { margin-left: 8px; font-size: 13px; font-weight: 600; color: var(--gold); letter-spacing: 0; }
+.lwgrade__head p { font-size: 14px; color: var(--gray-500); word-break: keep-all; }
+.lwgrade__list { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.lwgrade__list a, .lwgrade__no {
+  display: flex; align-items: center; gap: 14px; height: 100%; padding: 14px 16px;
+  border: 1px solid var(--line); background: #fff; transition: all .3s var(--ease);
+}
+.lwgrade__list a:hover { border-color: var(--navy); box-shadow: 0 10px 28px rgba(13, 33, 98, .08); }
+.lwgrade__ph {
+  flex: 0 0 auto; width: 46px; height: 46px; overflow: hidden; border-radius: 50%;
+  background: var(--gray-50, #f6f6f4); display: grid; place-items: center;
+}
+.lwgrade__ph img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.lwgrade__ph .initial { font-size: 17px; font-weight: 800; color: var(--gray-300); }
+.lwgrade__txt { display: flex; flex-direction: column; min-width: 0; }
+.lwgrade__txt b { font-size: 15.5px; font-weight: 700; letter-spacing: -.03em; }
+.lwgrade__txt small { margin-top: 2px; font-size: 12px; color: var(--gray-500); }
+.lwgrade__go { margin-left: auto; color: var(--gray-300); transition: color .3s var(--ease); }
+.lwgrade__list a:hover .lwgrade__go { color: var(--navy); }
+@media (max-width: 900px) { .lwgrade__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .lwgrade__list { grid-template-columns: 1fr; } }
 
 /* 진행 바 */
 .lwshow__bar { height: 2px; background: var(--line); overflow: hidden; }
@@ -867,6 +959,12 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   body.nav-open .gnb { opacity: 1; visibility: visible; transform: none; z-index: 1; }
   .gnb a { color: var(--navy) !important; font-size: 22px; padding-block: 14px; border-bottom: 1px solid var(--line); }
   .gnb a::after { display: none; }
+
+  /* 모바일에서는 펼침을 쓰지 않는다 — 손가락으로 여닫는 단계가 하나 늘 뿐이다.
+     상위 메뉴만 세로로 두고, 하위 항목은 각 페이지 안에서 찾도록 한다. */
+  .gnb { overflow-y: auto; justify-content: flex-start; padding-block: calc(var(--header-h) + 12px) 40px; }
+  .gnb__item { display: block; width: 100%; }
+  .gnbdrop { display: none; }
   body.nav-open { overflow: hidden; }
   body.nav-open .header { background: #fff; border-bottom-color: var(--line); }
   body.nav-open .logo, body.nav-open .header__tel { color: var(--navy); }
@@ -1055,7 +1153,8 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   color: rgba(13,33,98,.12); letter-spacing: -.05em; line-height: 1;
 }
 .lwp-profile__body { padding: clamp(32px, 4.5vw, 64px); display: flex; flex-direction: column; justify-content: center; }
-.lwp-profile__role { font-size: 12px; letter-spacing: .2em; color: var(--navy); font-weight: 700; }
+.lwp-profile__role { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .2em; color: var(--navy); font-weight: 700; }
+.lwp-profile__qual { letter-spacing: .06em; color: var(--gray-500); font-weight: 600; }
 .lwp-profile__name { margin-top: 12px; font-size: clamp(30px, 4vw, 52px); font-weight: 800; letter-spacing: -.045em; }
 .lwp-profile__name .en { margin-left: 12px; font-size: 14px; font-weight: 400; color: var(--gray-300); letter-spacing: .08em; }
 .lwp-profile__tagline { margin-top: 18px; max-width: 620px; font-size: clamp(15px, 1.5vw, 17.5px); color: var(--gray-700); }

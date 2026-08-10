@@ -270,7 +270,10 @@ def _person(L):
         "@id": SITE + "/#person-" + slug,
         "name": L["name"],
         "alternateName": L["en"],
-        "jobTitle": L["role"],
+        # 구성원변호사 / 소속변호사 구분이 검색 결과에도 그대로 나가야 한다
+        "jobTitle": " · ".join(
+            x for x in [L.get("short") or "변호사", L.get("role") or ""] if x
+        ),
         "description": re.sub(r"<[^>]+>", "", L.get("tagline", "")),
         "worksFor": {"@id": SITE + "/#organization"},
         "knowsAbout": [f["title"] for f in L.get("focus", [])] or SERVICES,

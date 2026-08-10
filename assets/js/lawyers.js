@@ -13,6 +13,8 @@
 
   var stage = root.querySelector('[data-lw-stage]');
   var nav = root.querySelector('[data-lw-tabs]');
+  // 구성원변호사 / 소속변호사 명단 — 슬라이드와 같은 데이터를 등급별로 다시 묶어 보여준다
+  var roster = document.querySelector('[data-lw-roster]');
   var curEl = root.querySelector('[data-lw-cur]');
   var totEl = root.querySelector('[data-lw-total]');
   var bar = root.querySelector('.lwshow__bar');
@@ -26,6 +28,18 @@
   var careerHtml = function (s) {
     return esc(s).replace(/&lt;(\/?)strong&gt;/gi, '<$1strong>');
   };
+
+  // 등급 표기 — 법무법인은 구성원변호사(파트너)와 소속변호사를 구분해 표기한다
+  var TIERS = [
+    { key: '구성원', label: '구성원변호사', mod: 'partner',
+      desc: '법무법인의 지분을 가진 파트너 변호사입니다. 사건의 최종 책임을 집니다.' },
+    { key: '소속', label: '소속변호사', mod: 'associate',
+      desc: '법무법인에 소속되어 담당 분야 사건을 수행합니다.' }
+  ];
+  function tierOf(p) {
+    for (var i = 0; i < TIERS.length; i++) if (TIERS[i].key === p.tier) return TIERS[i];
+    return TIERS[TIERS.length - 1];
+  }
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var list = [];
@@ -50,7 +64,9 @@
               ' role="tabpanel" aria-label="' + esc(p.name) + ' 변호사">' +
         photoBox +
         '<div class="lwslide__body">' +
-          '<p class="lwslide__role">' + esc(p.role) + '</p>' +
+          '<p class="lwslide__role">' +
+            '<span class="lwtier lwtier--' + tierOf(p).mod + '">' + esc(p.short || tierOf(p).label) + '</span>' +
+            (p.role ? '<span class="lwslide__qual">' + esc(p.role) + '</span>' : '') + '</p>' +
           '<h3 class="lwslide__name">' +
             (page ? '<a href="' + page + '">' + nameHtml + '</a>' : nameHtml) + '</h3>' +
           (p.tagline ? '<p class="lwslide__tagline">' + esc(p.tagline) + '</p>' : '') +
@@ -65,13 +81,46 @@
     }).join('');
 
     nav.innerHTML = items.map(function (p, i) {
-      return '<button type="button" class="lwshow__tab' + (i === 0 ? ' is-on' : '') + '" data-go="' + i + '"' +
-             ' role="tab" aria-selected="' + (i === 0) + '">' +
-             esc(p.name) + '<small>' + esc(p.short || p.role) + '</small></button>';
+      return '<button type="button" class="lwshow__tab is-' + tierOf(p).mod + (i === 0 ? ' is-on' : '') +
+             '" data-go="' + i + '" role="tab" aria-selected="' + (i === 0) + '">' +
+             esc(p.name) + '<small>' + esc(p.short || tierOf(p).label) + '</small></button>';
     }).join('');
 
     if (totEl) totEl.textContent = items.length;
     if (curEl) curEl.textContent = 1;
+  }
+
+  /* 등급별 명단 — 슬라이드 순서와 별개로 구성원변호사 · 소속변호사를 나눠 보여준다 */
+  function renderRoster(items) {
+    if (!roster) return;
+    roster.innerHTML = TIERS.map(function (t) {
+      var group = items.filter(function (p) { return tierOf(p).key === t.key; });
+      if (!group.length) return '';
+      return '' +
+      '<div class="lwgrade lwgrade--' + t.mod + '">' +
+        '<div class="lwgrade__head">' +
+          '<h3>' + esc(t.label) + '<span class="lwgrade__n">' + group.length + '명</span></h3>' +
+          '<p>' + esc(t.desc) + '</p>' +
+        '</div>' +
+        '<ul class="lwgrade__list">' +
+          group.map(function (p) {
+            var page = p.slug ? 'lawyers/' + esc(p.slug) + '.html' : '';
+            var photo = p.photo
+              ? '<img src="' + esc(p.photo) + '" alt="" loading="lazy">'
+              : '<span class="initial">' + esc(p.initial || p.name.charAt(0)) + '</span>';
+            var inner =
+              '<span class="lwgrade__ph">' + photo + '</span>' +
+              '<span class="lwgrade__txt">' +
+                '<b>' + esc(p.name) + '</b>' +
+                '<small>' + esc(p.short || t.label) + (p.role ? ' · ' + esc(p.role) : '') + '</small>' +
+              '</span>';
+            return '<li>' + (page
+              ? '<a href="' + page + '">' + inner + '<span class="lwgrade__go">→</span></a>'
+              : '<span class="lwgrade__no">' + inner + '</span>') + '</li>';
+          }).join('') +
+        '</ul>' +
+      '</div>';
+    }).join('');
   }
 
   function show(n) {
@@ -171,6 +220,7 @@
       interval = d.interval || 7000;
       root.style.setProperty('--dur', (interval / 1000) + 's');
       render(list);
+      renderRoster(list);
       play();   // 이미 화면 안이면 즉시 시작, 아니면 관찰자가 깨운다
     })
     .catch(function (err) {

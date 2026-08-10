@@ -4,9 +4,10 @@
   "lawyers": [
     {
       "slug": "park-jong-il",
+      "tier": "구성원",
       "initial": "朴",
       "photo": "assets/img/lawyers/park-jong-il.jpg",
-      "role": "대표변호사 / 공인회계사",
+      "role": "공인회계사",
       "name": "박종일",
       "en": "PARK JONG IL",
       "short": "대표변호사",
@@ -50,12 +51,13 @@
     },
     {
       "slug": "lee-ji-hun",
+      "tier": "구성원",
       "initial": "李",
       "photo": "assets/img/lawyers/lee-ji-hun.jpg",
-      "role": "변호사",
+      "role": "",
       "name": "이지훈",
       "en": "LEE JI HUN",
-      "short": "변호사",
+      "short": "구성원변호사",
       "focus": [
         {
           "title": "하자소송",
@@ -88,12 +90,13 @@
     },
     {
       "slug": "ha-hye-yong",
+      "tier": "소속",
       "initial": "河",
       "photo": "assets/img/lawyers/ha-hye-yong.jpg",
-      "role": "변호사",
+      "role": "",
       "name": "하혜용",
       "en": "HA HYE YONG",
-      "short": "변호사",
+      "short": "소속변호사",
       "focus": [
         {
           "title": "하자소송",
@@ -129,12 +132,13 @@
     },
     {
       "slug": "jang-woo-jin",
+      "tier": "소속",
       "initial": "張",
       "photo": "assets/img/lawyers/jang-woo-jin.jpg",
-      "role": "변호사",
+      "role": "",
       "name": "장우진",
       "en": "JANG WOO JIN",
-      "short": "변호사",
+      "short": "소속변호사",
       "focus": [
         {
           "title": "민사 · 조정",
@@ -160,12 +164,13 @@
     },
     {
       "slug": "lim-jun-kyu",
+      "tier": "구성원",
       "initial": "林",
       "photo": "assets/img/lawyers/lim-jun-kyu.jpg",
-      "role": "변호사 / 대한변협 형사법 전문",
+      "role": "대한변협 형사법 전문",
       "name": "임준규",
       "en": "LIM JUN KYU",
-      "short": "변호사",
+      "short": "구성원변호사",
       "focus": [
         {
           "title": "형사",
@@ -192,12 +197,13 @@
     },
     {
       "slug": "oh-hyun-jin",
+      "tier": "소속",
       "initial": "吳",
       "photo": "",
-      "role": "변호사",
+      "role": "",
       "name": "오현진",
       "en": "OH HYUN JIN",
-      "short": "변호사",
+      "short": "소속변호사",
       "focus": [
         {
           "title": "송무",
