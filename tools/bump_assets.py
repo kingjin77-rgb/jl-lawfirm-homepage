@@ -41,6 +41,9 @@ def main():
             print('갱신', p)
             changed += 1
 
+    # 배포된 화면이 스스로 최신본을 알아채도록 현재 번호를 파일로 남긴다 (assets/js/fresh.js 가 읽는다)
+    io.open('version.json', 'w', encoding='utf-8').write('{ "build": "%s" }\n' % ver)
+
     print('완료 — %d개 파일을 v=%s 로 올렸습니다.' % (changed, ver))
     return 0
 
