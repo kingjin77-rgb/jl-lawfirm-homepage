@@ -158,14 +158,17 @@ body.nav-open .logo__img--color { display: block; }
    위치 값은 헤더 높이에 따라 달라지므로 gnb.js 가 넣어 준다. */
 .gnbdrop {
   position: absolute; left: 0; right: 0; top: var(--gnb-top, 100%);
-  /* 메뉴 밑줄과 하위 항목 사이는 한 줄 정도만 띄운다 */
-  padding-top: 9px;
+  /* 메뉴 밑줄과 하위 항목 사이 */
+  padding-top: 16px;
   opacity: 0; transform: translateY(-4px); pointer-events: none;
   transition: opacity .22s var(--ease), transform .22s var(--ease);
   z-index: 60;
 }
 .gnb__item.is-open .gnbdrop { opacity: 1; transform: none; pointer-events: auto; }
-.gnbdrop__in { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+/* 하위 항목의 왼쪽 끝을 상단 메뉴 첫 글자에 맞춘다. 로고 쪽 여백에 맞추면
+   메뉴와 하위 항목이 어긋나 보여 어느 메뉴에서 나온 것인지 눈으로 잇기 어렵다.
+   메뉴가 시작하는 위치는 화면 폭에 따라 달라지므로 gnb.js 가 --gnb-left 로 넣어 준다. */
+.gnbdrop__in { padding-left: var(--gnb-left, var(--gutter)); padding-right: var(--gutter); }
 .gnbdrop__lead { display: none; }
 .gnbdrop__list small { display: none; }
 .gnbdrop__list {

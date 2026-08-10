@@ -151,6 +151,9 @@
       var hb = header.getBoundingClientRect();
       var top = Math.round(wrap.getBoundingClientRect().bottom - hb.top);
       wrap.style.setProperty('--gnb-top', top + 'px');
+      // 하위 항목의 왼쪽 끝을 상단 메뉴 첫 글자에 맞춘다
+      wrap.style.setProperty('--gnb-left',
+        Math.round(gnb.getBoundingClientRect().left - hb.left) + 'px');
       // 항목 수가 메뉴마다 달라 헤더가 늘어날 높이도 그때그때 재야 한다.
       // 판이 헤더 아래로 삐져나가는 만큼만 늘린다
       var over = top + panel.offsetHeight + 12 - Math.round(hb.height);
