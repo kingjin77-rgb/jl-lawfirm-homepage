@@ -244,7 +244,7 @@ def page_html(L, all_lawyers):
     <div class="footer__copy">
       <span>EMAIL jllaw2020@naver.com</span>
       <a class="is-strong" href="../privacy.html">개인정보처리방침</a>
-      <span class="footer__adm"><a href="../admin/index.html">관리자</a> · <a href="../admin/registry.html">등기센터</a></span>
+      <span class="footer__adm">직원용 — <a href="../admin/index.html">홈페이지 관리자</a> · <a href="../admin/registry.html">등기센터 관리자</a> · <a href="../admin/qna.html">법률상식 관리자</a></span>
       <span>© JL LAW FIRM. All rights reserved.</span>
     </div>
   </div>
