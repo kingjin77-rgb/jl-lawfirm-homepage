@@ -42,20 +42,9 @@
     'registry.html': {
       lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기' },
       items: [
-        { t: '업무 안내', h: 'registry.html', d: '범위 · 절차 · 기간' },
-        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황', children: [
-          { t: '개별등기 신청', h: 'dongtan.html#apply', d: '소유권이전 · 근저당 · 상속' },
-          { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 채권 · 보수액' },
-          { t: '진행 현황', h: 'dongtan.html#track', d: '접수 ~ 등기필증 수령' },
-          { t: '구비서류', h: 'dongtan.html#docs', d: '매매 · 상속 · 증여별' }
-        ] },
+        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황' },
         { t: '아파트친구', h: 'https://kingjin77-rgb.github.io/apt-friend/',
-          d: '입주예정자협의회 지원센터', ext: true, children: [
-          { t: '단체등기 접수', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html', d: '단지 단위', ext: true },
-          { t: '전 과정 26단계', h: 'https://kingjin77-rgb.github.io/apt-friend/roadmap.html', d: '발족 ~ 해체', ext: true },
-          { t: '위임장 접수', h: 'https://kingjin77-rgb.github.io/apt-friend/poa-system.html', d: '세대별 전자접수', ext: true },
-          { t: '서식 생성', h: 'https://kingjin77-rgb.github.io/apt-friend/document-center.html', d: '회칙 · 공고문', ext: true }
-        ] }
+          d: '입주예정자협의회 지원센터', ext: true }
       ]
     },
     'law.html': {
