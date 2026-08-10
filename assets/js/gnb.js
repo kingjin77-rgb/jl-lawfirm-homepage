@@ -141,7 +141,7 @@
       if (open && open !== wrap) hide(open);
       panel.hidden = false;
       // 항목 수가 메뉴마다 달라 헤더가 늘어날 높이도 그때그때 재야 한다
-      header.style.setProperty('--drop-h', panel.offsetHeight + 26 + 'px');
+      header.style.setProperty('--drop-h', panel.offsetHeight + 14 + 'px');
       // hidden 해제 직후 전환이 먹도록 한 프레임 뒤에 상태를 준다
       requestAnimationFrame(function () { wrap.classList.add('is-open'); });
       a.setAttribute('aria-expanded', 'true');
