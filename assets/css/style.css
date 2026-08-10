@@ -860,31 +860,37 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
    Client list
    ========================================================= */
 .clients { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-.clients__lead { margin-bottom: 26px; font-size: clamp(15px, 1.4vw, 17px); color: var(--gray-700); }
-.clients__sub { font-size: clamp(19px, 2vw, 24px); font-weight: 700; color: var(--navy); letter-spacing: -.02em; }
-.sec-head--sub { margin-top: 46px; margin-bottom: 18px; }
+.clients__lead { margin-bottom: 22px; font-size: clamp(15px, 1.4vw, 17px); color: var(--gray-700); }
 
 .cli {
+  position: relative; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-  min-height: 150px; padding: 26px 18px; background: #fff;
-  transition: background .35s var(--ease);
+  min-height: 118px; padding: 20px 16px; background: #fff;
 }
-.cli:hover { background: var(--paper-alt); }
-/* 로고 자리 — 로고 파일이 들어오면 이 안에 img 를 넣는다. 없으면 자리도 차지하지 않는다 */
-.cli__mark { display: flex; align-items: center; justify-content: center; height: 44px; margin-bottom: 14px; }
-.cli__mark img { max-height: 44px; max-width: 150px; width: auto; object-fit: contain; }
-.cli__name { font-size: 16px; font-weight: 700; color: var(--gray-900); letter-spacing: -.02em; line-height: 1.5; }
-.cli__cat { margin-top: 7px; font-size: 12.5px; color: var(--gray-500); }
+/* 커서를 올리면 아래에서 남색 면이 차오른다 */
+.cli::after {
+  content: ""; position: absolute; inset: 0; background: var(--navy);
+  transform: translateY(101%); transition: transform .45s var(--ease);
+}
+.cli > * { position: relative; z-index: 1; transition: color .45s var(--ease); }
+.cli:hover::after { transform: translateY(0); }
+.cli:hover .cli__name { color: #fff; }
+.cli:hover .cli__cat { color: rgba(255,255,255,.62); }
 
-/* 주요 자문 고객사 — 상시 자문 관계라 한 단계 강조한다 */
-.clients--lead .cli { min-height: 150px; border-top: 2px solid var(--gold); }
-.clients--lead .cli__name { font-size: 17.5px; }
-.clients--lead .cli__cat { color: var(--navy); font-weight: 600; }
+/* 로고 자리 — 로고 파일이 들어오면 이 안에 img 를 넣는다. 없으면 자리도 차지하지 않는다 */
+.cli__mark { display: flex; align-items: center; justify-content: center; height: 40px; margin-bottom: 10px; }
+.cli__mark img { max-height: 40px; max-width: 148px; width: auto; object-fit: contain; }
+.cli__name { font-size: 15.5px; font-weight: 700; color: var(--gray-900); letter-spacing: -.02em; line-height: 1.5; }
+.cli__cat { margin-top: 5px; font-size: 12.5px; color: var(--gray-500); }
+
+/* 상시 자문처는 금색 선으로만 구분한다 — 따로 소제목을 두지 않는다 */
+.cli--lead { border-top: 2px solid var(--gold); }
+.cli--lead .cli__name { font-size: 16.5px; }
 
 @media (max-width: 860px) { .clients { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 460px) {
   .clients { grid-template-columns: 1fr; }
-  .cli, .clients--lead .cli { min-height: 0; padding: 22px 16px; }
+  .cli { min-height: 0; padding: 17px 16px; }
 }
 
 /* =========================================================
