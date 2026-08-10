@@ -15,7 +15,7 @@
      lead 는 펼침 왼쪽에 놓이는 소개글이다. */
   var MENU = {
     'about.html': {
-      lead: { t: '법인소개', d: '소통 · 공감 · 신뢰 세 가지 원칙으로 일합니다.' },
+      lead: { t: '법인소개', d: '소통 · 공감 · 신뢰' },
       items: [
         { t: '법인 개요', h: 'about.html#intro', d: '설립 배경과 운영 원칙' },
         { t: '구성원', h: 'lawyers.html', d: '구성원변호사 3인 · 소속변호사 3인' },
@@ -37,12 +37,12 @@
     'practice.html': {
       lead: { t: '업무분야', d: '여섯 개 분야를 나눠 맡되, 한 사건은 함께 봅니다.' },
       items: [
-        { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 운영 · 관리처분 · 현금청산 · 명도' },
-        { t: '하자소송', h: 'practice.html#defect', d: '하자보수 청구 · 보증금 소송 · 담보책임기간 계산' },
+        { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 · 관리처분 · 현금청산' },
+        { t: '하자소송', h: 'practice.html#defect', d: '보수 청구 · 보증금 소송' },
         { t: '단체등기', h: 'registry.html', d: '입주 아파트 · 분양전환 · 대지권' },
-        { t: '민사 · 형사', h: 'practice.html#civil', d: '부동산 · 채권회수 · 수사 초기 대응' },
+        { t: '민사 · 형사', h: 'practice.html#civil', d: '부동산 · 채권회수 · 수사대응' },
         { t: '기업법무', h: 'corporate.html', d: '법률자문 · 법인등기' },
-        { t: '상속 · 이혼 · 조세', h: 'practice.html#tax', d: '조세심판 · 상속재산분할 · 유류분' }
+        { t: '상속 · 이혼 · 조세', h: 'practice.html#tax', d: '조세심판 · 상속 · 유류분' }
       ]
     },
     /* 단체등기 아래에 등기센터가 있고, 계산기 · 개별등기 접수는
@@ -51,22 +51,22 @@
     'registry.html': {
       lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기를 한 팀이 맡아 처리합니다.' },
       items: [
-        { t: '업무 안내', h: 'registry.html', d: '수행 범위 · 진행 절차 · 소요 기간' },
-        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황을 한 곳에서', children: [
+        { t: '업무 안내', h: 'registry.html', d: '범위 · 절차 · 기간' },
+        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황', children: [
           { t: '개별등기 신청', h: 'dongtan.html#apply', d: '소유권이전 · 근저당 · 상속' },
-          { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 국민주택채권 · 보수액' },
-          { t: '진행 현황', h: 'dongtan.html#track', d: '접수부터 등기필증 수령까지' },
+          { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 채권 · 보수액' },
+          { t: '진행 현황', h: 'dongtan.html#track', d: '접수 ~ 등기필증 수령' },
           { t: '구비서류', h: 'dongtan.html#docs', d: '매매 · 상속 · 증여별 목록' }
         ] },
         { t: '단지 단위 신청', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html',
-          d: '입주예정자협의회 대상 · 아파트친구에서 접수', ext: true }
+          d: '아파트친구에서 접수', ext: true }
       ]
     },
     'law.html': {
       lead: { t: '법률정보', d: '법제처 자료를 매일 06시에 자동으로 받아옵니다.' },
       items: [
         { t: '자주 묻는 법률상식', h: 'qna.html', d: '실무에서 반복되는 질문과 답', hot: true },
-        { t: '공동주택 관련 법령', h: 'law.html#acts', d: '주택법 · 공동주택관리법 등 12종' },
+        { t: '공동주택 관련 법령', h: 'law.html#acts', d: '주택법 등 12종' },
         { t: '최신 판례', h: 'law.html#cases', d: '하자 · 재건축 · 등기 쟁점' }
       ]
     },
