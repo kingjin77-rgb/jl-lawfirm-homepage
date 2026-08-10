@@ -280,7 +280,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   object-fit: cover; opacity: 0;
   transition: opacity 1.4s var(--ease);
 }
-.hero__video.is-ready { opacity: .82; }
+.hero__video.is-ready { opacity: .96; }
 
 /* 영상 없을 때 노출되는 이미지 슬라이드 (7초 체류 / 2초 크로스페이드 + 켄번스) */
 .hero__slide {
@@ -296,10 +296,10 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .hero__slide--2 { background-image: url("../img/skyline.svg"); background-position: 12% 100%; }
 .hero__slide--3 { background-image: url("../img/skyline.svg"); background-position: 88% 100%; }
 
-/* 텍스트 가독용 최소 그라디언트 (좌측만 살짝) */
+/* 글자가 놓이는 왼쪽만 살짝 눌러 준다. 화면 전체를 어둡게 덮으면 영상이 죽는다 */
 .hero::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, rgba(4,8,20,.62) 0%, rgba(4,8,20,.28) 42%, rgba(4,8,20,0) 78%);
+  background: linear-gradient(90deg, rgba(4,8,20,.52) 0%, rgba(4,8,20,.18) 40%, rgba(4,8,20,0) 70%);
 }
 .hero__inner { position: relative; z-index: 2; padding-top: var(--header-h); }
 

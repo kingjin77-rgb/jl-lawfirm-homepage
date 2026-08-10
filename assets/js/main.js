@@ -73,7 +73,8 @@
       slides[idx].classList.remove('is-active');
       idx = (idx + 1) % slides.length;
       slides[idx].classList.add('is-active');
-      if (curEl) curEl.textContent = idx + 1;
+      // 영상이 재생 중이면 화면에 보이는 것은 영상이다. 숫자는 영상 쪽이 맡는다
+      if (curEl && !document.querySelector('.hero__video.is-ready')) curEl.textContent = idx + 1;
     }, 7000);
   }
 
@@ -97,18 +98,67 @@
   /* ---------- 히어로 배경 영상 ----------
      파일이 없거나 재생 실패하면 이미지 슬라이드가 그대로 유지된다.
      모바일 · 데이터 절약 모드 · 모션 최소화 설정에서는 로드하지 않는다. */
-  var video = document.querySelector('.hero__video');
-  if (video && !reduced && window.innerWidth > 768 &&
+  var videos = [].slice.call(document.querySelectorAll('.hero__video'));
+  if (videos.length && !reduced && window.innerWidth > 768 &&
       !(navigator.connection && navigator.connection.saveData)) {
-    var src = video.dataset.src;
-    if (src) {
-      video.addEventListener('canplay', function () { video.classList.add('is-ready'); }, { once: true });
-      video.addEventListener('error', function () { video.classList.remove('is-ready'); });
-      video.src = src;
-      video.load();
-      var p = video.play();
-      if (p && p.catch) p.catch(function () { video.classList.remove('is-ready'); });
+    var ready = [];   // 실제로 재생되는 것만 모은다. 없는 파일은 조용히 빠진다
+    var at = 0;
+    var turn = null;
+    var counter = document.querySelector('[data-hero-current]');
+    var total = document.querySelector('[data-hero-total]');
+
+    function label() {
+      if (total) total.textContent = ready.length || 1;
+      if (counter) counter.textContent = ready.length ? at + 1 : 1;
     }
+
+    function step() {
+      if (ready.length < 2) return;
+      var prev = ready[at];
+      at = (at + 1) % ready.length;
+      var v = ready[at];
+      // 다음 영상을 먼저 위로 올려 덮은 뒤 이전 것을 내린다.
+      // 동시에 바꾸면 둘 다 반투명해지는 순간이 생겨 화면이 한 번 어두워진다.
+      v.currentTime = 0;
+      v.style.zIndex = 1;
+      v.classList.add('is-ready');
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+      label();
+      setTimeout(function () {
+        prev.classList.remove('is-ready');
+        prev.style.zIndex = '';
+        prev.pause();          // 안 보이는 영상까지 돌리면 노트북 배터리만 먹는다
+      }, 1500);
+    }
+
+    function joined(v) {
+      var shown = ready[at];
+      ready.push(v);
+      // 먼저 불러와진 순서가 아니라 적어 둔 순서(도시 → 사무실 → 상담)대로 돌린다
+      ready.sort(function (a, b) { return videos.indexOf(a) - videos.indexOf(b); });
+      if (shown) at = ready.indexOf(shown);
+      if (ready.length === 1) {
+        // 첫 번째로 준비된 것을 바로 띄운다
+        v.classList.add('is-ready');
+        var p = v.play();
+        if (p && p.catch) p.catch(function () { v.classList.remove('is-ready'); });
+      } else {
+        v.pause();   // 차례가 올 때까지 멈춰 둔다
+      }
+      label();
+      // 두 개 이상 모이면 그때부터 돌린다
+      if (ready.length === 2 && !turn) turn = setInterval(step, 9000);
+    }
+
+    videos.forEach(function (v) {
+      var src = v.dataset.src;
+      if (!src) return;
+      v.addEventListener('canplay', function () { joined(v); }, { once: true });
+      v.addEventListener('error', function () { v.classList.remove('is-ready'); });
+      v.src = src;
+      v.load();
+    });
   }
 
   /* ---------- 글자 단위 스태거 리빌 ---------- */
