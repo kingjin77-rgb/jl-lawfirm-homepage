@@ -37,7 +37,7 @@
     'practice.html': {
       lead: { t: '업무분야', d: '여섯 개 분야를 나눠 맡되, 한 사건은 함께 봅니다.' },
       items: [
-        { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 운영 · 관리처분 · 현금청산 · 명도', hot: true },
+        { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 운영 · 관리처분 · 현금청산 · 명도' },
         { t: '하자소송', h: 'practice.html#defect', d: '하자보수 청구 · 보증금 소송 · 담보책임기간 계산' },
         { t: '단체등기', h: 'registry.html', d: '입주 아파트 · 분양전환 · 대지권' },
         { t: '민사 · 형사', h: 'practice.html#civil', d: '부동산 · 채권회수 · 수사 초기 대응' },
@@ -45,15 +45,21 @@
         { t: '상속 · 이혼 · 조세', h: 'practice.html#tax', d: '조세심판 · 상속재산분할 · 유류분' }
       ]
     },
+    /* 단체등기 아래에 등기센터가 있고, 계산기 · 개별등기 접수는
+       등기센터 안의 기능이다. 같은 줄에 늘어놓지 않는다.
+       단지 단위 단체등기 접수는 아파트친구에서 받는다. */
     'registry.html': {
       lead: { t: '단체등기', d: '입주 단지 단위 소유권이전등기를 한 창구에서 처리합니다.' },
       items: [
-        { t: '제이엘 등기센터', h: 'dongtan.html', d: '신청 · 접수 · 조회 · 계산', hot: true },
-        { t: '단체등기 신청', h: 'dongtan.html#group', d: '아파트명 · 성함 · 직책 · 연락처만' },
-        { t: '개별등기 접수', h: 'dongtan.html#apply', d: '등기 종류별 온라인 신청' },
-        { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 채권 · 수수료 자동 계산' },
-        { t: '진행 조회', h: 'dongtan.html#track', d: '접수한 등기의 현재 단계' },
-        { t: '필요 서류', h: 'dongtan.html#docs', d: '유형별 준비 서류 목록' }
+        { t: '단체등기 안내', h: 'registry.html', d: '업무 범위와 진행 절차' },
+        { t: '제이엘 등기센터', h: 'dongtan.html', d: '개별등기를 처리하는 창구', children: [
+          { t: '개별등기 접수', h: 'dongtan.html#apply', d: '등기 종류별 온라인 신청' },
+          { t: '등기비용 계산기', h: 'dongtan.html#calc', d: '취득세 · 채권 · 수수료' },
+          { t: '진행 조회', h: 'dongtan.html#track', d: '접수한 등기의 현재 단계' },
+          { t: '필요 서류', h: 'dongtan.html#docs', d: '유형별 준비 서류' }
+        ] },
+        { t: '단체등기 접수', h: 'https://kingjin77-rgb.github.io/apt-friend/group-registration.html',
+          d: '입주예정자협의회 단위 — 아파트친구', ext: true }
       ]
     },
     'law.html': {
@@ -92,6 +98,24 @@
   var up = /\/lawyers\//.test(location.pathname) ? '../' : '';
   function href(h) { return up + h; }
 
+  // 외부 주소는 그대로 쓰고, 사이트 안 주소만 경로를 맞춘다
+  function link(it) {
+    var url = it.ext ? it.h : href(it.h);
+    return '<a href="' + esc(url) + '"' +
+           (it.ext ? ' target="_blank" rel="noopener" class="is-ext"' : '') + '>' +
+             '<b>' + esc(it.t) + '</b><small>' + esc(it.d) + '</small>' +
+           '</a>';
+  }
+  // 하위 기능이 있으면 한 단 들여 묶는다 — 같은 줄에 늘어놓으면 관계가 사라진다
+  function row(it) {
+    if (!it.children) return '<li>' + link(it) + '</li>';
+    return '<li class="has-sub">' + link(it) +
+             '<ul class="gnbdrop__sub">' +
+               it.children.map(function (c) { return '<li>' + link(c) + '</li>'; }).join('') +
+             '</ul>' +
+           '</li>';
+  }
+
   var links = Array.prototype.slice.call(gnb.querySelectorAll('a'));
   var open = null;
   var closeTimer = null;
@@ -119,14 +143,7 @@
           '<p class="gnbdrop__d">' + esc(conf.lead.d) + '</p>' +
           '<a class="gnbdrop__all" href="' + esc(href(key)) + '">전체 보기 <span>→</span></a>' +
         '</div>' +
-        '<ul class="gnbdrop__list">' +
-          conf.items.map(function (it) {
-            return '<li><a href="' + esc(href(it.h)) + '"' + (it.hot ? ' class="is-hot"' : '') + '>' +
-                     '<b>' + esc(it.t) + (it.hot ? '<span class="gnbdrop__tag">주력</span>' : '') + '</b>' +
-                     '<small>' + esc(it.d) + '</small>' +
-                   '</a></li>';
-          }).join('') +
-        '</ul>' +
+        '<ul class="gnbdrop__list">' + conf.items.map(row).join('') + '</ul>' +
       '</div>';
     wrap.appendChild(panel);
 

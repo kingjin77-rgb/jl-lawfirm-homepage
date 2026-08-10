@@ -178,10 +178,16 @@ body.nav-open .logo__img--color { display: block; }
 .gnbdrop__list a:hover { background: var(--gray-50, #f7f7f5); }
 .gnbdrop__list b { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; letter-spacing: -.03em; color: var(--gray-900); white-space: nowrap; }
 .gnbdrop__list small { font-size: 12px; color: var(--gray-500); letter-spacing: -.01em; word-break: keep-all; }
-.gnbdrop__list a.is-hot b { color: var(--navy); }
-.gnbdrop__tag {
-  padding: 1px 6px; font-size: 10px; font-weight: 700; letter-spacing: .02em;
-  color: #fff; background: var(--gold);
+/* 하위 기능 — 한 단 들여 상하 관계를 보이게 한다 */
+.gnbdrop__list > li.has-sub { grid-row: span 3; }
+.gnbdrop__list > li.has-sub > a b { color: var(--navy); }
+.gnbdrop__sub { margin: 2px 0 4px 12px; padding-left: 10px; border-left: 1px solid var(--line); }
+.gnbdrop__sub a { padding: 6px 10px; }
+.gnbdrop__sub b { font-size: 13px; font-weight: 600; color: var(--gray-700); }
+.gnbdrop__sub small { font-size: 11.5px; }
+/* 사이트 밖으로 나가는 항목 */
+.gnbdrop__list a.is-ext b::after {
+  content: "↗"; margin-left: 4px; font-size: .78em; opacity: .55; font-weight: 400;
 }
 /* 오른쪽 끝 메뉴는 펼침판이 화면 밖으로 나가지 않도록 오른쪽에 맞춘다 */
 .gnb__item:nth-last-child(-n+2) .gnbdrop { left: auto; right: 0; transform: translate(0, -6px); }
