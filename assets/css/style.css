@@ -132,9 +132,12 @@ body.nav-open .logo__img--color { display: block; }
 /* 간격·글자를 vw 로 두면 컨테이너(1280px)는 그대로인데 항목만 커져
    넓은 화면에서 오히려 헤더 밖으로 넘친다. 고정값으로 잡는다. */
 .gnb { display: flex; gap: 24px; flex: 0 1 auto; min-width: 0; }
+/* 메뉴 글자 크기는 화면 폭에 따라 줄어든다. 펼침 항목이 그걸 따라가야
+   상하 관계가 유지되므로 값을 변수로 두고 아래에서 함께 쓴다. */
+.gnb { --gnb-fs: 15px; }
 .gnb a {
   position: relative; padding-block: 8px; white-space: nowrap;
-  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  font-size: var(--gnb-fs); font-weight: 600; letter-spacing: -.01em;
   color: rgba(255,255,255,.9); transition: color .3s var(--ease);
 }
 .gnb a::after {
@@ -180,7 +183,9 @@ body.nav-open .logo__img--color { display: block; }
 .gnbdrop__list a::after { display: none; }
 .gnbdrop__list b {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 13.5px; font-weight: 500; line-height: 1.5; letter-spacing: -.025em;
+  /* 상위 메뉴보다 한 단계 작게. 같거나 크면 어느 쪽이 상위인지 눈에 안 잡힌다 */
+  font-size: max(11.5px, calc(var(--gnb-fs, 15px) - 2.5px));
+  font-weight: 500; line-height: 1.5; letter-spacing: -.025em;
   white-space: nowrap; transition: color .2s var(--ease);
 }
 .gnbdrop__list a:hover b { color: var(--gold); }
@@ -192,7 +197,7 @@ body.nav-open .logo__img--color { display: block; }
   padding-left: clamp(14px, 1.6vw, 22px);
   border-left: 1px solid currentColor;
 }
-.gnbdrop__sub b { font-size: 13px; font-weight: 400; opacity: .82; }
+.gnbdrop__sub b { font-size: max(11px, calc(var(--gnb-fs, 15px) - 3.5px)); font-weight: 400; opacity: .82; }
 .gnbdrop__list a.is-ext b::after { content: "↗"; font-size: .78em; opacity: .55; }
 
 /* 글자만 두므로 배경이 밝을 때와 어두울 때 색을 각각 잡는다 */
@@ -1585,12 +1590,10 @@ a.lwslide__photolink { display: contents; }
 /* 메뉴 9개 · 데스크톱 폭에 맞춰 단계적으로 줄인다.
    1024px 아래는 햄버거 메뉴로 바뀌므로 여기서 다루지 않는다. */
 @media (max-width: 1340px) and (min-width: 1201px) {
-  .gnb { gap: 19px; }
-  .gnb a { font-size: 14.2px; }
+  .gnb { gap: 19px; --gnb-fs: 14.2px; }
 }
 @media (max-width: 1200px) and (min-width: 1025px) {
-  .gnb { gap: 13px; }
-  .gnb a { font-size: 13.2px; }
+  .gnb { gap: 13px; --gnb-fs: 13.2px; }
   .header__tel .num { font-size: 17px; }
   .btn-track { height: 36px; padding-inline: 13px; font-size: 13px; }
 }
