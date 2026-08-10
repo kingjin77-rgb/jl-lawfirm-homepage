@@ -15,15 +15,12 @@
   var kind = me.getAttribute('data-gate') || 'home';
 
   // SHA-256 해시 (평문을 코드에 남기지 않기 위한 최소한의 처리)
+  // 직원이 화면마다 다른 번호를 외우게 하면 결국 메모지에 적어 붙인다.
+  // 지금은 하나로 통일하고, 실제 권한 통제는 토큰·서버 계정으로 간다.
+  var PW = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
   var GATES = {
-    home: {
-      label: '홈페이지 관리자',
-      hash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'
-    },
-    registry: {
-      label: '등기센터 관리자',
-      hash: '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'
-    }
+    home:     { label: '홈페이지 관리자', hash: PW },
+    registry: { label: '등기센터 관리자', hash: PW }
   };
   var gate = GATES[kind] || GATES.home;
   var KEY = 'jladmin.gate.' + kind;
@@ -61,8 +58,17 @@
     var msg = wrap.querySelector('[data-gate-msg]');
     input.focus();
 
+    // 엔터로도 들어갈 수 있어야 한다. 브라우저에 따라 form 의 기본 제출이
+    // 일어나지 않는 경우가 있어 키 입력을 직접 받는다.
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); tryOpen(); }
+    });
     wrap.querySelector('form').addEventListener('submit', function (e) {
       e.preventDefault();
+      tryOpen();
+    });
+
+    function tryOpen() {
       sha256(input.value).then(function (h) {
         if (h === gate.hash) {
           sessionStorage.setItem(KEY, gate.hash);
@@ -74,6 +80,6 @@
           input.focus();
         }
       });
-    });
+    }
   });
 })();
