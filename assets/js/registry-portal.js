@@ -53,7 +53,11 @@
     return 0;
   }
 
-  function stampDuty(price) {
+  /* 인지세 — 인지세법 별표. 다만 주택의 소유권 이전 증서는 1억원 이하면 비과세다(제6조).
+     예전에는 이 주택 특례를 상가·토지에도 적용해 8천만원짜리 상가가 0원으로 나왔다. */
+  function stampDuty(price, isHouse) {
+    var ex = CFG.misc.stampDutyHouseExempt;
+    if (isHouse && ex && price <= ex.upto) return 0;
     var list = CFG.misc.stampDuty;
     for (var i = 0; i < list.length; i++) {
       if (list[i].upto === null || price <= list[i].upto) return list[i].amount;
@@ -89,7 +93,8 @@
     var stdRaw = $('#cStd').value.trim();
     var area = parseFloat($('#cArea').value) || 0;
     var isMetro = $('#cRegion').value === 'metro';
-    var discount = parseFloat($('#cDiscount').value) || 0;
+    // 음수를 넣으면 손실이 이익으로 뒤집혀 합계가 깎인다. 0 아래로는 내려가지 않게 한다
+    var discount = Math.max(0, parseFloat($('#cDiscount').value) || 0);
 
     var out = $('#calcOut');
     if (!price || price <= 0) {
@@ -97,8 +102,10 @@
       return;
     }
 
-    var estimated = !stdRaw;
-    var std = estimated ? price * 0.7 : parseFloat(stdRaw) * 100000000;
+    // 0 을 넣어도 값이 있는 것으로 보면 과세표준이 0 이 되어 세금이 전부 0 원으로 나온다
+    var stdNum = parseFloat(stdRaw);
+    var estimated = !(stdNum > 0);
+    var std = estimated ? price * 0.7 : stdNum * 100000000;
     var rows = [];
     var notes = [];
     var total = 0;
@@ -119,7 +126,6 @@
       row('지방교육세', '등록면허세의 20%', regEdu);
       row('등기신청수수료 · 증명서', '', fee0);
       if (cause === 'mortgage') {
-        var bR = bondRate(price, isMetro) / 2;  // 저당권은 주택채권 매입률 별도 — 안내만
         notes.push('근저당권설정 시 국민주택채권 매입 의무가 별도로 있을 수 있습니다(채권최고액 2천만원 이상). 정확한 매입액은 담당자가 안내합니다.');
       }
       if (cause === 'landright' && T.landRight.note) notes.push(T.landRight.note);
@@ -130,6 +136,7 @@
     /* ---- 취득세 계열 ---- */
     var c = T.causes[cause];
     var aRate, rateMemo;
+    var heavyApplied = false;      // 다주택·법인 중과세율이 적용됐는지 (지방교육세 계산에 쓴다)
 
     if (cause === 'purchase_house') {
       var houses = $('#cHouses') ? $('#cHouses').value : '1';
@@ -137,6 +144,7 @@
       var heavy = c.heavy[adjusted ? 'adjusted' : 'normal'][houses];
       if (heavy != null) {
         aRate = heavy;
+        heavyApplied = true;
         rateMemo = (adjusted ? '조정대상지역 · ' : '') +
                    (houses === 'corp' ? '법인' : houses + '주택') + ' 중과 ' + aRate + '%';
         notes.push('다주택·법인 중과세율이 적용된 추정입니다. 일시적 2주택 등 예외는 반영되지 않았습니다.');
@@ -183,21 +191,36 @@
     }
     var acqAfter = acq - reliefAmt;
 
+    /* 지방교육세 — 지방세법 제151조.
+       원칙은 (취득세율 − 중과기준세율 2%) × 20% 다.
+       주택을 사고파는 경우만 예외로 (세율 × 50%) × 20% = 취득세의 10% 이고,
+       다주택 중과일 때는 표준세율 4% 를 기준으로 보아 0.4% 로 고정된다.
+       예전에는 모든 원인에 취득세의 10% 를 곱해, 세율이 4% 가 아닌
+       상속·증여·원시취득에서 금액이 실제보다 크게 나왔다. */
     var edu;
     if (c.eduMode === 'house') {
-      edu = acqAfter * CFG.acquisitionTax.eduTaxRatio;
+      edu = heavyApplied
+        ? price * (4 - 2) * 0.2 / 100
+        : acqAfter * CFG.acquisitionTax.eduTaxRatio;
     } else {
-      edu = acqAfter * 0.1;
+      edu = price * Math.max(0, aRate - 2) * 0.2 / 100;
     }
+
+    /* 농어촌특별세 — 국민주택규모(전용 85㎡ 이하) 주택은 비과세다(농어촌특별세법 제4조).
+       감면분에 붙는 20% 도 마찬가지로 비과세이므로 함께 막는다. */
+    var smallHouse = area > 0 && area <= T.ruralTaxExemptArea;
     var rural = 0;
-    if (c.kind === 'house') {
-      rural = (area > T.ruralTaxExemptArea) ? price * T.ruralTaxRate / 100 : 0;
-    } else if (c.ruralAlways) {
-      rural = price * T.ruralTaxRate / 100;
-    }
-    if (reliefAmt > 0) {
-      rural += reliefAmt * 0.2;                 // 감면분 농특세 20%
-      notes.push('감면받은 취득세의 20%는 농어촌특별세로 부과됩니다.');
+    if (!smallHouse) {
+      if (c.kind === 'house') {
+        rural = (area > T.ruralTaxExemptArea) ? price * T.ruralTaxRate / 100 : 0;
+      } else if (c.ruralAlways) {
+        rural = price * T.ruralTaxRate / 100;
+        if (!area) notes.push('전용면적을 넣으면 국민주택규모(85㎡ 이하) 비과세까지 반영해 계산합니다.');
+      }
+      if (reliefAmt > 0) {
+        rural += reliefAmt * 0.2;               // 감면분 농특세 20%
+        notes.push('감면받은 취득세의 20%는 농어촌특별세로 부과됩니다.');
+      }
     }
     var taxTotal = acqAfter + edu + rural;
 
@@ -205,7 +228,7 @@
     var bondBuy = std * bRate / 100;
     var bondLoss = bondBuy * discount / 100;
 
-    var stamp = (cause === 'inherit' || cause === 'gift') ? 0 : stampDuty(price);
+    var stamp = (cause === 'inherit' || cause === 'gift') ? 0 : stampDuty(price, c.kind === 'house');
     var fee = CFG.misc.registrationFee + CFG.misc.certFee;
 
     total = taxTotal + bondLoss + stamp + fee;
@@ -213,17 +236,14 @@
     row('취득세', rateMemo, acq);
     if (reliefAmt) row('감면 (−)', reliefMemo, -reliefAmt);
     row('지방교육세', '', edu);
-    if (c.kind === 'house') {
-      rows.push(rural && !(reliefAmt)
-        ? '' : '');
-      row('농어촌특별세', rural ? '' : '전용 85㎡ 이하 비과세', rural);
-    } else {
-      row('농어촌특별세', '', rural);
-    }
+    row('농어촌특별세', rural ? '' : (smallHouse ? '전용 85㎡ 이하 비과세' : ''), rural);
     rows.push('<tr class="sum"><th>세금 소계</th><td></td><td>' + won(taxTotal) + '</td></tr>');
     row('국민주택채권 매입', (bRate ? bRate + '% · 시가표준액 ' + eok(std) : '매입 면제'), bondBuy);
     row('채권 즉시매도 손실', '할인율 ' + discount + '%', bondLoss);
-    row('인지세', stamp ? '' : (cause === 'inherit' || cause === 'gift' ? '계약서 없음 · 비과세' : '주택 1억 이하 비과세'), stamp);
+    row('인지세', stamp ? '' :
+        (cause === 'inherit' || cause === 'gift') ? '계약서 없음 · 비과세'
+      : (c.kind === 'house') ? '주택 1억 이하 비과세'
+      : '1천만원 이하 비과세', stamp);
     row('등기신청수수료 · 증명서', '', fee);
 
     if (estimated && (cause === 'purchase_house' || cause === 'purchase_other')) {

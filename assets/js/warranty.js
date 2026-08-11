@@ -31,18 +31,23 @@
     var opt = typeEl.options[typeEl.selectedIndex];
     var years = parseInt(typeEl.value, 10);
 
-    var start = new Date(raw);
-    var end = new Date(raw);
+    // 'YYYY-MM-DD' 를 그냥 넘기면 세계표준시 자정으로 읽는다. 우리 시각과 9시간이 어긋나
+    // 하루가 밀려 계산되므로, 시각을 붙여 이 컴퓨터 시각의 자정으로 읽게 한다.
+    var start = new Date(raw + 'T00:00:00');
+    var end = new Date(raw + 'T00:00:00');
     end.setFullYear(end.getFullYear() + years);
 
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-    var left = Math.ceil((end - today) / 86400000);
+    var left = Math.floor((end - today) / 86400000);
 
     var state, cls;
     if (left < 0) {
       state = '기간이 ' + Math.abs(left).toLocaleString('ko-KR') + '일 지났습니다';
       cls = 'is-over';
+    } else if (left === 0) {
+      state = '오늘이 마지막 날입니다';
+      cls = 'is-soon';
     } else if (left <= 180) {
       state = '남은 기간 ' + left.toLocaleString('ko-KR') + '일 — 서둘러야 합니다';
       cls = 'is-soon';

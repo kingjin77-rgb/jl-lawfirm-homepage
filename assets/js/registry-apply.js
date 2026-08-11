@@ -96,7 +96,9 @@
   function estimate() {
     var C = window.JLRegCalc;
     var v = inputs();
-    if (!C || !v.price) return null;
+    // 값이 없는 것과 세율표를 아직 못 받은 것은 다른 상황이다. 안내 문구가 달라야 한다
+    if (!C) return 'loading';
+    if (!v.price) return null;
 
     var price = v.price * 100000000;
     var std = price * 0.7;                    // 시가표준액 추정 (분양가 70%)
@@ -109,7 +111,7 @@
     var bondBuy = std * bRate / 100;
     var discount = parseFloat(C.cfg.bond.rate) || 0;
     var bondLoss = bondBuy * discount / 100;
-    var stamp = C.stampDuty(price);
+    var stamp = C.stampDuty(price, true);      // 입주 아파트 — 주택 기준
     var fee = C.cfg.misc.registrationFee + C.cfg.misc.certFee;
     return {
       total: acq + edu + rural + bondLoss + stamp + fee,
@@ -123,6 +125,10 @@
     var out = $('[data-apply-estimate]');
     var v = inputs();
     var e = estimate();
+    if (e === 'loading') {
+      out.innerHTML = '<p class="apw__note">세율표를 불러오는 중입니다. 잠시만 기다려 주세요.</p>';
+      return;
+    }
     if (!e) {
       out.innerHTML = '<p class="apw__note">분양가를 입력하지 않아 예상 비용은 접수 후 담당자가 안내해 드립니다.</p>';
       return;
@@ -206,4 +212,10 @@
     b.addEventListener('click', function () { go(state.step - 1); });
   });
   $('[data-apply-next3]').addEventListener('click', function () { go(4); });
+
+  // 세율표는 따로 받아 온다. 다 받으면 3단계를 다시 그려, 기다리는 사이 떠 있던
+  // "불러오는 중" 문구가 실제 금액으로 바뀌게 한다.
+  document.addEventListener('jlreg:ready', function () {
+    if (state.step === 3) renderEstimate();
+  });
 })();

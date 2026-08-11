@@ -66,10 +66,11 @@
   var slides = document.querySelectorAll('.hero__slide');
   var curEl = document.querySelector('[data-hero-current]');
   var totEl = document.querySelector('[data-hero-total]');
+  var slideTimer = null;
   if (totEl && slides.length) totEl.textContent = slides.length;
   if (slides.length > 1 && !reduced) {
     var idx = 0;
-    setInterval(function () {
+    slideTimer = setInterval(function () {
       slides[idx].classList.remove('is-active');
       idx = (idx + 1) % slides.length;
       slides[idx].classList.add('is-active');
@@ -139,8 +140,10 @@
       ready.sort(function (a, b) { return videos.indexOf(a) - videos.indexOf(b); });
       if (shown) at = ready.indexOf(shown);
       if (ready.length === 1) {
-        // 첫 번째로 준비된 것을 바로 띄운다
+        // 첫 번째로 준비된 것을 바로 띄운다.
+        // 이때부터 화면에 보이는 것은 영상이므로 뒤에 깔린 이미지 슬라이드는 멈춘다.
         v.classList.add('is-ready');
+        if (slideTimer) { clearInterval(slideTimer); slideTimer = null; }
         var p = v.play();
         if (p && p.catch) p.catch(function () { v.classList.remove('is-ready'); });
       } else {
