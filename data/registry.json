@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-10",
+  "updatedAt": "2026-08-11",
   "_note": "취득세율·채권 매입률은 법령 개정 시 갱신이 필요합니다. 채권 할인율은 매일 변동하므로 bond.rate 를 주기적으로 갱신하세요.",
   "acquisitionTax": {
     "_basis": "주택 유상취득 · 1주택 기준. 아래 tax 블록이 범용 계산의 기준이며 이 항목은 하위 호환용입니다.",
@@ -128,8 +128,8 @@
   },
   "bond": {
     "_basis": "제1종 국민주택채권. 시가표준액(공시가격) 기준으로 매입률을 적용합니다.",
-    "rate": 14.798,
-    "rateDate": "2026-08-10",
+    "rate": 14.9,
+    "rateDate": "2026-08-11",
     "rateSource": "주택도시기금 · 우리은행 제1종 국민주택채권 즉시매도 기준 (자동 수집)",
     "exemptUnder": 20000000,
     "brackets": [
@@ -170,8 +170,8 @@
         "label": "6억 이상"
       }
     ],
-    "rateSellPrice": 8541,
-    "rateYield": 4.186
+    "rateSellPrice": 8531,
+    "rateYield": 4.212
   },
   "misc": {
     "stampDuty": [
