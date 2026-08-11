@@ -1,0 +1,16 @@
+# GitHub Pages 배포 설정
+#
+# 저장소에는 두되 홈페이지로는 내보내지 않을 것들을 적는다.
+# 여기 적힌 폴더·파일은 주소로 접근해도 나오지 않는다.
+
+exclude:
+  # 로고 원본(.ai)은 편집용 파일이다. 홈페이지가 쓰지 않는데도 주소만 알면
+  # 누구나 내려받을 수 있어 배포에서 뺀다. 파일은 저장소에 그대로 남는다.
+  - assets/brand/
+
+  # 작업 도구와 문서 — 화면에 쓰이지 않는다
+  - tools/
+  - README.md
+  - CONTRIBUTING.md
+  - assets/video/README.md
+  - assets/img/clients/README.md
