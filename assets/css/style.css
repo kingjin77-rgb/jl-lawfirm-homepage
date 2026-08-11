@@ -326,7 +326,19 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   font-size: clamp(15px, 1.45vw, 18px); color: rgba(255,255,255,.85); font-weight: 300;
   text-shadow: 0 1px 14px rgba(0,0,0,.4);
 }
-.hero__actions { margin-top: 38px; display: flex; flex-wrap: wrap; gap: 12px; }
+/* 분야 바로가기 — 검색으로 들어온 사람이 자기 사건을 여기서 다루는지 바로 본다 */
+.hero__fields { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; }
+.hero__fields a {
+  display: block; padding: 8px 15px;
+  font-size: 13.5px; font-weight: 600; letter-spacing: -.02em; color: rgba(255,255,255,.92);
+  border: 1px solid rgba(255,255,255,.34); border-radius: 100px;
+  backdrop-filter: blur(2px);
+  transition: background .3s var(--ease), border-color .3s var(--ease);
+}
+.hero__fields a:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.7); }
+@media (max-width: 560px) { .hero__fields a { padding: 7px 13px; font-size: 12.5px; } }
+
+.hero__actions { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
 
 /* 글자 단위 스태거 리빌 (lawl) */
 .js .split-line { display: block; }
@@ -1033,11 +1045,28 @@ p > .s + .s { margin-top: .38em; }
   .gnb a { color: var(--navy) !important; font-size: 22px; padding-block: 14px; border-bottom: 1px solid var(--line); }
   .gnb a::after { display: none; }
 
-  /* 모바일에서는 펼침을 쓰지 않는다 — 손가락으로 여닫는 단계가 하나 늘 뿐이다.
-     상위 메뉴만 세로로 두고, 하위 항목은 각 페이지 안에서 찾도록 한다. */
+  /* 모바일에는 마우스를 올릴 수가 없다. 펼침을 감춰 두면 기업법무·재건축·질의응답처럼
+     펼침 안에만 있는 페이지에 메뉴로 갈 방법이 사라진다. 접지 말고 그대로 펴 둔다. */
   .gnb { overflow-y: auto; justify-content: flex-start; padding-block: calc(var(--header-h) + 12px) 40px; }
   .gnb__item { display: block; width: 100%; }
-  .gnbdrop { display: none; }
+  /* gnb.js 가 마우스로 열기 전까지 hidden 을 걸어 둔다. 모바일에서는 처음부터 펴 둬야 하므로 푼다 */
+  .gnbdrop, .gnbdrop[hidden] {
+    display: block;
+    position: static; opacity: 1; transform: none; pointer-events: auto;
+    margin: 0; padding: 6px 0 10px; z-index: auto;
+  }
+  .gnbdrop__in { padding: 0; }
+  .gnbdrop__lead { display: none; }
+  .gnbdrop__list { display: block; }
+  .gnbdrop__list > li { display: block; }
+  .gnbdrop__list a { padding: 0; }
+  .gnb .gnbdrop__list b {
+    font-size: 16px !important; font-weight: 500; color: var(--gray-700);
+    padding: 11px 0 11px 14px; border-left: 2px solid var(--line);
+  }
+  .gnb .gnbdrop__list a { border-bottom: 0; }
+  .gnbdrop__sub { display: block; padding-left: 14px; border-left: 0; }
+  .gnb .gnbdrop__sub b { font-size: 15px !important; opacity: .9; }
   body.nav-open { overflow: hidden; }
   body.nav-open .header { background: #fff; border-bottom-color: var(--line); }
   body.nav-open .logo, body.nav-open .header__tel { color: var(--navy); }
