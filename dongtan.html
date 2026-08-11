@@ -6,7 +6,7 @@
 <title>제이엘 등기센터 · 동탄 분사무소 | 법무법인 제이엘</title>
 <meta name="description" content="개별등기 온라인 접수와 진행조회, 등기비용 계산을 한 곳에서. 입주 아파트 소유권이전, 분양전환, 대지권 등기를 법무법인 제이엘 등기센터(동탄 분사무소)가 전담합니다.">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css?v=59">
+<link rel="stylesheet" href="assets/css/style.css?v=60">
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/dongtan.html">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -166,8 +166,9 @@
         <ol class="apw__steps" aria-hidden="true">
           <li class="apw__dot is-on">1<span>유형</span></li>
           <li class="apw__dot">2<span>정보</span></li>
-          <li class="apw__dot">3<span>비용</span></li>
-          <li class="apw__dot">4<span>접수</span></li>
+          <li class="apw__dot">3<span>서류</span></li>
+          <li class="apw__dot">4<span>비용</span></li>
+          <li class="apw__dot">5<span>접수</span></li>
         </ol>
 
         <!-- 1단계: 등기유형 -->
@@ -230,6 +231,28 @@
                 <option value="none">대출 없음 (자납)</option>
               </select>
             </div>
+            <!-- 아래 세 가지로 준비 서류가 갈린다. 실제 보완 요청이 가장 많이 나가는 항목이다 -->
+            <div class="fld">
+              <label for="aMoveIn">전입신고</label>
+              <select id="aMoveIn">
+                <option value="no">아직 전입신고 전</option>
+                <option value="yes">해당 단지로 전입신고 완료</option>
+              </select>
+            </div>
+            <div class="fld">
+              <label for="aOwner">명의</label>
+              <select id="aOwner">
+                <option value="single">단독 명의</option>
+                <option value="joint">공동 명의</option>
+              </select>
+            </div>
+            <div class="fld">
+              <label for="aPay">취득세 납부</label>
+              <select id="aPay">
+                <option value="agency">법무법인이 대납</option>
+                <option value="self">직접 납부 (위택스 · 은행)</option>
+              </select>
+            </div>
           </div>
           <div class="fld" style="margin-top:14px">
             <label for="aNote">요청사항</label>
@@ -237,22 +260,33 @@
           </div>
           <div class="apw__acts">
             <button type="button" class="btn apw__back">← 이전</button>
-            <button type="button" class="btn btn--fill" data-apply-next2>다음 — 예상비용 확인 <span class="arrow">→</span></button>
+            <button type="button" class="btn btn--fill" data-apply-next2>다음 — 준비서류 확인 <span class="arrow">→</span></button>
           </div>
         </div>
 
-        <!-- 3단계: 예상비용 -->
+        <!-- 3단계: 준비서류 — 앞에서 고른 조건에 따라 세대별로 뽑아 준다 -->
         <div class="apw__panel" data-step="3" hidden>
+          <p class="apw__q">이 세대에 필요한 서류입니다.</p>
+          <div data-apply-docs></div>
+          <div class="apw__acts">
+            <button type="button" class="btn apw__back">← 이전</button>
+            <button type="button" class="btn" data-docs-print>서류 목록 인쇄</button>
+            <button type="button" class="btn btn--fill" data-apply-next3>다음 — 예상비용 확인 <span class="arrow">→</span></button>
+          </div>
+        </div>
+
+        <!-- 4단계: 예상비용 -->
+        <div class="apw__panel" data-step="4" hidden>
           <p class="apw__q">예상 비용입니다.</p>
           <div data-apply-estimate></div>
           <div class="apw__acts">
             <button type="button" class="btn apw__back">← 이전</button>
-            <button type="button" class="btn btn--fill" data-apply-next3>다음 — 접수하기 <span class="arrow">→</span></button>
+            <button type="button" class="btn btn--fill" data-apply-next4>다음 — 접수하기 <span class="arrow">→</span></button>
           </div>
         </div>
 
-        <!-- 4단계: 접수 -->
-        <div class="apw__panel" data-step="4" hidden>
+        <!-- 5단계: 접수 -->
+        <div class="apw__panel" data-step="5" hidden>
           <p class="apw__q">접수 내용을 확인해 주세요.</p>
           <div data-apply-summary></div>
           <div class="cform__agree" style="margin-top:18px">
@@ -574,13 +608,13 @@
   <a href="tel:18994252">대표번호 1899-4252</a>
 </div>
 
-<script src="assets/js/main.js?v=59" defer></script>
-<script src="assets/js/motion.js?v=59" defer></script>
-<script src="assets/js/gnb.js?v=59" defer></script>
-<script src="assets/js/map.js?v=59" defer></script>
-<script src="assets/js/registry-portal.js?v=59" defer></script>
-<script src="assets/js/registry-apply.js?v=59" defer></script>
-<script src="assets/js/registry-group.js?v=59" defer></script>
-<script src="assets/js/fresh.js?v=59" defer></script>
+<script src="assets/js/main.js?v=60" defer></script>
+<script src="assets/js/motion.js?v=60" defer></script>
+<script src="assets/js/gnb.js?v=60" defer></script>
+<script src="assets/js/map.js?v=60" defer></script>
+<script src="assets/js/registry-portal.js?v=60" defer></script>
+<script src="assets/js/registry-apply.js?v=60" defer></script>
+<script src="assets/js/registry-group.js?v=60" defer></script>
+<script src="assets/js/fresh.js?v=60" defer></script>
 </body>
 </html>
