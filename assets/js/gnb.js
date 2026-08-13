@@ -32,7 +32,7 @@
         { t: '민사 · 형사', h: 'practice.html#civil', d: '부동산 · 채권회수 · 수사대응' },
         { t: '하자소송', h: 'practice.html#defect', d: '보수 청구 · 보증금 소송' },
         { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 · 관리처분 · 현금청산' },
-        { t: '상속 · 이혼 · 조세', h: 'practice.html#tax', d: '조세심판 · 상속 · 유류분' },
+        { t: '가사 · 상속 · 이혼', h: 'practice.html#family', d: '이혼 · 상속재산분할 · 유류분' },
         { t: '단체등기', h: 'registry.html', d: '입주 아파트 · 분양전환 · 대지권' }
       ]
     },
