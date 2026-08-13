@@ -39,6 +39,9 @@
   document.addEventListener('click', function (e) {
     var a = e.target.closest ? e.target.closest('.gnb a') : null;
     if (!a) return;
+    // 업무분야 펼침 안에도 "단체등기"로 가는 항목이 하나 더 있다(분야 목록의 마지막 자리).
+    // 그건 업무 소개로 가는 링크지 이 카드를 여는 자리가 아니다 — 최상위 메뉴 링크만 반응한다.
+    if (a.closest('.gnbdrop')) return;
     var href = (a.getAttribute('href') || '').split('/').pop().split('#')[0];
     if (href !== 'registry.html') return;
     if (localStorage.getItem(KEY) === new Date().toISOString().slice(0, 10)) return;

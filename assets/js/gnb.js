@@ -65,14 +65,8 @@
         { t: '하자소송 Q&A 연재', h: 'lawyers/ha-hye-yong.html', d: '하혜용 변호사' }
       ]
     },
-    'contact.html': {
-      lead: { t: '오시는 길', d: '서초 본사무소와 동탄 분사무소를 운영합니다.' },
-      items: [
-        { t: '본사무소 · 서초', h: 'contact.html#seocho', d: '02-537-0123' },
-        { t: '분사무소 · 동탄', h: 'contact.html#dongtan', d: '단체등기 1899-4252' },
-        { t: '상담 문의', h: 'contact.html#consult', d: '내용을 적어 바로 보내기' }
-      ]
-    }
+    /* 오시는 길은 페이지 자체가 사무소 두 곳과 상담 폼을 전부 보여준다.
+       펼침 안에 같은 항목을 또 늘어놓을 필요가 없어 뺐다. */
   };
 
   function esc(s) {

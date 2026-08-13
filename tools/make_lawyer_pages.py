@@ -143,9 +143,9 @@ def page_html(L, all_lawyers):
       <a href="../about.html">법인소개</a>
       <a href="../lawyers.html">구성원</a>
       <a href="../practice.html">업무분야</a>
-      <a href="../registry.html">단체등기</a>
       <a href="../law.html">법률정보</a>
       <a href="../magazine.html">제이엘 매거진</a>
+      <a href="../registry.html">단체등기</a>
       <a href="../contact.html">오시는 길</a>
     </nav>
     <div class="header__util">
