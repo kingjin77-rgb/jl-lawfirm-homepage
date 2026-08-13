@@ -152,8 +152,11 @@ def collect_precedents(oc, per_query=3):
     seen = set()
     for query, cat in PREC_QUERIES:
         try:
+            # sort 를 안 주면 검색 API가 관련도순으로 돌려준다.
+            # 페이지 제목이 "판례 동향"인데 관련도 1~3위가 20년 전 판결일 수도 있다.
+            # ddes = 선고일자 내림차순 — 각 키워드에서 가장 최근 판결부터 잡는다.
             d = fetch("lawSearch.do", {"OC": oc, "target": "prec", "type": "JSON",
-                                       "query": query, "display": per_query})
+                                       "query": query, "display": per_query, "sort": "ddes"})
             for it in as_list(d.get("PrecSearch", {}).get("prec")):
                 case_no = (it.get("사건번호") or "").strip()
                 if not case_no or case_no in seen:
