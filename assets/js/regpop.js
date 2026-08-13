@@ -1,17 +1,26 @@
-/* 오른쪽 위 안내 카드 — 상단 메뉴에서 단체등기를 눌렀을 때 연다.
+/* 오른쪽 위 안내 카드 — 단체등기 페이지(registry.html)에 도착하면 뜬다.
 
    등기센터와 아파트친구 두 장을 위아래로 세워 둔다.
    단체등기는 들어가는 문이 둘(개별등기는 등기센터, 단지 단위는 아파트친구)이라
-   메뉴를 누른 사람에게 어느 쪽인지 먼저 고르게 하는 편이 헤매지 않는다.
+   이 페이지에 온 사람에게 어느 쪽인지 먼저 보여 주는 편이 헤매지 않는다.
 
-   묻지도 않았는데 첫 화면에서 저절로 뜨던 것은 그만둔다. 누른 사람에게만 보인다.
+   메뉴 클릭은 그냥 페이지로 넘어간다 — 가로채지 않는다.
+   페이지에 도착한 뒤에만 이 카드가 뜬다.
    "오늘 하루 보지 않기"는 localStorage 에 날짜만 저장한다.
    개인정보는 담지 않으며, 서버로 전송되지 않는다.
 */
 (function () {
   'use strict';
 
+  // 단체등기 페이지에서만 뜬다. 다른 페이지에 이 스크립트가 실려 있어도 조용히 아무 일도 안 한다.
+  var page = location.pathname.split('/').pop() || 'index.html';
+  if (page !== 'registry.html') return;
+
   var KEY = 'jl.regpop.hideUntil';
+  if (localStorage.getItem(KEY) === new Date().toISOString().slice(0, 10)) return;
+
+  // 도착하자마자 뜨면 화면을 채 보기도 전에 가려 거슬린다. 잠깐 두고 띄운다.
+  var DELAY = 900;
 
   var CARDS = [
     {
@@ -33,21 +42,8 @@
     }
   ];
 
-  /* 상단 메뉴의 단체등기를 누르면 페이지로 넘어가는 대신 이 카드를 연다.
-     메뉴는 gnb.js 가 감싸므로, 눌린 지점에서 거슬러 올라가 찾는다.
-     "오늘 하루 보지 않기"를 눌러 둔 사람은 카드를 건너뛰고 바로 페이지로 보낸다. */
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest ? e.target.closest('.gnb a') : null;
-    if (!a) return;
-    // 업무분야 펼침 안에도 "단체등기"로 가는 항목이 하나 더 있다(분야 목록의 마지막 자리).
-    // 그건 업무 소개로 가는 링크지 이 카드를 여는 자리가 아니다 — 최상위 메뉴 링크만 반응한다.
-    if (a.closest('.gnbdrop')) return;
-    var href = (a.getAttribute('href') || '').split('/').pop().split('#')[0];
-    if (href !== 'registry.html') return;
-    if (localStorage.getItem(KEY) === new Date().toISOString().slice(0, 10)) return;
-    if (document.querySelector('.regpop')) return;
-    e.preventDefault();
-    open();
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(open, DELAY);
   });
 
   function esc(s) {
@@ -74,14 +70,13 @@
   }
 
   function open() {
+    if (document.querySelector('.regpop')) return;
     var pop = document.createElement('div');
     pop.className = 'regpop';
     pop.setAttribute('role', 'complementary');
     pop.setAttribute('aria-label', '제이엘 등기센터 · 아파트친구 안내');
     pop.innerHTML =
       CARDS.map(card).join('') +
-      // 절차부터 보고 싶은 사람도 있다. 원래 가려던 곳으로 가는 길을 남겨 둔다
-      '<p class="regpop__plain"><a href="registry.html">단체등기 업무 안내부터 보기 →</a></p>' +
       '<div class="regpop__foot">' +
         '<button type="button" data-hide-today>오늘 하루 보지 않기</button>' +
         '<button type="button" data-close>닫기</button>' +

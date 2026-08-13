@@ -1765,7 +1765,3 @@ a.lwslide__photolink { display: contents; }
   .dcs__head span { color: #444; }
 }
 
-/* 팝업 안에서 원래 가려던 곳으로 가는 길 */
-.regpop__plain { padding: 12px 18px 0; text-align: center; }
-.regpop__plain a { font-size: 13px; font-weight: 600; color: var(--navy); }
-.regpop__plain a:hover { text-decoration: underline; text-underline-offset: 3px; }
