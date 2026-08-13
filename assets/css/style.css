@@ -1765,3 +1765,55 @@ a.lwslide__photolink { display: contents; }
   .dcs__head span { color: #444; }
 }
 
+
+/* =========================================================
+   정비사업 동향 페이지 — redevelopment-desk.html
+   팀원이 만든 뉴스판을 JL 톤(남색·금색·Pretendard)으로 다시 입힌 것.
+   원본은 청록색·명조체의 독립 디자인 시스템이었다. 새 색을 만들지 않고
+   기존 --navy/--gold/--gray 토큰만 쓴다.
+   ========================================================= */
+.rdesk-date {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: 14px; padding: 5px 12px;
+  font-size: 12.5px; font-weight: 700; color: var(--gold-ink);
+  border: 1px solid var(--line);
+}
+
+/* 단계 아코디언 — 9단계, 각 단계마다 등기 실무 안내가 붙는다 */
+.rdstage { border-top: 1px solid var(--line); }
+.rdstage__item { border-bottom: 1px solid var(--line); }
+.rdstage__item summary {
+  display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline;
+  gap: 14px; padding: 17px 6px; cursor: pointer; list-style: none;
+}
+.rdstage__item summary::-webkit-details-marker { display: none; }
+.rdstage__item summary:hover { background: var(--paper-alt); }
+.rdstage__item[open] summary { background: var(--paper-alt); }
+.rdstage__no { font-size: 13px; font-weight: 800; color: var(--gold-ink); letter-spacing: .04em; }
+.rdstage__name { font-size: 16px; font-weight: 700; color: var(--ink); }
+.rdstage__art { font-size: 12px; color: var(--gray-500); white-space: nowrap; }
+.rdstage__body { padding: 2px 6px 26px 60px; display: grid; gap: 14px; max-width: 74ch; }
+.rdstage__body p { font-size: 14px; color: var(--gray-700); line-height: 1.8; }
+.rdstage__duty {
+  border-left: 3px solid var(--gold); padding: 10px 0 10px 16px;
+  background: var(--paper-alt);
+}
+.rdstage__duty span {
+  display: block; font-size: 12px; font-weight: 700; letter-spacing: .04em;
+  color: var(--gold-ink); margin-bottom: 4px;
+}
+.rdstage__duty p { color: var(--ink); font-size: 14px; }
+@media (max-width: 560px) {
+  .rdstage__item summary { grid-template-columns: 32px 1fr; gap: 4px 12px; }
+  .rdstage__art { grid-column: 2; }
+  .rdstage__body { padding-left: 44px; }
+}
+
+/* 상시 확인처 — 외부 공적 사이트 링크 목록 */
+.reflink {
+  display: block; padding: 16px 18px; border: 1px solid var(--line);
+  background: #fff; transition: border-color .3s var(--ease), background .3s var(--ease);
+}
+.reflink:hover { border-color: var(--navy); background: var(--paper-alt); }
+.reflink strong { display: block; font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.reflink span { display: block; margin-top: 4px; font-size: 12px; color: var(--gray-500); word-break: break-all; }

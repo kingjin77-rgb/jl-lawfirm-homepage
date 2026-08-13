@@ -59,6 +59,7 @@ PRIORITY = {
     "about.html": "0.8",
     "corporate.html": "0.8",
     "redevelopment.html": "0.9",
+    "redevelopment-desk.html": "0.6",
     "magazine.html": "0.7",
     "law.html": "0.7",
     "qna.html": "0.9",
@@ -71,6 +72,7 @@ CRUMBS = {
     "practice.html": ["업무분야"],
     "corporate.html": ["업무분야", "기업법무"],
     "redevelopment.html": ["업무분야", "재건축·재개발"],
+    "redevelopment-desk.html": ["업무분야", "재건축·재개발", "정비사업 동향"],
     "registry.html": ["단체등기"],
     "dongtan.html": ["단체등기", "제이엘 등기센터"],
     "law.html": ["법률정보"],
@@ -82,6 +84,7 @@ CRUMBS = {
 CRUMB_PARENT = {
     "corporate.html": "practice.html",
     "redevelopment.html": "practice.html",
+    "redevelopment-desk.html": "redevelopment.html",
     "dongtan.html": "registry.html",
 }
 
