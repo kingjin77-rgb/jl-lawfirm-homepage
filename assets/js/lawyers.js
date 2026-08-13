@@ -29,12 +29,11 @@
     return esc(s).replace(/&lt;(\/?)strong&gt;/gi, '<$1strong>');
   };
 
-  // 등급 표기 — 법무법인은 구성원변호사(파트너)와 소속변호사를 구분해 표기한다
+  // 등급 표기 — 법무법인은 구성원변호사(파트너)와 소속변호사를 구분해 표기한다.
+  // 인원수와 등급 설명은 붙이지 않는다. 보는 사람에게 필요한 것은 누가 있는지다.
   var TIERS = [
-    { key: '구성원', label: '구성원변호사', mod: 'partner',
-      desc: '법무법인의 지분을 가진 파트너 변호사입니다. 사건의 최종 책임을 집니다.' },
-    { key: '소속', label: '소속변호사', mod: 'associate',
-      desc: '법무법인에 소속되어 담당 분야 사건을 수행합니다.' }
+    { key: '구성원', label: '구성원변호사', mod: 'partner' },
+    { key: '소속', label: '소속변호사', mod: 'associate' }
   ];
   function tierOf(p) {
     for (var i = 0; i < TIERS.length; i++) if (TIERS[i].key === p.tier) return TIERS[i];
@@ -99,8 +98,7 @@
       return '' +
       '<div class="lwgrade lwgrade--' + t.mod + '">' +
         '<div class="lwgrade__head">' +
-          '<h3>' + esc(t.label) + '<span class="lwgrade__n">' + group.length + '명</span></h3>' +
-          '<p>' + esc(t.desc) + '</p>' +
+          '<h3>' + esc(t.label) + '</h3>' +
         '</div>' +
         '<ul class="lwgrade__list">' +
           group.map(function (p) {

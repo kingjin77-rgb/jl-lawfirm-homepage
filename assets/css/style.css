@@ -565,8 +565,6 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .lwgrade--associate { border-top-color: var(--line); }
 .lwgrade__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
 .lwgrade__head h3 { font-size: clamp(19px, 2vw, 24px); font-weight: 800; letter-spacing: -.035em; }
-.lwgrade__n { margin-left: 8px; font-size: 13px; font-weight: 600; color: var(--gold-ink); letter-spacing: 0; }
-.lwgrade__head p { font-size: 14px; color: var(--gray-500); word-break: keep-all; }
 .lwgrade__list { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .lwgrade__list a, .lwgrade__no {
   display: flex; align-items: center; gap: 14px; height: 100%; padding: 14px 16px;
@@ -1754,3 +1752,8 @@ a.lwslide__photolink { display: contents; }
   .dcs__head { background: none; color: #000; border-bottom: 2px solid #000; }
   .dcs__head span { color: #444; }
 }
+
+/* 팝업 안에서 원래 가려던 곳으로 가는 길 */
+.regpop__plain { padding: 12px 18px 0; text-align: center; }
+.regpop__plain a { font-size: 13px; font-weight: 600; color: var(--navy); }
+.regpop__plain a:hover { text-decoration: underline; text-underline-offset: 3px; }

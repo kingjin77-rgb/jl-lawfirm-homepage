@@ -1,6 +1,10 @@
-/* 오른쪽 위 안내 카드 — 메인 첫 방문 시 1회
+/* 오른쪽 위 안내 카드 — 상단 메뉴에서 단체등기를 눌렀을 때 연다.
 
    등기센터와 아파트친구 두 장을 위아래로 세워 둔다.
+   단체등기는 들어가는 문이 둘(개별등기는 등기센터, 단지 단위는 아파트친구)이라
+   메뉴를 누른 사람에게 어느 쪽인지 먼저 고르게 하는 편이 헤매지 않는다.
+
+   묻지도 않았는데 첫 화면에서 저절로 뜨던 것은 그만둔다. 누른 사람에게만 보인다.
    "오늘 하루 보지 않기"는 localStorage 에 날짜만 저장한다.
    개인정보는 담지 않으며, 서버로 전송되지 않는다.
 */
@@ -8,11 +12,6 @@
   'use strict';
 
   var KEY = 'jl.regpop.hideUntil';
-  var today = new Date().toISOString().slice(0, 10);
-  if (localStorage.getItem(KEY) === today) return;
-
-  // 스크롤 없이 바로 뜨면 거슬리므로 잠깐 뒤에 띄운다
-  var DELAY = 1400;
 
   var CARDS = [
     {
@@ -34,8 +33,18 @@
     }
   ];
 
-  document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(open, DELAY);
+  /* 상단 메뉴의 단체등기를 누르면 페이지로 넘어가는 대신 이 카드를 연다.
+     메뉴는 gnb.js 가 감싸므로, 눌린 지점에서 거슬러 올라가 찾는다.
+     "오늘 하루 보지 않기"를 눌러 둔 사람은 카드를 건너뛰고 바로 페이지로 보낸다. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('.gnb a') : null;
+    if (!a) return;
+    var href = (a.getAttribute('href') || '').split('/').pop().split('#')[0];
+    if (href !== 'registry.html') return;
+    if (localStorage.getItem(KEY) === new Date().toISOString().slice(0, 10)) return;
+    if (document.querySelector('.regpop')) return;
+    e.preventDefault();
+    open();
   });
 
   function esc(s) {
@@ -68,6 +77,8 @@
     pop.setAttribute('aria-label', '제이엘 등기센터 · 아파트친구 안내');
     pop.innerHTML =
       CARDS.map(card).join('') +
+      // 절차부터 보고 싶은 사람도 있다. 원래 가려던 곳으로 가는 길을 남겨 둔다
+      '<p class="regpop__plain"><a href="registry.html">단체등기 업무 안내부터 보기 →</a></p>' +
       '<div class="regpop__foot">' +
         '<button type="button" data-hide-today>오늘 하루 보지 않기</button>' +
         '<button type="button" data-close>닫기</button>' +
@@ -84,7 +95,7 @@
       b.addEventListener('click', close);
     });
     pop.querySelector('[data-hide-today]').addEventListener('click', function () {
-      localStorage.setItem(KEY, today);
+      localStorage.setItem(KEY, new Date().toISOString().slice(0, 10));
       close();
     });
     document.addEventListener('keydown', onKey);

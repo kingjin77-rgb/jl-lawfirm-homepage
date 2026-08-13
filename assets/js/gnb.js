@@ -25,13 +25,15 @@
     },
     'practice.html': {
       lead: { t: '업무분야', d: '여섯 개 분야를 나눠 맡되, 한 사건은 함께 봅니다.' },
+      /* 분야 순서는 이 여섯 개로 사이트 전체가 같아야 한다.
+         상단 메뉴 · 메인 주요업무 · 업무분야 페이지 카드와 본문이 모두 이 차례를 따른다. */
       items: [
-        { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 · 관리처분 · 현금청산' },
-        { t: '하자소송', h: 'practice.html#defect', d: '보수 청구 · 보증금 소송' },
-        { t: '단체등기', h: 'registry.html', d: '입주 아파트 · 분양전환 · 대지권' },
-        { t: '민사 · 형사', h: 'practice.html#civil', d: '부동산 · 채권회수 · 수사대응' },
         { t: '기업법무', h: 'corporate.html', d: '법률자문 · 법인등기' },
-        { t: '상속 · 이혼 · 조세', h: 'practice.html#tax', d: '조세심판 · 상속 · 유류분' }
+        { t: '민사 · 형사', h: 'practice.html#civil', d: '부동산 · 채권회수 · 수사대응' },
+        { t: '하자소송', h: 'practice.html#defect', d: '보수 청구 · 보증금 소송' },
+        { t: '재건축 · 재개발', h: 'redevelopment.html', d: '조합 · 관리처분 · 현금청산' },
+        { t: '상속 · 이혼 · 조세', h: 'practice.html#tax', d: '조세심판 · 상속 · 유류분' },
+        { t: '단체등기', h: 'registry.html', d: '입주 아파트 · 분양전환 · 대지권' }
       ]
     },
     /* 단체등기 아래에 등기센터가 있고, 계산기 · 개별등기 접수는
