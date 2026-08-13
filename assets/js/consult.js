@@ -11,9 +11,31 @@
   if (!form) return;
 
   var TO = 'jllaw2020@naver.com';
+  var TARGET_NAME = '';   // 특정 변호사에게 바로 가는 경우 이름을 담아 화면에 알린다
   var result = form.querySelector('[data-consult-result]');
   var area = form.querySelector('#cf-area');
   var complexWrap = form.querySelector('[data-when-registry]');
+
+  /* 변호사 개별 페이지에서 "상담 문의"를 누르면 ?lawyer=슬러그 를 달고 온다.
+     그 변호사가 자기 접수 메일을 갖고 있으면 대표 메일 대신 그리로 보낸다.
+     없는 변호사는 그냥 대표 메일로 간다 — 전원이 메일을 가질 필요는 없다. */
+  (function routeToLawyer() {
+    var slug = new URLSearchParams(location.search).get('lawyer');
+    if (!slug) return;
+    fetch('data/lawyers.json?v=' + (window.JL_ASSET_V || '1'))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var L = (d.lawyers || []).filter(function (x) { return x.slug === slug; })[0];
+        if (!L || !L.email) return;
+        TO = L.email;
+        TARGET_NAME = L.name;
+        var notice = document.createElement('p');
+        notice.className = 'cform__routed';
+        notice.textContent = '이 문의는 ' + L.name + ' 변호사에게 바로 전달됩니다.';
+        form.parentNode.insertBefore(notice, form);
+      })
+      .catch(function () { /* 못 받아오면 대표 메일로 조용히 진행 */ });
+  })();
 
   /* 단체등기를 고르면 단지 정보 칸을 보여준다 */
   function syncComplex() {
@@ -61,7 +83,8 @@
 
   function subject() {
     var a = val('cf-area');
-    return '[상담문의] ' + (a ? a + ' · ' : '') + val('cf-name');
+    var tag = TARGET_NAME ? '[' + TARGET_NAME + ' 변호사 상담문의] ' : '[상담문의] ';
+    return tag + (a ? a + ' · ' : '') + val('cf-name');
   }
 
   function body() {

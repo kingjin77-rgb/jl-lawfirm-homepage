@@ -163,7 +163,8 @@
         "<strong>2021</strong> 법무법인(유) 세한",
         "<strong>2022</strong> 법무법인 태성",
         "<strong>2022</strong> 법무법인 제이엘"
-      ]
+      ],
+      "email": "hyeyong@gmail.com"
     },
     {
       "slug": "jang-woo-jin",
@@ -201,7 +202,7 @@
       "slug": "oh-hyun-jin",
       "tier": "소속",
       "initial": "吳",
-      "photo": "",
+      "photo": "assets/img/lawyers/oh-hyun-jin.jpg",
       "role": "",
       "name": "오현진",
       "en": "OH HYUN JIN",
@@ -222,8 +223,9 @@
         "제14회 변호사시험 합격",
         "헌법재판소 실무수습",
         "사법연수원 재판실무심화연수",
-        "법무법인 제이엘 구성원변호사"
+        "법무법인 제이엘 소속변호사"
       ]
     }
-  ]
+  ],
+  "_note": ""
 }

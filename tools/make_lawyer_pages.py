@@ -178,7 +178,7 @@ def page_html(L, all_lawyers):
           <h2 class="lwp-profile__name">%(name)s<span class="en">%(en)s</span></h2>
           <p class="lwp-profile__tagline">%(tagline)s</p>
           <div class="lwp-profile__acts">
-            <a class="btn btn--fill" href="../contact.html#consult">%(name)s 변호사에게 상담 문의 <span class="arrow">→</span></a>
+            <a class="btn btn--fill" href="../contact.html?lawyer=%(slug)s#consult">%(name)s 변호사에게 상담 문의 <span class="arrow">→</span></a>
             <a class="btn" href="tel:025370123">02-537-0123</a>
           </div>
         </div>
@@ -215,8 +215,7 @@ def page_html(L, all_lawyers):
         <p>지금 상황을 알려주시면 %(name)s 변호사가 직접 검토해 드립니다.</p>
       </div>
       <div class="cta__tels reveal" data-delay="120">
-        <div><span class="lbl">서울 본사</span><a class="num" href="tel:025370123">02-537-0123</a></div>
-        <div><span class="lbl">동탄 분사무소</span><a class="num" href="tel:18994252">1899-4252</a></div>
+        <div><span class="lbl">변호사 상담</span><a class="num" href="tel:025370123">02-537-0123</a></div>
       </div>
     </div>
   </section>
@@ -251,8 +250,7 @@ def page_html(L, all_lawyers):
 </footer>
 
 <div class="quick">
-  <a href="tel:025370123">서울 02-537-0123</a>
-  <a class="is-alt" href="tel:18994252">동탄 1899-4252</a>
+  <a href="tel:025370123">변호사 상담 02-537-0123</a>
 </div>
 
 <script src="../assets/js/main.js?v=6"></script>
@@ -274,6 +272,7 @@ def page_html(L, all_lawyers):
             )
         )[:160],
         "photo": photo,
+        "slug": esc(slug),
         "tagline": esc(tagline),
         "career": career,
         "focusSec": focus_html(focus) if focus else "",
