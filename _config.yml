@@ -14,3 +14,8 @@ exclude:
   - CONTRIBUTING.md
   - assets/video/README.md
   - assets/img/clients/README.md
+
+  # 팀원이 넘겨준 원본 초안. 언론사 기사 스니펫이 그대로 들어 있어
+  # 배포판(redevelopment-desk.html)으로 다시 쓴 뒤에도 이 파일 자체는
+  # 저작권 우려 때문에 주소로 노출하지 않는다. 저장소에는 참고용으로 남긴다.
+  - "홈페이지 재개발,재건축파트 추가.txt"
