@@ -195,6 +195,10 @@ def main():
     precs = collect_precedents(args.oc)
 
     items = laws + precs
+    if not items:
+        print("법령/판례 0건 — API 응답 없음(네트워크 차단 또는 키 오류로 추정). 기존 파일 보존, 갱신 생략.", file=sys.stderr)
+        return 1
+
     items.sort(key=lambda x: x.get("sortKey") or "", reverse=True)
     for i, it in enumerate(items):
         it["no"] = len(items) - i
