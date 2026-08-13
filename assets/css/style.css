@@ -11,8 +11,9 @@
   --ink:        #111418;
   --gray-900:   #222222;
   --gray-700:   #4b515a;
-  /* 흰 바탕에서 4.5:1 을 넘겨야 본문 크기로 써도 읽힌다 (기존 #767c86 은 4.2:1) */
-  --gray-500:   #6d727b;
+  /* 보조 글자. 기준(4.5:1)만 겨우 넘기면 화면에서는 여전히 흐리게 보인다.
+     본문(8.0:1)보다는 옅되 눈에 또렷하게 잡히는 6.4:1 로 둔다. */
+  --gray-500:   #5a5f68;
   --gray-300:   #b6bbc2;
   --line:       #e3e5e9;
   --line-dark:  rgba(255, 255, 255, .16);
@@ -530,7 +531,8 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px clamp(20px, 2.6vw, 44px);
   max-height: 260px; overflow: hidden;
 }
-.lwslide__career li { position: relative; padding-left: 14px; font-size: 14.5px; color: var(--gray-500); line-height: 1.75; }
+/* 경력은 곁들이는 글이 아니라 읽히라고 있는 본문이다. 본문 색으로 쓴다 */
+.lwslide__career li { position: relative; padding-left: 14px; font-size: 14.5px; color: var(--gray-700); line-height: 1.75; }
 .lwslide__career li::before { content: ""; position: absolute; left: 0; top: 11px; width: 4px; height: 4px; background: var(--gray-300); border-radius: 50%; }
 .lwslide__career li strong { color: var(--gray-900); font-weight: 600; }
 
@@ -1268,7 +1270,9 @@ p > .s + .s { margin-top: .38em; }
 .lwp-focus__card h3 { font-size: 18px; font-weight: 700; }
 .lwp-focus__card p { margin-top: 12px; font-size: 14.5px; color: var(--gray-500); line-height: 1.8; }
 
-.lwp-career__list { max-height: none; }
+/* 개별 변호사 페이지는 경력을 다 보여 준다.
+   높이 제한만 풀고 overflow 를 그대로 두면 글자 아래가 잘린다. 둘 다 푼다. */
+.lwp-career__list { max-height: none; overflow: visible; }
 
 .lwp-cols { display: grid; gap: 14px; }
 .lwp-col {
