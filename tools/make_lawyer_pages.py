@@ -151,7 +151,8 @@ def page_html(L, all_lawyers):
         for o in all_lawyers
     )
 
-    focus_kw = " · ".join(f["title"] for f in focus) if focus else ""
+    focus_kw = " · ".join(f["title"] for f in focus) if focus else \
+        " · ".join(w["title"] for w in workareas) if workareas else ""
 
     return '''<!DOCTYPE html>
 <html lang="ko">
@@ -307,7 +308,8 @@ def page_html(L, all_lawyers):
         "slug": esc(slug),
         "tagline": esc(tagline),
         "career": career,
-        "focusSec": focus_html(focus) if focus else "",
+        # workareas 가 있으면 focus 는 같은 정보의 요약본이라 중복 — workareas 로 대체한다.
+        "focusSec": focus_html(focus) if (focus and not workareas) else "",
         "workSec": workareas_html(workareas),
         "colsSec": columns_html(columns, name),
         "others": others,
