@@ -1316,10 +1316,29 @@ p > .s + .s { margin-top: .38em; }
 .lwslide__more .btn { height: 48px; padding-inline: 24px; font-size: 14px; }
 a.lwslide__photolink { display: contents; }
 
+.lwp-work { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.lwp-work__card {
+  padding: 30px 28px; background: #fff; border: 1px solid var(--line);
+  border-top: 3px solid var(--gold);
+}
+.lwp-work__card h3 { font-size: 18px; font-weight: 700; }
+.lwp-work__lead { margin-top: 12px; font-size: 14px; color: var(--gray-500); line-height: 1.75; }
+.lwp-work__list { margin-top: 14px; display: grid; gap: 8px; }
+.lwp-work__list li {
+  padding-left: 14px; position: relative;
+  font-size: 13.5px; color: var(--gray-700); line-height: 1.6;
+}
+.lwp-work__list li::before {
+  content: ""; position: absolute; left: 0; top: 9px;
+  width: 5px; height: 5px; background: var(--gold);
+}
+.lwp-work__list li strong { color: var(--ink); font-weight: 700; }
+
 @media (max-width: 900px) {
   .lwp-profile { grid-template-columns: 1fr; }
   .lwp-profile__photo { min-height: 300px; }
   .lwp-focus { grid-template-columns: 1fr; }
+  .lwp-work { grid-template-columns: 1fr; }
   .lwp-others { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 

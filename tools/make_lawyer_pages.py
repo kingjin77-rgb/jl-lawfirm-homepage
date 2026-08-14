@@ -59,6 +59,36 @@ def focus_html(focus):
   </section>''' % cards
 
 
+def workareas_html(workareas):
+    if not workareas:
+        return ""
+    cards = "".join(
+        '\n        <article class="lwp-work__card reveal">'
+        '\n          <h3>%s</h3>%s'
+        '\n          <ul class="lwp-work__list">%s'
+        '\n          </ul>'
+        '\n        </article>' % (
+            esc(w["title"]),
+            ('\n          <p class="lwp-work__lead">%s</p>' % esc(w["lead"])) if w.get("lead") else "",
+            "".join(
+                '\n            <li>%s</li>' % career_html(item)
+                for item in w.get("items", [])
+            ),
+        )
+        for w in workareas
+    )
+    return '''
+  <section class="section">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2 class="sec-title"><span class="en">WORK AREAS</span>업무 분야</h2>
+      </div>
+      <div class="lwp-work">%s
+      </div>
+    </div>
+  </section>''' % cards
+
+
 def columns_html(columns, name):
     if not columns:
         return ""
@@ -94,6 +124,7 @@ def page_html(L, all_lawyers):
     name = L["name"]
     slug = L["slug"]
     focus = L.get("focus", [])
+    workareas = L.get("workareas", [])
     columns = L.get("columns", [])
     tagline = L.get("tagline", "")
     desc_meta = strip_tags(tagline)
@@ -186,6 +217,7 @@ def page_html(L, all_lawyers):
     </div>
   </section>
 %(focusSec)s
+%(workSec)s
   <section class="section">
     <div class="container">
       <div class="sec-head reveal">
@@ -276,6 +308,7 @@ def page_html(L, all_lawyers):
         "tagline": esc(tagline),
         "career": career,
         "focusSec": focus_html(focus) if focus else "",
+        "workSec": workareas_html(workareas),
         "colsSec": columns_html(columns, name),
         "others": others,
     }
