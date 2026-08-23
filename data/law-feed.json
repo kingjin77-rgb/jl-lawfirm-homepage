@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17 06:12",
+  "generatedAt": "2026-08-24 06:12",
   "source": "법제처 국가법령정보 공동활용 (law.go.kr)",
   "counts": {
     "law": 12,
@@ -50,6 +50,20 @@
     {
       "type": "prec",
       "category": "민사·형사",
+      "title": "부동산 증여의 사해행위취소",
+      "summary": "포항지원-2025-가단-3763",
+      "date": "2026.07.14",
+      "meta": {
+        "caseNo": "포항지원-2025-가단-3763",
+        "court": "",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/판례/(%ED%8F%AC%ED%95%AD%EC%A7%80%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-3763)",
+      "no": 68
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
       "title": "사해행위취소소송에서 채무자의 채무초과상태에 대한 입증책임",
       "summary": "남양주지원-2025-가단-8561",
       "date": "2026.07.09",
@@ -59,20 +73,6 @@
         "keyword": "사해행위취소"
       },
       "link": "https://www.law.go.kr/판례/(%EB%82%A8%EC%96%91%EC%A3%BC%EC%A7%80%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-8561)",
-      "no": 68
-    },
-    {
-      "type": "prec",
-      "category": "민사·형사",
-      "title": "사해행위취소",
-      "summary": "남양주지원-2025-가단-6932",
-      "date": "2026.07.09",
-      "meta": {
-        "caseNo": "남양주지원-2025-가단-6932",
-        "court": "",
-        "keyword": "사해행위취소"
-      },
-      "link": "https://www.law.go.kr/판례/(%EB%82%A8%EC%96%91%EC%A3%BC%EC%A7%80%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-6932)",
       "no": 67
     },
     {
