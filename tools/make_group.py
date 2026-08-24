@@ -13,11 +13,21 @@ from scipy.ndimage import label
 
 SRC = r'D:\DDownloads\jl-lawfirm-homepage\assets\img\lawyers'
 OUT = r'D:\DDownloads\jl_group'
-ORDER = ['lee-ji-hun', 'ha-hye-yong', 'park-jong-il', 'lim-jun-kyu', 'jang-woo-jin']
+ORDER = ['jang-woo-jin', 'ha-hye-yong', 'park-jong-il', 'lim-jun-kyu', 'oh-hyun-jin']
 CENTER = 2          # 앞으로 조금 나오게 할 사람(대표) 위치
 
 W, H = 1400, 470
 HEAD_W = 92          # 모든 인물의 머리 폭을 이 값으로 맞춘다
+
+# 머리 꼭대기를 놓을 y — 가운데가 가장 높고 바깥으로 갈수록 내려가는 피라미드.
+# 바닥에 맞추면 원본 크롭 여유가 그대로 머리 높이 차이로 튀어 지그재그가 된다.
+HEAD_TOP = {0: 27, 1: 47, 2: 72, 3: 92}
+
+# 피부톤 폭 측정이 사람마다 조금씩 빗나간다. 렌더 결과를 재서 되먹인 보정값.
+FACE_FIX = {'jang-woo-jin': 1.17}
+
+OV_FAR = 0.09        # 일반 인접쌍 겹침 — 어깨에 걸린다
+OV_LEAD = 0.13       # 대표 좌우만 조금 더 — 대신 손·팔뚝은 피한다
 LEAD_K = 1.30        # 대표변호사만 이만큼 더 크게 — 가운데에서 가장 크게 선다
 NAVY_TOP, NAVY_BOT = (17, 36, 82), (8, 17, 45)
 BG = 'navy'          # 'navy' | 'white'
@@ -65,13 +75,8 @@ def head_width(im):
 def backdrop(w, h):
     if BG == 'white':
         # 원본 배경이 흰색이라 흰 바탕이 가장 깨끗하게 떨어진다.
-        # 인물이 허공에 뜨지 않도록 바닥에 옅은 그림자만 깐다.
-        bg = Image.new('RGB', (w, h), (255, 255, 255))
-        sh = Image.new('L', (w, h), 0)
-        ImageDraw.Draw(sh).ellipse(
-            [w * 0.06, h * 0.93, w * 0.94, h * 1.06], fill=38)
-        sh = sh.filter(ImageFilter.GaussianBlur(h // 26))
-        return Image.composite(Image.new('RGB', (w, h), (208, 212, 220)), bg, sh)
+        # 가슴에서 잘린 흉상이라 발밑 그림자는 넣지 않는다. 아래로 흘려보내 자른다.
+        return Image.new('RGB', (w, h), (255, 255, 255))
     col = Image.new('RGB', (1, h))
     d = ImageDraw.Draw(col)
     for y in range(h):
@@ -94,24 +99,58 @@ def build():
         im = im.crop(bb)
         # 원본 맨 아랫줄에 JPEG 압축 찌꺼기가 한 줄 남는다. 가슴 아래라 잘라도 안 보인다.
         im = im.crop((0, 0, im.width, im.height - max(3, int(im.height * 0.025))))
+
         mid = (i == CENTER)
         target = HEAD_W * (LEAD_K if mid else 1.0)
-        k = target / head_width(im)
+        k = target / head_width(im) * FACE_FIX.get(slug, 1.0)
         k = min(k, 1.34)
         im = im.resize((max(1, int(im.width * k)), max(1, int(im.height * k))),
                        Image.LANCZOS)
         cuts.append(im)
 
-    # 캔버스를 인물 크기에 맞춘다 — 위가 휑하지 않게
-    tall = max(c.height for c in cuts)
-    h = int(tall * 1.07)
-    ov = int(sum(c.width for c in cuts) / n * 0.16)      # 서로 겹치는 폭
-    content = sum(c.width for c in cuts) - ov * (n - 1)
-    side = int(content * 0.05)
+    # 머리 꼭대기를 피라미드 선에 얹는다 (bbox 크롭이라 이미지 y=0 이 곧 머리 꼭대기)
+    tops = [HEAD_TOP[min(abs(i - CENTER), max(HEAD_TOP))] for i in range(n)]
 
-    # 대표의 가로 중심이 캔버스 정중앙에 오도록 좌우 여백을 따로 준다.
-    # 인원이 짝수면 그냥 늘어놓았을 때 가운데가 비어 대표가 옆으로 밀린다.
-    lead_off = sum(c.width - ov for c in cuts[:CENTER]) + cuts[CENTER].width / 2.0
+    # 캔버스 아래로 전원이 흘러넘치게 자른다.
+    # 밑단을 맞추지 않으면 들쭉날쭉한 가슴 절단선도, 떠 있는 느낌도 함께 사라진다.
+    h = min(tops[i] + cuts[i].height for i in range(n))
+
+    # 겹침은 어깨에 떨어뜨린다. 손이 잘리면 바로 합성으로 읽힌다.
+    ovs = []
+    for i in range(n - 1):
+        near = (i == CENTER - 1) or (i + 1 == CENTER)
+        base = (cuts[i].width + cuts[i + 1].width) / 2.0
+        ovs.append(int(base * (OV_LEAD if near else OV_FAR)))
+
+    content = sum(c.width for c in cuts) - sum(ovs)
+
+    # 대표의 가로 중심과 인물 덩어리의 가로 중심을 일치시킨다.
+    # 둘이 어긋나면 대표를 정중앙에 놓는 순간 한쪽 여백만 넓어진다.
+    # 왼쪽 간격을 e 만큼씩 좁혀 맞춘다 — 벌리면 빈틈이 생기므로 좁히는 쪽만 쓴다.
+    lead_off0 = sum(cuts[i].width - ovs[i] for i in range(CENTER)) + cuts[CENTER].width / 2.0
+    if CENTER:
+        e = int(round((2 * lead_off0 - content) / CENTER))
+        for i in range(CENTER):
+            room = int((cuts[i].width + cuts[i + 1].width) / 2.0 * 0.20) - ovs[i]
+            ovs[i] += max(-ovs[i], min(e, room))       # 겹침 상한 20%
+        content = sum(c.width for c in cuts) - sum(ovs)
+
+        # 왼쪽만으로 못 맞추면 오른쪽 간격을 벌려 나머지를 흡수한다 (겹침 하한 5%)
+        right = list(range(CENTER, n - 1))
+        if right:
+            lead_off = sum(cuts[i].width - ovs[i] for i in range(CENTER)) + cuts[CENTER].width / 2.0
+            d = int(round((2 * lead_off - content) / len(right)))
+            if d > 0:
+                for i in right:
+                    floor = int((cuts[i].width + cuts[i + 1].width) / 2.0 * 0.05)
+                    ovs[i] -= min(d, max(0, ovs[i] - floor))
+                content = sum(c.width for c in cuts) - sum(ovs)
+
+    side = 92
+
+    # 대표의 가로 중심을 캔버스 정중앙에 맞춘다.
+    # 짝수 인원이면 그냥 늘어놓았을 때 대표가 옆으로 밀린다.
+    lead_off = sum(cuts[i].width - ovs[i] for i in range(CENTER)) + cuts[CENTER].width / 2.0
     pad_l = side + max(0.0, content / 2.0 - lead_off)
     pad_r = side + max(0.0, lead_off - content / 2.0)
     w = int(content + pad_l + pad_r)
@@ -119,16 +158,13 @@ def build():
     canvas = backdrop(w, h).convert('RGBA')
 
     pos, cx = [], int(pad_l)
-    for c in cuts:
+    for i, c in enumerate(cuts):
         pos.append(cx)
-        cx += c.width - ov
+        cx += c.width - (ovs[i] if i < n - 1 else 0)
 
-    order = sorted(range(n), key=lambda i: abs(i - CENTER), reverse=True)
-    for i in order:
-        c = cuts[i]
-        # 대표는 한 뼘 앞으로 — 발치를 조금 내려 화면을 뚫고 나오게 한다
-        dy = int(h * 0.012) if i == CENTER else 0
-        canvas.alpha_composite(c, (pos[i], h - c.height + dy))
+    # 가운데에서 먼 사람부터 깔아 대표가 맨 위에 오게 한다
+    for i in sorted(range(n), key=lambda i: abs(i - CENTER), reverse=True):
+        canvas.alpha_composite(cuts[i], (pos[i], tops[i]))
 
     return canvas.convert('RGB')
 
@@ -141,7 +177,7 @@ if __name__ == '__main__':
         argv.remove('white')
     suffix = '_white' if BG == 'white' else ''
     if argv and argv[0] == '6':
-        ORDER = ['jang-woo-jin', 'lee-ji-hun', 'ha-hye-yong',
+        ORDER = ['jang-woo-jin', 'ha-hye-yong', 'lee-ji-hun',
                  'park-jong-il', 'lim-jun-kyu', 'oh-hyun-jin']
         CENTER = 3
         name = 'group6%s.jpg' % suffix
