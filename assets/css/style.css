@@ -1010,9 +1010,6 @@ p > .s + .s { margin-top: .38em; }
 .quick a:hover { background: var(--navy-deep); }
 .quick a.is-alt { background: var(--gold); }
 .quick a.is-alt:hover { background: #97763d; }
-/* 카카오톡 채널 상담 — 카카오 지정색(#FEE500)을 그대로 써야 카톡인 줄 바로 안다 */
-.quick a.is-kakao { background: #FEE500; color: #191600; }
-.quick a.is-kakao:hover { background: #F2DA00; }
 
 /* =========================================================
    Responsive
@@ -1856,3 +1853,73 @@ a.lwslide__photolink { display: contents; }
 .fold summary:hover { background: var(--paper-alt); }
 .fold[open] summary { border-bottom: 1px solid var(--line); }
 .fold__body { padding: 8px 24px 26px; }
+
+/* =========================================================
+   등기센터 상담 채팅 (dongtan.html 전용)
+   ========================================================= */
+.rchat { position: fixed; right: 20px; bottom: 22px; z-index: 95;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.rchat__fab {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 20px; border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--navy); color: #fff; font: inherit; font-size: 14.5px; font-weight: 700;
+  box-shadow: 0 14px 32px -12px rgba(13, 33, 98, .6);
+  transition: background .3s var(--ease), transform .3s var(--ease);
+}
+.rchat__fab:hover { background: var(--navy-deep); transform: translateY(-2px); }
+.rchat__fabi { width: 16px; height: 14px; background: currentColor;
+  border-radius: 4px 4px 4px 0; opacity: .9; }
+.rchat.is-open .rchat__fab { background: var(--navy-deep); }
+
+.rchat__box {
+  width: min(370px, calc(100vw - 40px)); max-height: min(560px, 72vh);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 26px 60px -24px rgba(13, 33, 98, .45);
+}
+.rchat__head { display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 15px 18px; background: var(--navy); color: #fff; }
+.rchat__head strong { display: block; font-size: 15px; font-weight: 700; }
+.rchat__head span { display: block; margin-top: 2px; font-size: 12px; color: rgba(255,255,255,.7); }
+.rchat__x { border: 0; background: none; color: rgba(255,255,255,.8);
+  font-size: 15px; cursor: pointer; padding: 4px; }
+.rchat__x:hover { color: #fff; }
+
+.rchat__log { flex: 1; overflow-y: auto; padding: 18px; display: grid; gap: 9px;
+  background: var(--paper-alt); }
+.rchat__b { max-width: 88%; padding: 11px 14px; border-radius: 12px;
+  font-size: 14.5px; line-height: 1.72; color: var(--gray-700); word-break: keep-all; }
+.rchat__b--bot { background: #fff; border: 1px solid var(--line); border-top-left-radius: 4px; }
+.rchat__b--me { margin-left: auto; background: var(--navy); color: #fff;
+  border-top-right-radius: 4px; font-weight: 600; }
+.rchat__b b { color: var(--navy); font-weight: 700; }
+.rchat__b--me b { color: #fff; }
+
+.rchat__go { display: inline-block; padding: 9px 16px; border: 0; border-radius: 999px;
+  background: var(--gold); color: #fff; font: inherit; font-size: 13.5px; font-weight: 700;
+  cursor: pointer; text-decoration: none; }
+.rchat__go:hover { background: #97763d; }
+
+.rchat__opts { display: flex; flex-wrap: wrap; gap: 7px; padding: 13px 16px;
+  border-top: 1px solid var(--line); background: #fff; }
+.rchat__opts button { padding: 9px 14px; border: 1px solid var(--line);
+  border-radius: 999px; background: #fff; font: inherit; font-size: 13.5px;
+  font-weight: 600; color: var(--navy); cursor: pointer;
+  transition: border-color .25s var(--ease), background .25s var(--ease); }
+.rchat__opts button:hover { border-color: var(--navy); background: var(--navy-soft); }
+
+.rchat__note { margin: 0; padding: 10px 16px 13px; background: #fff;
+  font-size: 11.5px; color: var(--gray-300); border-top: 1px solid var(--line); }
+
+/* 채팅에서 보낸 섹션을 잠깐 표시해 준다 — 어디로 왔는지 알 수 있게 */
+.is-flash { animation: rchatFlash 1.6s var(--ease); }
+@keyframes rchatFlash {
+  0%, 100% { background-color: transparent; }
+  22% { background-color: var(--navy-soft); }
+}
+@media (prefers-reduced-motion: reduce) { .is-flash { animation: none; } }
+
+/* 전화 버튼과 같은 자리라 겹친다. 채팅이 있는 페이지에서는 전화 버튼을 위로 올린다.
+   (모바일에서는 헤더 전화가 숨으므로 통화 버튼 자체는 반드시 남긴다) */
+body.has-rchat .quick { bottom: 84px; }
+@media (max-width: 460px) { body.has-rchat .quick { bottom: 78px; } }

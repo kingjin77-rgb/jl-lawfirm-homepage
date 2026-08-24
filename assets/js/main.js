@@ -212,30 +212,6 @@
     });
   }
 
-  /* ---------- 카카오톡 채널 상담 버튼 ----------
-     이미 운영 중인 카카오톡 채널에 연결한다. SDK도 API 키도 필요 없고
-     채널 홈 URL 하나면 된다 — 모바일은 카톡 앱, PC는 웹 채팅으로 열린다.
-
-     ▼ 여기에 채널 URL 을 넣으면 전 페이지 퀵버튼에 카톡 상담이 붙는다.
-       비워 두면 아무것도 하지 않으므로, 주소를 넣기 전까지는 화면이 그대로다.
-       형식: 'http://pf.kakao.com/_XXXXXX'
-       확인: 카카오톡 채널 관리자센터 > 채널 관리 > 상세설정 > 채널 홈 URL   */
-  var KAKAO_CHANNEL = '';
-
-  if (KAKAO_CHANNEL) {
-    var quick = document.querySelector('.quick');
-    if (quick && !quick.querySelector('.is-kakao')) {
-      var k = document.createElement('a');
-      k.className = 'is-kakao';
-      k.href = KAKAO_CHANNEL.replace(/\/+$/, '') + '/chat';
-      k.target = '_blank';
-      k.rel = 'noopener';
-      k.textContent = '카카오톡 상담';
-      // 전화보다 카톡을 편해하는 사람이 많아 위에 둔다
-      quick.insertBefore(k, quick.firstChild);
-    }
-  }
-
   /* ---------- 현재 페이지 GNB 표시 ---------- */
   var here = location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.gnb a').forEach(function (a) {
