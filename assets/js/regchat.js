@@ -14,13 +14,20 @@
 
   var TEL = '1899-4252';
   var TEL_HREF = 'tel:18994252';
+  var TO = 'jllaw2020@naver.com';
+
+  /* 문의를 어디로 보낼지.
+     지금은 메일이다 — 서버가 없어도 직원이 메일함에서 확인할 수 있다.
+     서버가 생기면 ENDPOINT 에 주소만 넣으면 그쪽으로 간다(메일은 자동 중단).
+     예: 'https://api.example.com/inquiries'  */
+  var ENDPOINT = '';
 
   /* 대화 시나리오.
      go: 이동할 섹션 / say: 답변 문단 / next: 이어지는 선택지 */
   var NODES = {
     start: {
       say: ['등기센터입니다. 어떤 것부터 도와드릴까요?'],
-      next: ['track', 'cost', 'docs', 'apply', 'group', 'call']
+      next: ['track', 'cost', 'docs', 'apply', 'group', 'ask', 'call']
     },
     track: {
       label: '진행 상황이 궁금해요',
@@ -28,7 +35,7 @@
             '아파트·동·호수와 계약자 성함, 생년월일을 넣으면 접수부터 등기필증 수령까지 어느 단계인지 나옵니다.',
             '조회가 안 되면 아직 접수 전이거나 성함이 계약자와 다른 경우가 많습니다.'],
       go: '#track', goLabel: '진행 조회 열기',
-      next: ['call', 'start']
+      next: ['ask', 'call', 'start']
     },
     cost: {
       say: ['<b>등기비용 계산기</b>에 취득 원인과 조건을 넣으면 예상 비용이 나옵니다.',
@@ -80,6 +87,13 @@
       go: '#group', goLabel: '단체등기 안내 보기',
       next: ['call', 'start']
     },
+    ask: {
+      label: '문의 남기기',
+      say: ['아래에 남겨 주시면 담당자가 확인하고 연락드립니다.',
+            '통화가 어려운 시간대면 그것도 함께 적어 주세요.'],
+      form: true,
+      next: ['call', 'start']
+    },
     call: {
       label: '담당자와 통화할래요',
       say: ['등기센터 대표번호는 <b>' + TEL + '</b> 입니다.',
@@ -96,6 +110,7 @@
     docs: '어떤 서류가 필요한가요',
     apply: '접수하고 싶어요',
     group: '아파트 단체등기 문의예요',
+    ask: '문의 남기기',
     call: '담당자와 통화할래요',
     docs_new: '입주 아파트',
     docs_conv: '분양전환',
@@ -165,6 +180,7 @@
     if (n.tel) {
       bubble('<a class="rchat__go" href="' + TEL_HREF + '">' + TEL + ' 전화하기</a>');
     }
+    if (n.form) askForm();
 
     opts.innerHTML = '';
     (n.next || []).forEach(function (k) {
@@ -174,6 +190,86 @@
       btn.addEventListener('click', function () { render(k); });
       opts.appendChild(btn);
     });
+  }
+
+  /* ---------- 문의 남기기 ---------- */
+  function askForm() {
+    var b = bubble(
+      '<form class="rchat__form" novalidate>' +
+        '<label>아파트<input name="apt" placeholder="예) 힐스테이트 광명" required></label>' +
+        '<label>동 · 호<input name="unit" placeholder="예) 101동 1001호"></label>' +
+        '<label>성함<input name="name" placeholder="계약자 성함" required></label>' +
+        '<label>연락처<input name="tel" placeholder="010-0000-0000" required></label>' +
+        '<label>문의 내용<textarea name="memo" rows="3" placeholder="궁금한 점을 적어 주세요" required></textarea></label>' +
+        '<label class="rchat__chk"><input type="checkbox" name="agree" required>' +
+          '<span>문의 처리를 위해 연락처를 수집·이용하는 데 동의합니다.</span></label>' +
+        '<button type="submit" class="rchat__go">보내기</button>' +
+        '<p class="rchat__err" hidden></p>' +
+      '</form>');
+
+    var form = b.querySelector('form');
+    var err = b.querySelector('.rchat__err');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var d = {};
+      ['apt', 'unit', 'name', 'tel', 'memo'].forEach(function (k) {
+        d[k] = form.elements[k].value.trim();
+      });
+      if (!d.apt || !d.name || !d.tel || !d.memo || !form.elements.agree.checked) {
+        err.hidden = false;
+        err.textContent = '아파트 · 성함 · 연락처 · 문의 내용과 동의 여부를 채워 주세요.';
+        return;
+      }
+      err.hidden = true;
+      form.querySelector('button').disabled = true;
+      send(d, form, err);
+    });
+  }
+
+  function send(d, form, err) {
+    var NL = String.fromCharCode(10);   // 역슬래시 이스케이프를 쓰지 않는다
+    var body = [
+      '[등기센터 채팅 문의]',
+      '아파트: ' + d.apt,
+      '동·호: ' + (d.unit || '-'),
+      '성함: ' + d.name,
+      '연락처: ' + d.tel,
+      '내용: ' + d.memo,
+      '접수시각: ' + new Date().toLocaleString('ko-KR')
+    ].join(NL);
+
+    function ok() {
+      form.remove();
+      bubble('접수되었습니다. 담당자가 확인하고 <b>' + d.tel + '</b> 로 연락드립니다.');
+      bubble('급하시면 <b>' + TEL + '</b> 로 바로 전화 주셔도 됩니다.');
+    }
+
+    if (ENDPOINT) {
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(d)
+      }).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        ok();
+      }).catch(function () {
+        err.hidden = false;
+        err.textContent = '전송이 되지 않았습니다. ' + TEL + ' 로 전화 주시겠어요?';
+        form.querySelector('button').disabled = false;
+      });
+      return;
+    }
+
+    // 서버가 없을 때 — 메일로 보낸다. 직원은 메일함에서 확인한다.
+    location.href = 'mailto:' + TO +
+      '?subject=' + encodeURIComponent('[등기센터 문의] ' + d.apt + ' ' + d.name) +
+      '&body=' + encodeURIComponent(body);
+    ok();
+    bubble('메일 프로그램이 열리지 않으면 아래 내용을 복사해 <b>' + TO +
+           '</b> 로 보내 주세요.');
+    var pre = bubble('<textarea class="rchat__copy" rows="6" readonly></textarea>');
+    pre.querySelector('textarea').value = body;
   }
 
   function open() {

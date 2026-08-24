@@ -1926,3 +1926,21 @@ a.lwslide__photolink { display: contents; }
    (모바일에서는 헤더 전화가 숨으므로 통화 버튼 자체는 반드시 남긴다) */
 body.has-rchat .quick { bottom: 84px; }
 @media (max-width: 460px) { body.has-rchat .quick { bottom: 78px; } }
+
+/* 채팅 안 문의 폼 */
+.rchat__form { display: grid; gap: 9px; }
+.rchat__form label { display: grid; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--navy); }
+.rchat__form input, .rchat__form textarea {
+  width: 100%; box-sizing: border-box; padding: 9px 11px;
+  border: 1px solid var(--line); border-radius: 8px;
+  font: inherit; font-size: 14px; font-weight: 400; color: var(--ink);
+}
+.rchat__form input:focus, .rchat__form textarea:focus { outline: 0; border-color: var(--navy); }
+.rchat__form textarea { resize: vertical; }
+.rchat__chk { grid-template-columns: 18px 1fr; align-items: start; font-weight: 500;
+  font-size: 12px; color: var(--gray-500); }
+.rchat__chk input { width: 16px; height: 16px; accent-color: var(--navy); padding: 0; }
+.rchat__form button { margin-top: 2px; }
+.rchat__err { margin: 0; font-size: 12.5px; color: var(--warn, #c0392b); font-weight: 600; }
+.rchat__copy { width: 100%; box-sizing: border-box; font: inherit; font-size: 12.5px;
+  padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; resize: vertical; }
