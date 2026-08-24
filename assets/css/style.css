@@ -1010,6 +1010,9 @@ p > .s + .s { margin-top: .38em; }
 .quick a:hover { background: var(--navy-deep); }
 .quick a.is-alt { background: var(--gold); }
 .quick a.is-alt:hover { background: #97763d; }
+/* 카카오톡 채널 상담 — 카카오 지정색(#FEE500)을 그대로 써야 카톡인 줄 바로 안다 */
+.quick a.is-kakao { background: #FEE500; color: #191600; }
+.quick a.is-kakao:hover { background: #F2DA00; }
 
 /* =========================================================
    Responsive
