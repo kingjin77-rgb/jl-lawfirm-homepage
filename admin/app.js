@@ -299,7 +299,17 @@
         headers: Object.assign({ 'Content-Type': 'application/json' }, h),
         body: JSON.stringify(body)
       });
-      if (!r.ok) throw new Error(r.status + ' ' + (await r.text()).slice(0, 160));
+      if (!r.ok) {
+        var t = await r.text(), m = '';
+        try { m = JSON.parse(t).message || ''; } catch (e2) { m = t.slice(0, 120); }
+        if (r.status === 409 || /does not match|sha/i.test(m))
+          throw new Error('다른 곳에서 이 파일이 먼저 저장되었습니다. [다시 불러오기] 후 '
+                        + '수정 내용을 다시 입력하고 저장해 주세요.');
+        if (r.status === 401) throw new Error('토큰이 만료되었거나 잘못되었습니다. 새 토큰으로 다시 연결해 주세요.');
+        if (r.status === 403) throw new Error('토큰에 이 저장소 쓰기 권한이 없습니다. Contents 쓰기 권한을 확인해 주세요.');
+        if (r.status === 404) throw new Error('저장소 또는 경로를 찾을 수 없습니다. 저장소 이름을 확인해 주세요.');
+        throw new Error('HTTP ' + r.status + (m ? ' — ' + m : ''));
+      }
 
       var j = await r.json();
       dirty = false;

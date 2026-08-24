@@ -24,6 +24,23 @@
     el.scrollTop = el.scrollHeight;
   }
 
+  var dirty = false;
+
+  /* GitHub 오류를 사람 말로 옮긴다 — 'HTTP 409' 만으로는 무엇을 해야 할지 알 수 없다. */
+  function ghFail(r) {
+    return r.text().then(function (t) {
+      var m = '';
+      try { m = (JSON.parse(t).message || ''); } catch (e) { m = t.slice(0, 120); }
+      if (r.status === 409 || /does not match|sha/i.test(m))
+        return '다른 곳에서 이 파일이 먼저 저장되었습니다. [다시 불러오기] 후 '
+             + '수정 내용을 다시 입력하고 저장해 주세요.';
+      if (r.status === 401) return '토큰이 만료되었거나 잘못되었습니다. 새 토큰으로 다시 연결해 주세요.';
+      if (r.status === 403) return '토큰에 이 저장소 쓰기 권한이 없습니다. Contents 쓰기 권한을 확인해 주세요.';
+      if (r.status === 404) return '저장소 또는 경로를 찾을 수 없습니다. 저장소 이름을 확인해 주세요.';
+      return 'HTTP ' + r.status + (m ? ' — ' + m : '');
+    });
+  }
+
   function gh() {
     try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; }
   }
@@ -107,6 +124,7 @@
     }
     if (act === 'up' && i > 0) data.items.splice(i - 1, 0, data.items.splice(i, 1)[0]);
     if (act === 'down' && i < data.items.length - 1) data.items.splice(i + 1, 0, data.items.splice(i, 1)[0]);
+    dirty = true;
     renderList();
   });
 
@@ -115,6 +133,7 @@
     if (!el) return;
     var i = parseInt(el.closest('.item').dataset.i, 10);
     data.items[i][el.dataset.k] = el.value;
+    dirty = true;
     if (el.dataset.k === 'q') {
       var ttl = el.closest('.item').querySelector('.ttl');
       if (ttl) ttl.textContent = el.value || '(질문 없음)';
@@ -126,6 +145,7 @@
     if (!el) return;
     var i = parseInt(el.closest('.item').dataset.i, 10);
     data.items[i][el.dataset.k] = el.value;
+    dirty = true;
     var cat = el.closest('.item').querySelector('.cat');
     if (cat) cat.textContent = catLabel(el.value);
   });
@@ -135,6 +155,7 @@
       cat: data.categories[0].key, q: '', a: '',
       date: new Date().toISOString().slice(0, 10)
     });
+    dirty = true;
     renderList();
     var first = $('qnaList').querySelector('.item');
     if (first) {
@@ -196,10 +217,22 @@
       headers: { Authorization: 'Bearer ' + g.token, Accept: 'application/vnd.github+json' },
       body: JSON.stringify(payload)
     })
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (j) { sha = j.content.sha; log('커밋 완료 — ' + j.commit.sha.slice(0, 7), 'ok'); })
+      .then(function (r) {
+        if (!r.ok) return ghFail(r).then(function (m) { throw new Error(m); });
+        return r.json();
+      })
+      .then(function (j) {
+        sha = j.content.sha;
+        dirty = false;
+        log('커밋 완료 — ' + j.commit.sha.slice(0, 7), 'ok');
+        log('배포가 자동으로 이어집니다. 반영까지 1~2분 걸릴 수 있습니다.', 'dim');
+      })
       .catch(function (e) { log('저장 실패: ' + e.message, 'bad'); });
   };
+
+  window.addEventListener('beforeunload', function (e) {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
 
   paint();
   load();
