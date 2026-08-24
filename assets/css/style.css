@@ -1871,6 +1871,9 @@ a.lwslide__photolink { display: contents; }
   border-radius: 4px 4px 4px 0; opacity: .9; }
 .rchat.is-open .rchat__fab { background: var(--navy-deep); }
 
+/* [hidden] 이 display:flex 에 밀리지 않게 먼저 못을 박는다.
+   이 한 줄이 없으면 패널이 계속 펼쳐진 채로 남아 버튼이 안 듣는 것처럼 보인다. */
+.rchat__box[hidden] { display: none !important; }
 .rchat__box {
   width: min(370px, calc(100vw - 40px)); max-height: min(560px, 72vh);
   display: flex; flex-direction: column; overflow: hidden;
