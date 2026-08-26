@@ -780,47 +780,6 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 }
 
 /* =========================================================
-   자료 다운로드 (지명원 등)
-   ========================================================= */
-.dlcard {
-  display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
-  gap: clamp(24px, 3.4vw, 52px); align-items: center;
-  padding: clamp(26px, 3vw, 44px);
-  background: #fff; border: 1px solid var(--line);
-}
-.dlcard__thumb {
-  position: relative; box-shadow: 0 18px 44px rgba(13,33,98,.16);
-  transition: transform .5s var(--ease);
-}
-.dlcard:hover .dlcard__thumb { transform: translateY(-5px); }
-.dlcard__thumb img { width: 100%; height: auto; display: block; }
-.dlcard__cat { font-size: 12px; letter-spacing: .18em; color: var(--navy); font-weight: 700; }
-.dlcard__title { margin-top: 12px; font-size: clamp(22px, 2.6vw, 32px); font-weight: 800; letter-spacing: -.022em; }
-.dlcard__desc { margin-top: 16px; font-size: clamp(14.5px, 1.4vw, 16px); color: var(--gray-700); }
-.dlcard__list { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 6px; }
-.dlcard__list li {
-  padding: 5px 11px; font-size: 12.5px; font-weight: 500;
-  color: var(--navy); background: var(--navy-soft); border-radius: 999px;
-}
-.dlcard__meta { margin-top: 18px; font-size: 13px; color: var(--gray-500); }
-.dlcard__actions { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
-
-.btn-dl {
-  display: inline-flex; align-items: center; gap: 10px;
-  height: 56px; padding-inline: 30px;
-  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
-  background: var(--navy); color: #fff;
-  transition: background .35s var(--ease);
-}
-.btn-dl:hover { background: var(--navy-deep); }
-.btn-dl svg { flex: 0 0 auto; }
-
-@media (max-width: 720px) {
-  .dlcard { grid-template-columns: 1fr; }
-  .dlcard__thumb { max-width: 220px; }
-}
-
-/* =========================================================
    법률정보 게시판
    ========================================================= */
 .board-top {
@@ -1173,76 +1132,13 @@ p > .s + .s { margin-top: .38em; }
 .errpage__tel { margin-top: clamp(36px, 4vw, 52px); font-size: 15px; color: var(--gray-500); }
 .errpage__tel a { color: var(--navy); font-weight: 700; }
 
-/* =========================================================
-   상담 문의 폼
-   ========================================================= */
-.cform { display: grid; gap: 22px; }
-.cform__row { display: grid; gap: 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.cform__field { display: block; }
-.cform__field[hidden] { display: none; }
-.cform__field > label {
-  display: block; margin-bottom: 9px;
-  font-size: 13.5px; font-weight: 700; color: var(--navy); letter-spacing: -.01em;
-}
-.cform__field .req {
-  margin-left: 6px; padding: 2px 7px;
-  font-size: 11px; font-weight: 600; letter-spacing: 0;
-  background: var(--gold); color: #fff; vertical-align: 2px;
-}
-.cform input[type="text"],
-.cform input[type="tel"],
-.cform input[type="email"],
-.cform select,
-.cform textarea {
-  width: 100%; padding: 14px 16px;
-  font: inherit; font-size: 15px; color: var(--ink);
-  background: #fff; border: 1px solid var(--line);
-  transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
-}
-.cform textarea { resize: vertical; min-height: 150px; line-height: 1.75; }
-.cform select { appearance: none; padding-right: 42px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%230d2162' stroke-width='1.6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 16px center; background-size: 12px;
-}
-.cform :is(input, select, textarea):focus {
-  outline: 0; border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(13, 33, 98, .1);
-}
-.cform ::placeholder { color: var(--gray-300); }
-.cform__hint { margin-top: 8px; font-size: 13px; color: var(--gray-500); }
-
-.cform__agree { padding: 22px 24px; background: var(--paper-alt); border: 1px solid var(--line); }
-.cform .chk { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
-.cform .chk input { flex: 0 0 auto; width: 19px; height: 19px; margin-top: 3px; accent-color: var(--navy); }
-.cform .chk span { font-size: 13.5px; line-height: 1.75; color: var(--gray-700); }
-.cform .chk strong { display: block; margin-bottom: 4px; color: var(--ink); font-weight: 700; }
-.cform .chk a { color: var(--navy); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-
-.cform__notice {
-  padding: 18px 20px; border-left: 3px solid var(--gold); background: #fdfaf4;
-  font-size: 13.5px; line-height: 1.8; color: var(--gray-700);
-}
-.cform__notice strong { color: var(--navy); font-weight: 700; }
-.cform__notice a { color: var(--navy); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-
-.cform__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 /* 특정 변호사 페이지에서 넘어온 문의라는 것을 폼 위에서 미리 알려 준다 */
-.cform__routed {
-  margin-bottom: 18px; padding: 12px 16px; font-size: 13.5px; font-weight: 600;
-  color: var(--navy); background: var(--navy-soft); border-left: 3px solid var(--gold);
-}
-
-.cform__result { min-height: 22px; font-size: 14px; font-weight: 600; }
-.cform__result.is-ok  { color: #1d6b3a; }
-.cform__result.is-bad { color: #9c2b22; }
 
 @media (max-width: 900px) {
   .errpage__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .cform__row { grid-template-columns: 1fr; }
   .errpage__links { grid-template-columns: 1fr; }
-  .cform__actions .btn { width: 100%; justify-content: center; }
   .dtable thead th:first-child { width: 96px; }
   .legal h2 { margin-top: 42px; }
 }
@@ -1635,12 +1531,12 @@ a.lwslide__photolink { display: contents; }
    한글 조판 보정 — 어절이 쪼개지지 않게, 줄바꿈이 어색하지 않게
    ========================================================= */
 /* 버튼·칩·표 머리글처럼 짧은 라벨은 절대 쪼개지지 않는다 */
-.btn, .btn-track, .btn-dl, .chip, .pcard__tags li, .magcard__tags li,
+.btn, .btn-track, .chip, .pcard__tags li, .magcard__tags li,
 .lwshow__tab, .magfilter button, .pquick strong, .apw__dot span,
 .cta__tels .lbl, .header__tel .lbl, .footer__nav a, .footer__links a {
   word-break: keep-all;
 }
-.btn, .btn-track, .btn-dl { white-space: nowrap; }
+.btn, .btn-track { white-space: nowrap; }
 
 /* 제목은 줄 길이를 고르게 (한 단어만 떨어지는 것 방지) */
 .sec-title, .hero__title, .subhero h1, .qa__title,
@@ -1785,7 +1681,6 @@ a.lwslide__photolink { display: contents; }
   .dcs__head { background: none; color: #000; border-bottom: 2px solid #000; }
   .dcs__head span { color: #444; }
 }
-
 
 /* =========================================================
    정비사업 동향 페이지 — redevelopment-desk.html

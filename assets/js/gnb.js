@@ -19,7 +19,6 @@
       items: [
         { t: '법인 개요', h: 'about.html#intro', d: '설립 배경과 운영 원칙' },
         { t: '구성원', h: 'lawyers.html', d: '구성원변호사 3인 · 소속변호사 3인' },
-        { t: '지명원 내려받기', h: 'about.html#profile', d: 'PDF 회사소개서' },
         { t: '오시는 길', h: 'contact.html', d: '서초 본사무소 · 동탄 분사무소' }
       ]
     },
