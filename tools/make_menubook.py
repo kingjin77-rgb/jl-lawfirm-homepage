@@ -1,7 +1,46 @@
 # -*- coding: utf-8 -*-
-import json, io
+"""찍어 둔 화면을 파트별로 묶어 한 장짜리 회의용 안내서로 만든다.
 
-imgs = json.load(io.open('imgs.json', encoding='utf-8'))
+tools/shoot_pages.py 를 먼저 돌려 tools/shots/ 를 채워 둔다.
+PNG 원본은 15MB가 넘으므로 폭 520으로 줄이고 JPEG로 바꿔 본문에 박아 넣는다.
+너무 긴 페이지는 위에서 잘라낸다 — 메뉴북은 첫인상을 보는 물건이다.
+"""
+import base64
+import io
+import os
+
+from PIL import Image
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+SHOTS = os.path.join(HERE, 'shots')
+OUT = os.path.join(HERE, 'menubook.html')
+
+THUMB_W = 520          # 본문에 박히는 가로폭
+THUMB_MAX = int(THUMB_W * 4.2)   # 이보다 길면 위에서 자른다
+QUALITY = 76
+
+
+def thumbs():
+    """캡처를 줄여 data URI 로 바꾼다."""
+    if not os.path.isdir(SHOTS):
+        raise SystemExit('tools/shots 가 없다. tools/shoot_pages.py 를 먼저 돌려라.')
+    out = {}
+    for name in sorted(os.listdir(SHOTS)):
+        if not name.endswith('.png'):
+            continue
+        im = Image.open(os.path.join(SHOTS, name)).convert('RGB')
+        im = im.resize((THUMB_W, int(im.height * THUMB_W / im.width)), Image.LANCZOS)
+        if im.height > THUMB_MAX:
+            im = im.crop((0, 0, THUMB_W, THUMB_MAX))
+        buf = io.BytesIO()
+        im.save(buf, 'JPEG', quality=QUALITY, optimize=True)
+        out[name[:-4]] = 'data:image/jpeg;base64,' + base64.b64encode(buf.getvalue()).decode()
+    if not out:
+        raise SystemExit('tools/shots 에 PNG 가 없다.')
+    return out
+
+
+imgs = thumbs()
 
 PARTS = [
  ("01", "진입", "검색으로 들어온 사람이 자기 사건이 여기 있는지 확인하고 넘어가는 자리.", [
@@ -291,5 +330,6 @@ HTML = ('<title>제이엘 홈페이지 메뉴북</title>\n'
         '<footer>법무법인 제이엘 · 2026년 8월 26일 기준 · 화면은 실제 배포본 캡처</footer>\n\n'
         '</div>\n') % (CSS, '\n\n'.join(parts_html), admin_html, chg_html, ag_html)
 
-io.open('menubook.html', 'w', encoding='utf-8').write(HTML)
-print('작성 완료 %.2fMB' % (len(HTML.encode('utf-8')) / 1e6))
+with io.open(OUT, 'w', encoding='utf-8') as fp:
+    fp.write(HTML)
+print('작성 완료 %s (%.2fMB)' % (OUT, len(HTML.encode('utf-8')) / 1e6))
