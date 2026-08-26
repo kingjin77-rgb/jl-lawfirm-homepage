@@ -283,6 +283,38 @@ footer{padding:34px 0 62px; color:var(--ink-3); font-size:12.5px}
   .part__head{grid-template-columns:auto 1fr}
   .part__count{display:none}
 }
+
+/* 인쇄 — 회의 배포용. 카드와 표가 페이지 경계에서 잘리지 않게 한다. */
+@media print{
+  :root{
+    --ground:#ffffff; --surface:#ffffff; --sunk:#f2f4f9;
+    --ink:#111a30; --ink-2:#3d475f; --ink-3:#6d7791;
+    --navy:#0d2162; --gold:#8f7033; --line:#c9d0e0;
+    --ok:#1f6b4a; --wait:#8a4f10;
+  }
+  body{font-size:10.5pt; line-height:1.6}
+  .wrap{max-width:none; padding:0}
+  .cover{padding:0 0 18pt; break-after:page}
+  .cover h1{font-size:30pt; line-height:1.25}
+  .cover__sub{font-size:10.5pt}
+  .facts b{font-size:18pt}
+  .part{padding:0 0 6pt; break-before:page; border-bottom:none}
+  .part:first-of-type{break-before:auto}
+  .part__title{font-size:18pt}
+  .pgs{grid-template-columns:repeat(2,1fr); gap:14pt}
+  .pg{break-inside:avoid; border-color:var(--line)}
+  .pg__shot{height:150pt}
+  .pg__name{font-size:12pt}
+  .pg__desc{font-size:9.5pt; line-height:1.55}
+  .pg__tags li{font-size:8pt}
+  .pg:hover{border-color:var(--line)}
+  .block{padding:0 0 14pt; break-before:page; border-bottom:none}
+  .block h2{font-size:18pt}
+  table{min-width:0; font-size:10pt}
+  tr{break-inside:avoid}
+  .agenda li{break-inside:avoid}
+  footer{padding:14pt 0 0}
+}
 """
 
 HTML = ('<title>제이엘 홈페이지 메뉴북</title>\n'
