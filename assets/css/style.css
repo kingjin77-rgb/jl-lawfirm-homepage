@@ -1944,3 +1944,19 @@ body.has-rchat .quick { bottom: 84px; }
 .rchat__err { margin: 0; font-size: 12.5px; color: var(--warn, #c0392b); font-weight: 600; }
 .rchat__copy { width: 100%; box-sizing: border-box; font: inherit; font-size: 12.5px;
   padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; resize: vertical; }
+
+/* =========================================================
+   구성원 단체컷 — 흉상 밴드
+   원본이 전부 가슴에서 잘려 있어 아래로 흘려보내는 구도다.
+   그래서 배경을 흰색으로 두고 하단을 자른다.
+   ========================================================= */
+.lwgroup { margin: 0 0 12px; }
+.lwgroup__frame { background: #fff; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--line); }
+.lwgroup__frame img { display: block; width: 100%; height: auto; }
+.lwgroup__cap { margin: 12px 2px 0; font-size: 13.5px; color: var(--ink-3, #6b7280);
+  letter-spacing: -.01em; }
+@media (max-width: 720px) {
+  .lwgroup__frame { border-radius: 10px; }
+  .lwgroup__cap { font-size: 12.5px; }
+}
