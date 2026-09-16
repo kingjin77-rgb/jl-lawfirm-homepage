@@ -1855,3 +1855,101 @@ body.has-rchat .quick { bottom: 84px; }
   .lwgroup__frame { border-radius: 10px; }
   .lwgroup__cap { font-size: 12.5px; }
 }
+
+/* =========================================================
+   등기 진행 조회 — 고객 화면
+   글자로 "현재 접수 단계입니다" 한 줄을 주면 고객은 다시 전화한다.
+   여덟 단계 중 어디인지, 다음이 무엇인지 눈으로 보이게 한다.
+   ========================================================= */
+.trk { background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  padding: clamp(24px, 3.4vw, 40px); }
+.trk__demo { margin: 0 0 20px; padding: 11px 14px; border-radius: 8px;
+  background: #fff8e8; border: 1px solid #e8d3a0; color: #7a5a12;
+  font-size: 13.5px; font-weight: 600; line-height: 1.6; }
+.trk__at { margin: 0 0 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: .12em; color: var(--gold-ink); }
+.trk__title { margin: 0 0 12px; font-size: clamp(21px, 2.6vw, 27px);
+  font-weight: 800; letter-spacing: -.025em; }
+.trk__lead { margin: 0 0 26px; font-size: 15.5px; line-height: 1.75; color: var(--gray-700); }
+
+.trk__field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.trk__field label { font-size: 13.5px; font-weight: 700; letter-spacing: -.01em; }
+.trk__field input, .trk__field select {
+  font: inherit; font-size: 16px;            /* 16px 미만이면 아이폰이 화면을 확대한다 */
+  padding: 13px 14px; border: 1px solid var(--line); border-radius: 9px;
+  background: #fff; width: 100%; box-sizing: border-box;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.trk__field input:focus, .trk__field select:focus {
+  outline: none; border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(13,33,98,.12);
+}
+.trk__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.trk__go { width: 100%; justify-content: center; height: 56px; margin-top: 8px; font-size: 16px; }
+.trk__err { margin: 14px 0 0; padding: 12px 14px; border-radius: 8px;
+  background: #fdf6f5; border: 1px solid #f0cfc9; color: #c0392b;
+  font-size: 14px; font-weight: 600; line-height: 1.6; }
+.trk__note { margin: 22px 0 0; font-size: 13px; line-height: 1.7; color: var(--gray-500); }
+.trk__note a { color: var(--navy); font-weight: 700; }
+
+/* 결과 — 현재 단계 배너 */
+.trk__now { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px;
+  padding: 20px 22px; margin: 18px 0 20px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color: #fff; }
+.trk__now-lbl { font-size: 12px; letter-spacing: .14em; opacity: .75; font-weight: 700; }
+.trk__now-step { font-size: clamp(22px, 3vw, 30px); font-weight: 800; letter-spacing: -.025em;
+  flex: 1 1 100%; }
+.trk__now-date { font-size: 13px; opacity: .8; }
+
+/* 진행 막대 */
+.trk__bar { height: 9px; border-radius: 999px; background: var(--navy-soft); overflow: hidden; }
+.trk__bar i { display: block; height: 100%; width: 0; border-radius: 999px;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--gold) 100%);
+  transition: width 1s var(--ease); }
+.trk__pct { margin: 10px 0 0; font-size: 13px; color: var(--gray-500);
+  font-variant-numeric: tabular-nums; }
+
+/* 확인해 주실 내용 — 보완 서류처럼 고객이 움직여야 하는 것 */
+.trk__memo { display: flex; flex-direction: column; gap: 5px;
+  margin: 22px 0 0; padding: 16px 18px; border-radius: 10px;
+  background: #fff8e8; border-left: 3px solid var(--gold); }
+.trk__memo b { font-size: 13px; letter-spacing: .02em; color: var(--gold-ink); }
+.trk__memo span { font-size: 15px; line-height: 1.7; font-weight: 600; }
+
+/* 여덟 단계 타임라인 */
+.trk__steps { list-style: none; margin: 28px 0 0; padding: 0; position: relative; }
+.trk__steps::before { content: ""; position: absolute; left: 11px; top: 12px; bottom: 12px;
+  width: 2px; background: var(--line); }
+.trk__steps li { position: relative; padding: 0 0 22px 38px; }
+.trk__steps li:last-child { padding-bottom: 0; }
+.trk__steps li::before { content: ""; position: absolute; left: 4px; top: 5px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--line); box-sizing: border-box; }
+.trk__steps li b { display: block; font-size: 15.5px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--gray-500); }
+.trk__steps li span { display: block; margin-top: 3px; font-size: 14px;
+  line-height: 1.65; color: var(--gray-500); }
+.trk__steps li em { display: inline-block; margin-top: 7px; padding: 2px 10px;
+  border-radius: 999px; background: var(--navy); color: #fff;
+  font-size: 11.5px; font-style: normal; font-weight: 700; letter-spacing: .02em; }
+
+.trk__steps li.is-done::before { background: var(--navy); border-color: var(--navy); }
+.trk__steps li.is-done b { color: var(--ink); }
+.trk__steps li.is-done span { color: var(--gray-700); }
+
+.trk__steps li.is-now::before { background: var(--gold); border-color: var(--gold);
+  box-shadow: 0 0 0 5px rgba(176,141,79,.2); }
+.trk__steps li.is-now b { color: var(--ink); font-size: 17px; }
+.trk__steps li.is-now span { color: var(--gray-700); }
+
+.trk__acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.trk__acts .btn { flex: 1 1 200px; justify-content: center; }
+
+@media (max-width: 560px) {
+  .trk__grid { grid-template-columns: 1fr; }
+  .trk__now { padding: 17px 18px; }
+  .trk__steps li { padding-left: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trk__bar i { transition: none; }
+}
