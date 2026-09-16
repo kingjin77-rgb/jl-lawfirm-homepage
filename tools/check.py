@@ -11,7 +11,10 @@ for _s in ("stdout", "stderr"):
 ROOT = Path(__file__).resolve().parent.parent
 problems: list[str] = []
 
-pages = sorted(q for q in ROOT.rglob("*.html") if ".git" not in q.parts)
+# docs/legacy 는 이관 전 옛 시스템을 그대로 떠 둔 보존본이다.
+# 우리 자산이 아니므로 링크·파일 검사 대상에서 뺀다.
+SKIP_DIRS = {".git", "legacy"}
+pages = sorted(q for q in ROOT.rglob("*.html") if not SKIP_DIRS & set(q.parts))
 ids = {p.name: set(re.findall(r'id="([^"]+)"', p.read_text(encoding="utf-8"))) for p in pages}
 
 for p in pages:

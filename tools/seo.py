@@ -45,8 +45,16 @@ SITE_NAME = "법무법인 제이엘"
 BEGIN = "<!-- SEO:AUTO -->"
 END = "<!-- /SEO:AUTO -->"
 
-# 검색에 걸릴 필요가 없는 경로 (admin/ 하위는 전부)
-NOINDEX = {"admin/index.html", "admin/registry.html", "admin/qna.html", "404.html"}
+# 검색에 걸릴 필요가 없는 경로.
+# 관리자 화면을 새로 만들 때마다 여기에 적어야 한다면 언젠가 빠뜨린다.
+# 그래서 경로 규칙으로 판정한다.
+NOINDEX_EXACT = {"404.html"}
+NOINDEX_PREFIX = ("admin/",)
+
+
+def is_noindex(rel):
+    rel = rel.replace("\\", "/")
+    return rel in NOINDEX_EXACT or rel.startswith(NOINDEX_PREFIX)
 
 # sitemap 우선순위 — 적을수록 후순위. 없으면 0.6
 PRIORITY = {
@@ -358,7 +366,7 @@ def block_for(rel, title, desc, depth):
     url = SITE + "/" + ("" if rel == "index.html" else rel)
     lines = [BEGIN, '<link rel="canonical" href="%s">' % url]
 
-    if rel in NOINDEX:
+    if is_noindex(rel):
         lines.append('<meta name="robots" content="noindex, nofollow">')
     else:
         lines.append('<meta name="robots" content="index, follow, max-image-preview:large">')
@@ -409,7 +417,7 @@ def build_sitemap(rels):
     today = datetime.now(KST).strftime("%Y-%m-%d")
     rows = []
     for rel in rels:
-        if rel in NOINDEX:
+        if is_noindex(rel):
             continue
         loc = SITE + "/" + ("" if rel == "index.html" else rel)
         rows.append(
