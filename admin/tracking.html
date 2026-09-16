@@ -22,6 +22,8 @@
   font: inherit; font-size: 14px; padding: 8px 11px; border: 1px solid var(--line);
   border-radius: 6px; background: #fff; }
 .tk-bar .grow { flex: 1 1 200px; }
+/* display:flex 가 hidden 속성을 이긴다. 명시하지 않으면 숨긴 버튼이 계속 보인다. */
+.tk-bar[hidden], .tk-bar button[hidden], .tk-bar select[hidden] { display: none !important; }
 .tk-sp { flex: 1 1 auto; }
 
 .tk-stat { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
@@ -69,7 +71,10 @@ table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--n
 .tk-minus { color: #c0392b; font-weight: 600; }
 table.tk input[type=text] { width: 100%; box-sizing: border-box; font: inherit; font-size: 13px;
   padding: 4px 7px; border: 1px solid var(--line); border-radius: 5px; }
-table.tk td:nth-child(7), table.tk td:nth-child(8), table.tk td:nth-child(9) { text-align: right; }
+table.tk td:nth-child(8), table.tk td:nth-child(9), table.tk td:nth-child(10) { text-align: right; }
+.tk-poa { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px;
+  font-weight: 700; background: #e6f4ec; color: #1f6b4a; }
+.tk-poa.no { background: #f2f4f9; color: var(--gray-500); font-weight: 500; }
 </style>
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/admin/tracking.html">
@@ -144,14 +149,17 @@ table.tk td:nth-child(7), table.tk td:nth-child(8), table.tk td:nth-child(9) { t
   <p class="tk-hint">
     엑셀은 쓰시던 양식 그대로 올리시면 됩니다. 제목 줄과 여덟 단계를 알아서 찾습니다.
     진행 단계는 "완료" 로 표시된 마지막 칸으로 정합니다.
-    은행·계좌는 읽지 않습니다.
+    은행·계좌는 읽지 않습니다.<br>
+    단지 플랫폼에서 내려받은 <b>위임장접수내역 CSV</b> 를 합치면 어느 세대가 위임장을 냈는지 함께 보입니다.
+    동·호로 맞추므로 이름이 가려져 있어도 상관없습니다.
   </p>
 
   <div class="tk-bar">
     <select id="complex" class="grow" aria-label="단지 선택"></select>
     <input type="text" id="q" class="grow" placeholder="동·호·이름으로 검색">
     <span class="tk-sp"></span>
-    <button type="button" class="btn" id="btnImport">엑셀 불러오기</button>
+    <button type="button" class="btn" id="btnImport">등기 엑셀 불러오기</button>
+    <button type="button" class="btn" id="btnPoa">위임장 CSV 합치기</button>
     <button type="button" class="btn" id="btnSave">암호화 저장</button>
     <button type="button" class="btn" id="btnOpen">저장본 열기</button>
     <button type="button" class="btn btn--fill" id="btnExport">서버 업로드본 내보내기</button>
@@ -177,6 +185,7 @@ table.tk td:nth-child(7), table.tk td:nth-child(8), table.tk td:nth-child(9) { t
           <th style="width:80px">호</th>
           <th style="width:110px">이름</th>
           <th style="width:110px">생년월일</th>
+          <th style="width:88px">위임장</th>
           <th style="width:210px">진행 단계</th>
           <th style="width:110px">등기비용</th>
           <th style="width:110px">입금액</th>
@@ -194,6 +203,7 @@ table.tk td:nth-child(7), table.tk td:nth-child(8), table.tk td:nth-child(9) { t
 
 <input type="file" id="fileXlsx" accept=".xlsx,.xls,.csv" hidden>
 <input type="file" id="fileJson" accept=".jlreg,.json" hidden>
+<input type="file" id="filePoa" accept=".csv,.txt" hidden>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../assets/js/tracking-admin.js?v=105"></script>

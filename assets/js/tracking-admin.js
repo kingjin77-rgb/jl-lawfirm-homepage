@@ -150,6 +150,9 @@
         '<td class="num">' + esc(r.ho) + '</td>' +
         '<td>' + who + '</td>' +
         '<td class="num">' + esc(r.birth) + '</td>' +
+        '<td>' + (r.poaAt
+            ? '<span class="tk-poa" title="' + esc(r.poaAt) + (r.poaJoint ? ' · 공동명의' : '') + '">제출</span>'
+            : '<span class="tk-poa no">—</span>') + '</td>' +
         '<td>' + stepSelect(r.step, o.i) +
           ' <span class="tk-step' + (done ? ' done' : '') + '">' + (done ? '완료' : '진행') + '</span></td>' +
         '<td class="num">' + won(r.total) + '</td>' +
@@ -300,6 +303,7 @@
       if (t) {
         if (t.step !== r.step) moved++;
         r.memo = t.memo || '';              // 손으로 적은 안내는 지킨다
+        r.poaAt = t.poaAt; r.poaJoint = t.poaJoint;   // 합쳐 둔 위임장도 지킨다
         merged[idx[k]] = r;
         updated++;
       } else {
@@ -319,6 +323,88 @@
       (moved ? ' (단계가 바뀐 세대 ' + moved + '개)' : '') +
       (skipped ? ' · 건너뜀 ' + skipped + '줄' : '') +
       (broken ? ' · 수식 오류 ' + broken + '줄' : ''), 'ok');
+  }
+
+  /* ── 위임장 합치기 ─────────────────────────
+     단지마다 따로 배포하는 입주예정자협의회 플랫폼에서
+     "위임장접수내역 CSV" 를 내려받아 그대로 올린다.
+     플랫폼은 이름을 김○○ 처럼 가려서 내보내므로 이름으로는 맞출 수 없다.
+     동·호로 맞춘다. 그래서 가려진 이름이어도 상관없다. */
+
+  function splitCsvLine(line) {
+    var out = [], cur = '', q = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (q) {
+        if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+        else if (c === '"') { q = false; }
+        else { cur += c; }
+      } else if (c === '"') { q = true; }
+      else if (c === ',') { out.push(cur); cur = ''; }
+      else { cur += c; }
+    }
+    out.push(cur);
+    return out.map(function (v) { return v.trim(); });
+  }
+
+  var CR = String.fromCharCode(13), LF = String.fromCharCode(10);
+
+  function readPoaCsv(file) {
+    var key = cur();
+    if (!key) { msg('먼저 단지를 고르고 등기 엑셀을 불러오십시오.', 'err'); return; }
+
+    var fr = new FileReader();
+    fr.onload = function (e) {
+      // 엑셀이 저장한 CSV 앞에는 BOM 이 붙는다. 그대로 두면 첫 칸 이름이 어긋난다.
+      var text = String(e.target.result || '');
+      if (text.charCodeAt(0) === 65279) text = text.slice(1);  // 엑셀 CSV 앞의 BOM
+      var lines = text.split(LF).map(function (l) {
+        return l.split(CR).join('');
+      }).filter(function (l) { return l.trim(); });
+      if (lines.length < 2) { msg('CSV 에 읽을 줄이 없습니다.', 'err'); return; }
+
+      var head = splitCsvLine(lines[0]);
+      function find(names) {
+        for (var i = 0; i < head.length; i++) {
+          for (var j = 0; j < names.length; j++) {
+            if (head[i].indexOf(names[j]) >= 0) return i;
+          }
+        }
+        return -1;
+      }
+      var cD = find(['동']), cH = find(['호']),
+          cJ = find(['명의구분', '명의']), cA = find(['접수일시', '접수일', '일시']);
+
+      if (cD < 0 || cH < 0) {
+        msg('CSV 에서 동·호 칸을 찾지 못했습니다. 플랫폼의 위임장접수내역 CSV 가 맞는지 확인해 주십시오.', 'err');
+        return;
+      }
+
+      var rows = rowsOf(key), idx = {};
+      rows.forEach(function (r, i) { idx[r.dong + '-' + r.ho] = i; });
+
+      var hit = 0, miss = 0, seen = {};
+      for (var i = 1; i < lines.length; i++) {
+        var c = splitCsvLine(lines[i]);
+        var d = digits(c[cD]), h = digits(c[cH]);
+        if (!d || !h) continue;
+        var k = d + '-' + h;
+        if (seen[k]) continue;
+        seen[k] = 1;
+        var t = rows[idx[k]];
+        if (!t) { miss++; continue; }
+        t.poaAt = cA >= 0 ? (c[cA] || '제출') : '제출';
+        t.poaJoint = cJ >= 0 && c[cJ].indexOf('공동') >= 0;
+        hit++;
+      }
+
+      var none = rows.filter(function (r) { return !r.poaAt; }).length;
+      draw();
+      msg('위임장 ' + hit + '세대를 맞췄습니다' +
+        (miss ? ' · 등기 명단에 없는 세대 ' + miss + '건은 건너뛰었습니다' : '') +
+        ' · 아직 위임장이 없는 세대 ' + none + '개.', 'ok');
+    };
+    fr.readAsText(file, 'utf-8');
   }
 
   /* ── 암호화 저장 ───────────────────────────── */
@@ -415,7 +501,8 @@
           dong: r.dong, ho: r.ho, vhash: hs,
           step: r.step, at: r.at || today(), memo: r.memo || '',
           total: r.total || 0, paid: r.paid || 0, diff: r.diff || 0,
-          lack: r.lack || '', sentAt: r.sentAt || ''
+          lack: r.lack || '', sentAt: r.sentAt || '',
+          poa: r.poaAt ? 1 : 0
         };
       });
     })).then(function (list) {
@@ -447,6 +534,10 @@
     });
     $('fileXlsx').addEventListener('change', function () {
       if (this.files[0]) readXlsx(this.files[0]);
+    });
+    $('btnPoa').addEventListener('click', function () { $('filePoa').value = ''; $('filePoa').click(); });
+    $('filePoa').addEventListener('change', function () {
+      if (this.files[0]) readPoaCsv(this.files[0]);
     });
     $('btnOpen').addEventListener('click', function () { $('fileJson').value = ''; $('fileJson').click(); });
     $('fileJson').addEventListener('change', function () {
