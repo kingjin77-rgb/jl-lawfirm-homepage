@@ -17,16 +17,18 @@
 
   var ENDPOINT = '';          // 예: 'https://www.jllawfirm.co.kr/track/api/lookup.php'
 
+  // 실제 업무의 여덟 단계. 관리자 화면·엑셀과 같은 순서다.
   var STEPS = [
-    { n: '접수',        d: '세대 정보와 대출·전입 여부를 확인합니다.' },
-    { n: '서류 검토',   d: '내신 서류를 확인합니다. 빠진 것이 있으면 문자로 알려드립니다.' },
-    { n: '보완',        d: '빠진 서류를 받고 있습니다. 전산 반영에 며칠 걸립니다.' },
-    { n: '취득세 신고', d: '계약서 검인과 취득세 신고를 진행합니다. 비용 안내 문자가 갑니다.' },
-    { n: '취득세 납부', d: '취득세를 납부하고 국민주택채권을 매입·정산합니다.' },
-    { n: '등기 접수',   d: '관할 등기소에 접수했습니다. 대출 세대는 근저당권설정을 함께 넣습니다.' },
-    { n: '등기 완료',   d: '등기가 끝났습니다. 접수부터 보통 한 달 이상 걸립니다.' },
-    { n: '권리증 교부', d: '등기권리증을 드리고 비용을 정산합니다.' }
+    { n: '서류수령',            d: '등기에 필요한 서류를 받았습니다.' },
+    { n: '취득세신고',          d: '계약서를 검인하고 취득세를 신고합니다.' },
+    { n: '등기비용통보',        d: '납부하실 등기비용을 문자로 알려드립니다.' },
+    { n: '등기비입금확인',      d: '보내주신 등기비용이 들어온 것을 확인했습니다.' },
+    { n: '건설사 등기서류수령', d: '건설사에서 등기 서류를 받았습니다. 건설사 일정에 따라 기다리는 구간입니다.' },
+    { n: '등기소서류접수',      d: '관할 등기소에 접수했습니다. 대출 세대는 근저당권설정을 함께 넣습니다.' },
+    { n: '등기완료',            d: '등기가 끝났습니다. 접수부터 보통 한 달 이상 걸립니다.' },
+    { n: '권리증교부',          d: '등기권리증을 보내드리고 비용을 정산합니다. 모든 절차가 끝났습니다.' }
   ];
+  var NOT_YET = '접수 전';
 
   var $ = function (id) { return document.getElementById(id); };
   var qs = new URLSearchParams(location.search);
@@ -41,7 +43,8 @@
     // 같은 동·호면 늘 같은 결과가 나오게 한다. 눌러 보며 설명하기 편하다.
     var seed = (Number(dong) || 0) * 7 + (Number(ho) || 0) * 13;
     var i = seed % STEPS.length;
-    var memo = (i === 2) ? '주민등록등본에 주소 변동 이력이 빠져 있습니다. 다시 발급받아 보내주십시오.' : '';
+    var total = 2400000 + (seed % 60) * 84000;
+    var paid = i >= 3 ? total + ((seed % 7) - 2) * 62000 : 0;
     var d = new Date();
     d.setDate(d.getDate() - (seed % 20));
     return {
@@ -51,7 +54,8 @@
       step: STEPS[i].n,
       at: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
           '-' + String(d.getDate()).padStart(2, '0'),
-      memo: memo
+      memo: (i === 2) ? '주민등록등본에 주소 변동 이력이 빠져 있습니다. 다시 발급받아 보내주십시오.' : '',
+      total: total, paid: paid, diff: paid ? paid - total : 0
     };
   }
 
@@ -187,6 +191,8 @@
       $('rMemo').hidden = true;
     }
 
+    showCost(res);
+
     $('rSteps').innerHTML = STEPS.map(function (s, k) {
       var cls = k < i ? 'is-done' : (k === i ? 'is-now' : '');
       return '<li class="' + cls + '">' +
@@ -199,6 +205,32 @@
     $('form').hidden = true;
     $('result').hidden = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /** 등기비용. 고객이 가장 자주 묻는 것이 "얼마고 얼마 냈나"다. */
+  function showCost(res) {
+    var total = Number(res.total) || 0, paid = Number(res.paid) || 0;
+    if (!total && !paid) { $('rCost').hidden = true; return; }
+
+    $('rCost').hidden = false;
+    $('cTotal').textContent = total ? total.toLocaleString('ko-KR') + '원' : '아직 산정 전';
+    $('cPaid').textContent = paid ? paid.toLocaleString('ko-KR') + '원' : '아직 입금 전';
+
+    var diff = Number(res.diff);
+    if (!isFinite(diff)) diff = paid ? paid - total : 0;
+
+    if (!paid || diff === 0) {
+      $('cDiffRow').hidden = true;
+      $('cNote').textContent = paid ? '정산이 맞아떨어졌습니다.' : '';
+      return;
+    }
+    $('cDiffRow').hidden = false;
+    $('cDiffLbl').textContent = diff > 0 ? '돌려드릴 금액' : '더 내셔야 할 금액';
+    $('cDiff').textContent = Math.abs(diff).toLocaleString('ko-KR') + '원';
+    $('cDiff').className = diff > 0 ? 'is-back' : 'is-more';
+    $('cNote').textContent = diff > 0
+      ? '정산 후 남은 금액은 알려주신 계좌로 돌려드립니다.'
+      : '부족한 금액은 안내 문자의 계좌로 보내주시면 됩니다.';
   }
 
   /* ── 이어 붙이기 ───────────────────────────── */

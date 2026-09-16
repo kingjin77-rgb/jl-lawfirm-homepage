@@ -1953,3 +1953,17 @@ body.has-rchat .quick { bottom: 84px; }
 @media (prefers-reduced-motion: reduce) {
   .trk__bar i { transition: none; }
 }
+
+/* 등기비용 — 고객이 가장 자주 묻는 것이 얼마고 얼마 냈나이다 */
+.trk__cost { margin: 26px 0 0; padding: 20px 22px; border: 1px solid var(--line);
+  border-radius: 12px; background: var(--navy-soft); }
+.trk__cost h3 { margin: 0 0 14px; font-size: 14px; font-weight: 700;
+  letter-spacing: .04em; color: var(--navy); }
+.trk__cost dl { margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.trk__cost dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+.trk__cost dt { margin: 0; font-size: 14.5px; color: var(--gray-700); }
+.trk__cost dd { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; }
+.trk__cost dd.is-back { color: #1f6b4a; }
+.trk__cost dd.is-more { color: #c0392b; }
+.trk__cost-note { margin: 13px 0 0; font-size: 13px; line-height: 1.65; color: var(--gray-500); }

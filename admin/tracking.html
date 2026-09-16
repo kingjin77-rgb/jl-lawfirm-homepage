@@ -64,6 +64,12 @@ table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--n
 .tk-msg.ok { color: #1f6b4a; font-weight: 600; }
 .tk-prev { margin-top: 16px; font-size: 12.5px; color: var(--gray-700); }
 .tk-prev code { background: #f2f4f9; padding: 1px 5px; border-radius: 3px; }
+.tk-hint { margin: -12px 0 22px; font-size: 13.5px; line-height: 1.7; color: var(--gray-700); }
+.tk-co { display: block; font-size: 12.5px; color: var(--gray-500); }
+.tk-minus { color: #c0392b; font-weight: 600; }
+table.tk input[type=text] { width: 100%; box-sizing: border-box; font: inherit; font-size: 13px;
+  padding: 4px 7px; border: 1px solid var(--line); border-radius: 5px; }
+table.tk td:nth-child(7), table.tk td:nth-child(8), table.tk td:nth-child(9) { text-align: right; }
 </style>
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/admin/tracking.html">
@@ -135,6 +141,12 @@ table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--n
     파일과 비밀번호를 함께 메신저로 주고받지 마십시오.
   </div>
 
+  <p class="tk-hint">
+    엑셀은 쓰시던 양식 그대로 올리시면 됩니다. 제목 줄과 여덟 단계를 알아서 찾습니다.
+    진행 단계는 "완료" 로 표시된 마지막 칸으로 정합니다.
+    은행·계좌는 읽지 않습니다.
+  </p>
+
   <div class="tk-bar">
     <select id="complex" class="grow" aria-label="단지 선택"></select>
     <input type="text" id="q" class="grow" placeholder="동·호·이름으로 검색">
@@ -152,6 +164,8 @@ table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--n
     <select id="bulkStep" aria-label="일괄 변경할 단계"></select>
     <button type="button" class="btn" id="btnBulk">선택한 세대 단계 변경</button>
     <button type="button" class="btn" id="btnClearSel">선택 해제</button>
+    <span class="tk-sp"></span>
+    <button type="button" class="btn" id="btnUndo" hidden>되돌리기</button>
   </div>
 
   <div class="tk-table-wrap">
@@ -163,9 +177,11 @@ table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--n
           <th style="width:80px">호</th>
           <th style="width:110px">이름</th>
           <th style="width:110px">생년월일</th>
-          <th style="width:190px">진행 단계</th>
-          <th style="width:120px">갱신일</th>
-          <th>메모</th>
+          <th style="width:210px">진행 단계</th>
+          <th style="width:110px">등기비용</th>
+          <th style="width:110px">입금액</th>
+          <th style="width:100px">차액</th>
+          <th>고객 안내</th>
         </tr>
       </thead>
       <tbody id="rows"></tbody>
@@ -174,24 +190,6 @@ table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--n
   </div>
 
   <p class="tk-msg" id="msg"></p>
-</div>
-
-<!-- 엑셀 열 맞추기 -->
-<div class="tk-modal" id="mapModal">
-  <div class="tk-modal__box">
-    <h2>엑셀 열 맞추기</h2>
-    <p class="d">
-      단지마다 엑셀 양식이 다릅니다. 어느 열이 무엇인지 한 번만 지정하면 그대로 읽어들입니다.
-      지정한 내용은 이 브라우저에 기억되어 다음 번에 자동으로 맞춰집니다.
-    </p>
-    <div class="tk-map" id="mapFields"></div>
-    <p class="tk-prev" id="mapPrev"></p>
-    <div class="tk-acts">
-      <button type="button" class="btn btn--fill" id="mapOk">읽어들이기</button>
-      <button type="button" class="btn" id="mapCancel">취소</button>
-    </div>
-    <p class="tk-msg" id="mapMsg"></p>
-  </div>
 </div>
 
 <input type="file" id="fileXlsx" accept=".xlsx,.xls,.csv" hidden>
