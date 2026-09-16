@@ -1865,7 +1865,7 @@ body.has-rchat .quick { bottom: 84px; }
   padding: clamp(24px, 3.4vw, 40px); }
 .trk__demo { margin: 0 0 20px; padding: 11px 14px; border-radius: 8px;
   background: #fff8e8; border: 1px solid #e8d3a0; color: #7a5a12;
-  font-size: 13.5px; font-weight: 600; line-height: 1.6; }
+  font-size: 14.5px; font-weight: 700; line-height: 1.65; }
 .trk__at { margin: 0 0 8px; font-size: 12.5px; font-weight: 700;
   letter-spacing: .12em; color: var(--gold-ink); }
 .trk__title { margin: 0 0 12px; font-size: clamp(21px, 2.6vw, 27px);
@@ -1889,8 +1889,7 @@ body.has-rchat .quick { bottom: 84px; }
 .trk__err { margin: 14px 0 0; padding: 12px 14px; border-radius: 8px;
   background: #fdf6f5; border: 1px solid #f0cfc9; color: #c0392b;
   font-size: 14px; font-weight: 600; line-height: 1.6; }
-.trk__note { margin: 22px 0 0; font-size: 13px; line-height: 1.7; color: var(--gray-500); }
-.trk__note a { color: var(--navy); font-weight: 700; }
+
 
 /* 결과 — 현재 단계 배너 */
 .trk__now { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px;
@@ -1906,8 +1905,8 @@ body.has-rchat .quick { bottom: 84px; }
 .trk__bar i { display: block; height: 100%; width: 0; border-radius: 999px;
   background: linear-gradient(90deg, var(--navy) 0%, var(--gold) 100%);
   transition: width 1s var(--ease); }
-.trk__pct { margin: 10px 0 0; font-size: 13px; color: var(--gray-500);
-  font-variant-numeric: tabular-nums; }
+.trk__pct { margin: 11px 0 0; font-size: 14.5px; font-weight: 600; color: var(--gray-700);
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
 
 /* 확인해 주실 내용 — 보완 서류처럼 고객이 움직여야 하는 것 */
 .trk__memo { display: flex; flex-direction: column; gap: 5px;
@@ -1966,4 +1965,48 @@ body.has-rchat .quick { bottom: 84px; }
   font-variant-numeric: tabular-nums; }
 .trk__cost dd.is-back { color: #1f6b4a; }
 .trk__cost dd.is-more { color: #c0392b; }
-.trk__cost-note { margin: 13px 0 0; font-size: 13px; line-height: 1.65; color: var(--gray-500); }
+.trk__cost-note { margin: 14px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--gray-700); }
+
+/* 개인정보 한 줄 — 법적으로 필요한 고지다. 각주로 깔지 않는다. */
+.trk__lock { display: flex; align-items: flex-start; gap: 9px;
+  margin: 18px 0 0; padding: 12px 14px; border-radius: 9px;
+  background: var(--navy-soft); color: var(--navy);
+  font-size: 14.5px; line-height: 1.55; letter-spacing: -.01em; }
+.trk__lock svg { flex: 0 0 auto; opacity: .8; margin-top: 2px; }
+.trk__lock span { flex: 1 1 auto; }
+.trk__lock b { font-weight: 700; }
+
+/* 조회가 안 될 때 — 고객이 막히는 지점은 정해져 있다.
+   배송조회·금융앱이 쓰는 방식대로 카드로 띄우고 전화 버튼을 크게 둔다. */
+.trk__help { margin: 26px 0 0; padding: 24px 24px 22px;
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+.trk__help h3 { margin: 0 0 18px; font-size: 17.5px; font-weight: 800;
+  letter-spacing: -.025em; }
+.trk__help ul { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 17px; }
+.trk__help li { position: relative; padding-left: 26px; }
+.trk__help li::before { content: ""; position: absolute; left: 0; top: 7px;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+.trk__help li b { display: block; font-size: 15.5px; font-weight: 700;
+  letter-spacing: -.02em; margin-bottom: 4px; }
+.trk__help li { font-size: 15px; line-height: 1.72; color: var(--gray-700); }
+.trk__help .ex { display: inline-block; padding: 1px 8px; border-radius: 5px;
+  background: var(--navy-soft); color: var(--navy); font-weight: 700;
+  font-variant-numeric: tabular-nums; }
+.trk__help-cta { width: 100%; justify-content: center; height: 54px;
+  margin-top: 22px; font-size: 15.5px; }
+
+@media (max-width: 560px) {
+  .trk__help { padding: 20px 18px 18px; }
+  .trk__help h3 { font-size: 16.5px; }
+}
+
+/* =========================================================
+   hidden 은 언제나 이긴다
+
+   display:flex / grid 를 준 요소에 hidden 을 걸면 CSS 가 이겨서
+   숨겨지지 않는다. 이 사이트에서 같은 함정을 세 번 밟았다.
+   (채팅창 · 일괄 변경 버튼 · 조회 결과의 안내 박스)
+   한 줄로 끝낸다.
+   ========================================================= */
+[hidden] { display: none !important; }

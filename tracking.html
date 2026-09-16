@@ -6,7 +6,7 @@
 <title>등기 진행 조회 | 법무법인 제이엘</title>
 <meta name="description" content="법무법인 제이엘에 맡기신 등기가 지금 어느 단계인지, 다음에 무엇이 남았는지 확인하실 수 있습니다.">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css?v=110">
+<link rel="stylesheet" href="assets/css/style.css?v=114">
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/tracking.html">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -140,11 +140,35 @@
         <button type="button" class="btn btn--fill trk__go" id="btnGo">조회하기</button>
         <p class="trk__err" id="err" role="alert" hidden></p>
 
-        <p class="trk__note">
-          입력하신 내용은 조회에만 쓰이고 따로 저장하지 않습니다.
-          맞는데도 조회되지 않으면 계약자 명의가 다른 경우가 많습니다.
-          <a href="tel:18994252">1899-4252</a>로 연락 주십시오.
+        <p class="trk__lock">
+          <svg viewBox="0 0 16 16" aria-hidden="true" width="15" height="15">
+            <path d="M4 7V5a4 4 0 0 1 8 0v2m-9 0h10v7H3V7z" fill="none"
+                  stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span>입력하신 정보는 <b>본인 확인에만 쓰고 저장하지 않습니다.</b></span>
         </p>
+
+        <!-- 고객이 막히는 지점은 정해져 있다. 작은 각주로 깔지 않고 카드로 띄운다. -->
+        <section class="trk__help">
+          <h3>조회가 안 되시나요?</h3>
+          <ul>
+            <li>
+              <b>계약자 성함으로 넣으셨습니까</b>
+              배우자나 부모님 명의로 계약하신 경우가 많습니다. 계약서에 적힌 분의 성함과 생년월일로 조회해 주십시오.
+            </li>
+            <li>
+              <b>동·호는 숫자만 넣습니다</b>
+              101동 1203호라면 <span class="ex">101</span> 과 <span class="ex">1203</span> 입니다.
+            </li>
+            <li>
+              <b>서류를 받기 전이면 아직 조회되지 않습니다</b>
+              등기 서류가 저희에게 들어온 뒤부터 단계가 표시됩니다.
+            </li>
+          </ul>
+          <a class="btn btn--fill trk__help-cta" href="tel:18994252">
+            그래도 안 되면 전화 주십시오 · 1899-4252
+          </a>
+        </section>
       </div>
 
       <!-- 결과 -->
@@ -194,8 +218,8 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=110" defer></script>
-<script src="assets/js/gnb.js?v=110" defer></script>
-<script src="assets/js/tracking.js?v=110" defer></script>
+<script src="assets/js/main.js?v=114" defer></script>
+<script src="assets/js/gnb.js?v=114" defer></script>
+<script src="assets/js/tracking.js?v=114" defer></script>
 </body>
 </html>
