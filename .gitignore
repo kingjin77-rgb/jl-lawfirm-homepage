@@ -9,3 +9,4 @@ __pycache__/
 tools/shots/
 tools/menubook.html
 tools/menubook.pdf
+server/config.php

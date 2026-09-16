@@ -1,0 +1,7 @@
+# 설정 파일이 브라우저로 그대로 읽히면 DB 비밀번호가 새어 나간다.
+<FilesMatch "^(config\.php|config\.sample\.php|schema\.sql)$">
+  Require all denied
+</FilesMatch>
+
+# 디렉터리 목록을 보여주지 않는다
+Options -Indexes
