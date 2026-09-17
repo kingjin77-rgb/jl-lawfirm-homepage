@@ -2049,12 +2049,7 @@ body.has-rchat .quick { bottom: 84px; }
 .trk .s { display: block; }
 .trk .s + .s { margin-top: .5em; }
 .trk__help li .s { margin-top: .35em; }
-.trk__call { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
-.trk__call p { margin: 0 0 16px; font-size: 16.5px; line-height: 1.75; color: var(--ink); }
-.trk__help-cta { display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 2px; height: auto !important; min-height: 70px; padding: 12px 20px; margin-top: 0; }
-.trk__help-cta .num { font-size: 22px; font-weight: 800; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
-.trk__help-cta .lbl { font-size: 15px; font-weight: 600; opacity: .9; }
+.trk__help-cta { height: 60px !important; margin-top: 22px; font-size: 18px; font-weight: 800; letter-spacing: .01em; }
 .trk__steps li .d { display: block; }
 /* 첫 화면 소개도 문장마다 줄을 바꾼다 */
 .hero__lead .s { display: block; }

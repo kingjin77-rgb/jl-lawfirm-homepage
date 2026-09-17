@@ -43,7 +43,7 @@ $r = $st->fetch() ?: ['fails' => 0, 'total' => 0];
 if ((int)$r['fails'] >= $rate['max_fail'] || (int)$r['total'] >= $rate['max_total']) {
     json_out([
         'ok'      => false,
-        'message' => '조회를 여러 번 시도하셨습니다. 잠시 뒤 다시 시도하시거나 1899-4252로 연락 주십시오.',
+        'message' => '조회를 여러 번 시도하셨습니다. 잠시 뒤 다시 시도해 주십시오. 문의 1899-4252',
     ], 429);
 }
 
@@ -63,7 +63,7 @@ if ((int)$cx['is_open'] !== 1) {
     $log->execute([$iph, $cx['id'], 0]);
     json_out([
         'ok'      => false,
-        'message' => '이 아파트는 등기가 모두 끝나 온라인 조회를 닫았습니다. 1899-4252로 연락 주십시오.',
+        'message' => '이 아파트는 등기가 모두 끝나 온라인 조회를 닫았습니다. 문의 1899-4252',
     ]);
 }
 

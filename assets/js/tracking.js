@@ -111,7 +111,7 @@
 
   /** 문장마다 줄을 바꾼다. "니다." 뒤에서 끊는다. */
   function lines(text) {
-    return String(text || '').split(/(?<=다\.)\s+/).filter(Boolean).map(function (t) {
+    return String(text || '').replace(/\s*(문의 [\d-]+)\s*$/, '\n$1').split(/(?<=다\.)\s+|\n/).filter(Boolean).map(function (t) {
       return '<span class="s">' + esc(t) + '</span>';
     }).join('');
   }
@@ -204,7 +204,7 @@
     }
 
     if (!ENDPOINT) {
-      err('온라인 조회는 준비 중입니다. 등기센터 1899-4252로 연락 주시면 바로 확인해 드립니다.');
+      err('온라인 조회는 준비 중입니다. 문의 1899-4252');
       return;
     }
 
@@ -224,7 +224,7 @@
           : '조회되지 않았습니다. 동과 호, 계약자 성함과 생년월일을 다시 확인해 주십시오.');
       })
       .catch(function () {
-        err('지금 조회가 되지 않습니다. 잠시 뒤 다시 시도하시거나 1899-4252로 연락 주십시오.');
+        err('지금 조회가 되지 않습니다. 잠시 뒤 다시 시도해 주십시오. 문의 1899-4252');
       })
       .then(function () {
         btn.disabled = false;
