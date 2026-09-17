@@ -34,47 +34,77 @@
   var qs = new URLSearchParams(location.search);
 
   /* ── 체험 모드 ─────────────────────────────
-     서버가 아직 없어도 화면을 눌러 볼 수 있게 한다.
-     tracking.html?demo=1 로 들어오면 아무 값이나 넣어도 결과가 나온다.
-     실제 자료가 아니라는 표시를 화면에 남긴다. */
+     tracking.html?demo=1 로 들어오면 서버 대신 data/demo-track.json 을 본다.
+     예전 체험 화면은 아무 값이나 넣어도 결과가 나와서 시험이 되지 않았다.
+     이제 서버와 똑같이 이름·생년월일을 해시로 바꿔 대조한다.
+     맞아야 조회되고, 생년월일 한 자리만 틀려도 막힌다. 공동명의는 두 분 모두 된다.
+     자료는 가짜 세대다. 실제 입주민 정보가 아니다. */
   var DEMO = qs.get('demo') === '1';
+  var demoDb = null;
 
-  /** 체험용 명세 — 실제 엑셀 한 세대의 비율을 흉내 낸다. 합이 합계와 딱 맞게 끝을 맞춘다. */
-  function demoItems(total) {
-    var parts = [
-      ['취득세', .62], ['이전채권', .21], ['설정채권', .09], ['인지대', 0], ['증지대', .004],
-      ['경유증표', .001], ['신탁말소', 0], ['제증명', .002], ['보수료', .05], ['부가세', .005],
-      ['기타(교통비 등)', .011], ['송달료', .002], ['감면수수료', 0]
-    ];
-    var used = 0;
-    var out = parts.map(function (p, i) {
-      var v = Math.round(total * p[1] / 1000) * 1000;
-      used += v;
-      return { k: p[0], v: v };
-    });
-    out[0].v += total - used;       // 반올림 오차는 취득세에 얹는다
-    return out;
+  function loadDemo() {
+    if (demoDb) return Promise.resolve(demoDb);
+    return fetch('data/demo-track.json', { cache: 'no-cache' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { demoDb = d; return d; });
   }
 
-  function demoAnswer(dong, ho) {
-    // 같은 동·호면 늘 같은 결과가 나오게 한다. 눌러 보며 설명하기 편하다.
-    var seed = (Number(dong) || 0) * 7 + (Number(ho) || 0) * 13;
-    var i = seed % STEPS.length;
-    var total = 2400000 + (seed % 60) * 84000;
-    var paid = i >= 3 ? total + ((seed % 7) - 2) * 62000 : 0;
-    var d = new Date();
-    d.setDate(d.getDate() - (seed % 20));
-    return {
-      ok: true,
-      complex: $('inComplex').value || '보평역 서희스타힐스',
-      dong: dong, ho: ho,
-      step: STEPS[i].n,
-      at: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
-          '-' + String(d.getDate()).padStart(2, '0'),
-      memo: (i === 2) ? '주민등록등본에 주소 변동 이력이 빠져 있습니다. 다시 발급받아 보내주십시오.' : '',
-      total: total, paid: paid, diff: paid ? paid - total : 0,
-      items: demoItems(total)
-    };
+  function sha256hex(text) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (x) {
+        return x.toString(16).padStart(2, '0');
+      }).join('');
+    });
+  }
+
+  /** lookup.php 와 같은 판정. 어느 칸이 틀렸는지는 알려주지 않는다. */
+  function demoLookup(p) {
+    return loadDemo().then(function (d) {
+      var list = d.complexes[p.complex] || [];
+      return sha256hex(d.salt + '|' + p.name + '|' + p.birth).then(function (vh) {
+        var u = list.filter(function (x) {
+          return x.dong === p.dong && x.ho === p.ho && x.vhash.indexOf(vh) >= 0;
+        })[0];
+        if (!u) {
+          return { ok: false, message: '조회되지 않았습니다. 동·호와 계약자 성함, 생년월일을 다시 확인해 주십시오. ' +
+                                        '계약자가 다른 분 명의인 경우에도 조회되지 않습니다.' };
+        }
+        return { ok: true, complex: p.complex, dong: u.dong, ho: u.ho, step: u.step, at: u.at,
+                 memo: u.memo, total: u.total, paid: u.paid, diff: u.diff, paidAt: u.paidAt, items: u.items };
+      });
+    });
+  }
+
+  /** 체험 화면에서 바로 눌러 볼 세대 목록 */
+  function drawGuide() {
+    loadDemo().then(function (d) {
+      var box = document.createElement('section');
+      box.className = 'trk__guide';
+      box.innerHTML = '<h3>체험용 세대로 조회해 보십시오</h3>' +
+        '<p>누르면 칸이 채워집니다. 생년월일 한 자리를 바꿔 조회하면 막히는 것도 확인하실 수 있습니다.</p>' +
+        '<ul>' + d.guide.map(function (g, i) {
+          return '<li><button type="button" data-g="' + i + '">' +
+            '<b>' + esc(g.complex) + ' ' + esc(g.dong) + '동 ' + esc(g.ho) + '호</b>' +
+            '<span>' + esc(g.name) + ' · ' + esc(g.birth) + '</span>' +
+            '<em>' + esc(g.hint) + '</em>' +
+            (g.joint ? '<i>공동명의 ' + esc(g.joint[0]) + ' · ' + esc(g.joint[1]) + ' 로도 조회됩니다</i>' : '') +
+            '</button></li>';
+        }).join('') + '</ul>';
+      var form = $('form');
+      form.insertBefore(box, form.querySelector('.trk__title'));
+      box.querySelectorAll('[data-g]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var g = d.guide[Number(b.dataset.g)];
+          $('inComplex').value = g.complex;
+          $('fComplex').hidden = false;
+          $('atComplex').hidden = true;
+          $('inDong').value = g.dong; $('inHo').value = g.ho;
+          $('inName').value = g.name; $('inBirth').value = g.birth;
+          err('');
+          $('btnGo').scrollIntoView({ block: 'center', behavior: 'smooth' });
+        });
+      });
+    });
   }
 
   /* ── 거들기 ───────────────────────────────── */
@@ -104,13 +134,16 @@
      registry.json 에 이미 단지가 있다. 따로 관리하지 않는다. */
   function loadComplexes() {
     var pre = qs.get('c');
-    return fetch('data/registry.json', { cache: 'no-cache' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var list = (d.tracking && d.tracking.complexes || []).map(function (c) { return c.name; });
-        if (!list.length) list = d.complexes || [];
-        return list;
-      })
+    var src = DEMO
+      ? loadDemo().then(function (d) { return Object.keys(d.complexes); })
+      : fetch('data/registry.json', { cache: 'no-cache' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var list = (d.tracking && d.tracking.complexes || []).map(function (c) { return c.name; });
+            if (!list.length) list = d.complexes || [];
+            return list;
+          });
+    return src
       .catch(function () { return []; })
       .then(function (list) {
         var sel = $('inComplex');
@@ -156,7 +189,12 @@
       birth: $('inBirth').value.trim()
     };
 
-    if (DEMO) { show(demoAnswer(payload.dong, payload.ho)); return; }
+    if (DEMO) {
+      demoLookup(payload).then(function (res) {
+        if (res.ok) show(res); else err(res.message);
+      }).catch(function () { err('체험 자료를 불러오지 못했습니다. 새로고침해 주십시오.'); });
+      return;
+    }
 
     if (!ENDPOINT) {
       err('온라인 조회는 준비 중입니다. 등기센터 1899-4252로 연락 주시면 바로 확인해 드립니다.');
@@ -295,8 +333,9 @@
     if (DEMO) {
       var b = document.createElement('p');
       b.className = 'trk__demo';
-      b.textContent = '체험 화면입니다. 실제 자료가 아니며, 아무 값이나 넣어도 결과가 나옵니다.';
+      b.textContent = '체험 화면입니다. 가짜 세대로 실제 조회와 똑같이 확인합니다. 맞아야 조회되고, 틀리면 막힙니다.';
       $('form').insertBefore(b, $('form').firstChild);
+      drawGuide();
     }
 
     loadComplexes();
