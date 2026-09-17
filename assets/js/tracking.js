@@ -57,9 +57,41 @@
     });
   }
 
-  /** lookup.php 와 같은 판정. 어느 칸이 틀렸는지는 알려주지 않는다. */
+  /** 체험용 결과 — 동·호로 늘 같은 값이 나오게 만든다. */
+  function demoMake(p) {
+    var seed = (Number(p.dong) || 0) * 7 + (Number(p.ho) || 0) * 13;
+    var i = seed % STEPS.length;
+    var total = Math.round((2600000 + (seed % 97) * 83000) / 10) * 10;
+    var ratio = [.62, .21, .09, 0, .004, .001, 0, .002, .05, .005, .011, .002, 0];
+    var names = ['취득세', '이전채권', '설정채권', '인지대', '증지대', '경유증표', '신탁말소',
+                 '제증명', '보수료', '부가세', '기타(교통비 등)', '송달료', '감면수수료'];
+    var used = 0;
+    var items = names.map(function (k, n) {
+      var v = Math.round(total * ratio[n] / 10) * 10; used += v; return { k: k, v: v };
+    });
+    items[0].v += total - used;
+    var paid = i >= 3 ? total + Math.round(((seed % 11) * 41000 - 60000) / 10) * 10 : 0;
+    var d = new Date(); d.setDate(d.getDate() - (seed % 20));
+    return {
+      ok: true, complex: p.complex, dong: p.dong, ho: p.ho, step: STEPS[i].n,
+      at: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'),
+      memo: i === 0 ? '주민등록등본에 주소 변동 이력이 빠져 있습니다. 다시 발급받아 보내주십시오.' : '',
+      total: total, paid: paid, diff: paid ? paid - total : 0, items: items
+    };
+  }
+
+  /**
+   * 체험 판정.
+   * 화면에 안내한 네 세대는 서버(lookup.php)와 똑같이 해시로 대조한다. 틀리면 막힌다.
+   * 그 밖의 세대는 규격만 맞으면 결과를 보여준다. 누구든 화면을 끝까지 볼 수 있게.
+   */
   function demoLookup(p) {
     return loadDemo().then(function (d) {
+      var guided = d.guide.filter(function (g) {
+        return g.complex === p.complex && g.dong === p.dong && g.ho === p.ho;
+      })[0];
+      if (!guided) return demoMake(p);
+
       var list = d.complexes[p.complex] || [];
       return sha256hex(d.salt + '|' + p.name + '|' + p.birth).then(function (vh) {
         var u = list.filter(function (x) {
@@ -80,8 +112,8 @@
     loadDemo().then(function (d) {
       var box = document.createElement('section');
       box.className = 'trk__guide';
-      box.innerHTML = '<h3>체험용 세대로 조회해 보십시오</h3>' +
-        '<p>' + lines('아래 세대를 누르면 칸이 채워집니다. 생년월일을 한 자리 바꾸면 막히는 것도 보실 수 있습니다.') + '</p>' +
+      box.innerHTML = '<h3>실제처럼 대조하는 세대</h3>' +
+        '<p>' + lines('누르면 칸이 채워집니다. 생년월일을 한 자리 바꿔 조회하면 막힙니다.') + '</p>' +
         '<ul>' + d.guide.map(function (g, i) {
           return '<li><button type="button" data-g="' + i + '">' +
             '<b>' + esc(g.complex) + ' ' + esc(g.dong) + '동 ' + esc(g.ho) + '호</b>' +
@@ -340,7 +372,7 @@
     if (DEMO) {
       var b = document.createElement('p');
       b.className = 'trk__demo';
-      b.innerHTML = lines('체험 화면입니다. 가짜 세대로 조회해 봅니다. 성함과 생년월일이 맞아야 조회됩니다. 한 자리만 틀려도 막힙니다.');
+      b.innerHTML = lines('체험 화면입니다. 규격에 맞게 넣으면 어떤 세대든 결과가 나옵니다. 아래 네 세대는 실제 조회처럼 대조합니다. 생년월일 한 자리만 틀려도 막힙니다.');
       $('form').insertBefore(b, $('form').firstChild);
       drawGuide();
     }
