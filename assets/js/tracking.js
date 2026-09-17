@@ -66,7 +66,7 @@
           return x.dong === p.dong && x.ho === p.ho && x.vhash.indexOf(vh) >= 0;
         })[0];
         if (!u) {
-          return { ok: false, message: '조회되지 않았습니다. 동·호와 계약자 성함, 생년월일을 다시 확인해 주십시오. ' +
+          return { ok: false, message: '조회되지 않았습니다. 동과 호, 계약자 성함과 생년월일을 다시 확인해 주십시오. ' +
                                         '계약자가 다른 분 명의인 경우에도 조회되지 않습니다.' };
         }
         return { ok: true, complex: p.complex, dong: u.dong, ho: u.ho, step: u.step, at: u.at,
@@ -81,13 +81,13 @@
       var box = document.createElement('section');
       box.className = 'trk__guide';
       box.innerHTML = '<h3>체험용 세대로 조회해 보십시오</h3>' +
-        '<p>누르면 칸이 채워집니다. 생년월일 한 자리를 바꿔 조회하면 막히는 것도 확인하실 수 있습니다.</p>' +
+        '<p>' + lines('아래 세대를 누르면 칸이 채워집니다. 생년월일 한 자리를 바꿔 조회하면 막히는 것도 보실 수 있습니다.') + '</p>' +
         '<ul>' + d.guide.map(function (g, i) {
           return '<li><button type="button" data-g="' + i + '">' +
             '<b>' + esc(g.complex) + ' ' + esc(g.dong) + '동 ' + esc(g.ho) + '호</b>' +
-            '<span>' + esc(g.name) + ' · ' + esc(g.birth) + '</span>' +
+            '<span>' + esc(g.name) + '  ' + esc(g.birth) + '</span>' +
             '<em>' + esc(g.hint) + '</em>' +
-            (g.joint ? '<i>공동명의 ' + esc(g.joint[0]) + ' · ' + esc(g.joint[1]) + ' 로도 조회됩니다</i>' : '') +
+            (g.joint ? '<i>공동명의인 ' + esc(g.joint[0]) + ' ' + esc(g.joint[1]) + ' 으로도 조회됩니다</i>' : '') +
             '</button></li>';
         }).join('') + '</ul>';
       var form = $('form');
@@ -109,11 +109,18 @@
 
   /* ── 거들기 ───────────────────────────────── */
 
+  /** 문장마다 줄을 바꾼다. "니다." 뒤에서 끊는다. */
+  function lines(text) {
+    return String(text || '').split(/(?<=다\.)\s+/).filter(Boolean).map(function (t) {
+      return '<span class="s">' + esc(t) + '</span>';
+    }).join('');
+  }
+
   function err(text) {
     var n = $('err');
-    if (!text) { n.hidden = true; n.textContent = ''; return; }
+    if (!text) { n.hidden = true; n.innerHTML = ''; return; }
     n.hidden = false;
-    n.textContent = text;
+    n.innerHTML = lines(text);
     n.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 
@@ -214,7 +221,7 @@
         if (res && res.ok) { show(res); return; }
         err(res && res.message
           ? res.message
-          : '조회되지 않았습니다. 동·호와 계약자 성함, 생년월일을 다시 확인해 주십시오.');
+          : '조회되지 않았습니다. 동과 호, 계약자 성함과 생년월일을 다시 확인해 주십시오.');
       })
       .catch(function () {
         err('지금 조회가 되지 않습니다. 잠시 뒤 다시 시도하시거나 1899-4252로 연락 주십시오.');
@@ -242,7 +249,7 @@
 
     if (res.memo) {
       $('rMemo').hidden = false;
-      $('rMemoText').textContent = res.memo;
+      $('rMemoText').innerHTML = lines(res.memo);
     } else {
       $('rMemo').hidden = true;
     }
@@ -253,7 +260,7 @@
       var cls = k < i ? 'is-done' : (k === i ? 'is-now' : '');
       return '<li class="' + cls + '">' +
         '<b>' + esc(s.n) + '</b>' +
-        '<span>' + esc(s.d) + '</span>' +
+        '<span class="d">' + lines(s.d) + '</span>' +
         (k === i ? '<em>지금 여기</em>' : '') +
         '</li>';
     }).join('');
@@ -333,7 +340,7 @@
     if (DEMO) {
       var b = document.createElement('p');
       b.className = 'trk__demo';
-      b.textContent = '체험 화면입니다. 가짜 세대로 실제 조회와 똑같이 확인합니다. 맞아야 조회되고, 틀리면 막힙니다.';
+      b.innerHTML = lines('체험 화면입니다. 실제 입주민이 아닌 가짜 세대로 조회해 봅니다. 성함과 생년월일이 맞아야 조회되고 한 자리만 틀려도 막힙니다.');
       $('form').insertBefore(b, $('form').firstChild);
       drawGuide();
     }
