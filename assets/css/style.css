@@ -2059,3 +2059,5 @@ body.has-rchat .quick { bottom: 84px; }
 /* 첫 화면 소개도 문장마다 줄을 바꾼다 */
 .hero__lead .s { display: block; }
 .hero__lead .s + .s { margin-top: .35em; }
+.statcard .desc .s { display: block; }
+.statcard .desc .s + .s { margin-top: .3em; }
