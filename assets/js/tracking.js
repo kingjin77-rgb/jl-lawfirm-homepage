@@ -109,9 +109,9 @@
 
   /* ── 거들기 ───────────────────────────────── */
 
-  /** 문장마다 줄을 바꾼다. "니다." 뒤에서 끊는다. */
+  /** 문장마다 줄을 바꾼다. "니다." "주십시오." "해요." 뒤에서 끊는다. */
   function lines(text) {
-    return String(text || '').replace(/\s*(문의 [\d-]+)\s*$/, '\n$1').split(/(?<=다\.)\s+|\n/).filter(Boolean).map(function (t) {
+    return String(text || '').replace(/\s*(문의 [\d-]+)\s*$/, '\n$1').split(/(?<=[다오요]\.)\s+|\n/).filter(Boolean).map(function (t) {
       return '<span class="s">' + esc(t) + '</span>';
     }).join('');
   }
