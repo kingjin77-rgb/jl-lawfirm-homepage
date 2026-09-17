@@ -239,7 +239,7 @@ body.nav-open .logo__img--color { display: block; }
   color: #fff; background: var(--gold); white-space: nowrap;
   transition: background .3s var(--ease);
 }
-.btn-track::after { content: "↗"; font-size: 11px; }
+.btn-track::after { content: "→"; font-size: 13px; }
 .btn-track:hover { background: #97763d; }
 
 .header__tel { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.35; color: #fff; transition: color .4s var(--ease); }
@@ -2056,3 +2056,6 @@ body.has-rchat .quick { bottom: 84px; }
 .trk__help-cta .num { font-size: 22px; font-weight: 800; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
 .trk__help-cta .lbl { font-size: 15px; font-weight: 600; opacity: .9; }
 .trk__steps li .d { display: block; }
+/* 첫 화면 소개도 문장마다 줄을 바꾼다 */
+.hero__lead .s { display: block; }
+.hero__lead .s + .s { margin-top: .35em; }
