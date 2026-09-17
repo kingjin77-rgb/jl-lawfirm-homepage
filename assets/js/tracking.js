@@ -81,7 +81,7 @@
       var box = document.createElement('section');
       box.className = 'trk__guide';
       box.innerHTML = '<h3>체험용 세대로 조회해 보십시오</h3>' +
-        '<p>' + lines('아래 세대를 누르면 칸이 채워집니다. 생년월일 한 자리를 바꿔 조회하면 막히는 것도 보실 수 있습니다.') + '</p>' +
+        '<p>' + lines('아래 세대를 누르면 칸이 채워집니다. 생년월일을 한 자리 바꾸면 막히는 것도 보실 수 있습니다.') + '</p>' +
         '<ul>' + d.guide.map(function (g, i) {
           return '<li><button type="button" data-g="' + i + '">' +
             '<b>' + esc(g.complex) + ' ' + esc(g.dong) + '동 ' + esc(g.ho) + '호</b>' +
@@ -340,7 +340,7 @@
     if (DEMO) {
       var b = document.createElement('p');
       b.className = 'trk__demo';
-      b.innerHTML = lines('체험 화면입니다. 실제 입주민이 아닌 가짜 세대로 조회해 봅니다. 성함과 생년월일이 맞아야 조회되고 한 자리만 틀려도 막힙니다.');
+      b.innerHTML = lines('체험 화면입니다. 가짜 세대로 조회해 봅니다. 성함과 생년월일이 맞아야 조회됩니다. 한 자리만 틀려도 막힙니다.');
       $('form').insertBefore(b, $('form').firstChild);
       drawGuide();
     }
