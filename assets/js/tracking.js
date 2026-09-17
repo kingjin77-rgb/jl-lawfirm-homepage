@@ -39,6 +39,23 @@
      실제 자료가 아니라는 표시를 화면에 남긴다. */
   var DEMO = qs.get('demo') === '1';
 
+  /** 체험용 명세 — 실제 엑셀 한 세대의 비율을 흉내 낸다. 합이 합계와 딱 맞게 끝을 맞춘다. */
+  function demoItems(total) {
+    var parts = [
+      ['취득세', .62], ['이전채권', .21], ['설정채권', .09], ['인지대', 0], ['증지대', .004],
+      ['경유증표', .001], ['신탁말소', 0], ['제증명', .002], ['보수료', .05], ['부가세', .005],
+      ['기타(교통비 등)', .011], ['송달료', .002], ['감면수수료', 0]
+    ];
+    var used = 0;
+    var out = parts.map(function (p, i) {
+      var v = Math.round(total * p[1] / 1000) * 1000;
+      used += v;
+      return { k: p[0], v: v };
+    });
+    out[0].v += total - used;       // 반올림 오차는 취득세에 얹는다
+    return out;
+  }
+
   function demoAnswer(dong, ho) {
     // 같은 동·호면 늘 같은 결과가 나오게 한다. 눌러 보며 설명하기 편하다.
     var seed = (Number(dong) || 0) * 7 + (Number(ho) || 0) * 13;
@@ -55,7 +72,8 @@
       at: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
           '-' + String(d.getDate()).padStart(2, '0'),
       memo: (i === 2) ? '주민등록등본에 주소 변동 이력이 빠져 있습니다. 다시 발급받아 보내주십시오.' : '',
-      total: total, paid: paid, diff: paid ? paid - total : 0
+      total: total, paid: paid, diff: paid ? paid - total : 0,
+      items: demoItems(total)
     };
   }
 
@@ -213,6 +231,23 @@
     if (!total && !paid) { $('rCost').hidden = true; return; }
 
     $('rCost').hidden = false;
+
+    // 항목별 명세 — 0원인 항목은 흐리게 두되 빼지는 않는다.
+    // "감면 수수료 0원" 을 보고 안심하는 고객이 있다.
+    var items = Array.isArray(res.items) ? res.items : [];
+    if (items.length) {
+      $('cBill').hidden = false;
+      var nz = items.filter(function (it) { return Number(it.v); }).length;
+      $('cBillN').textContent = '· ' + nz + '개 항목';
+      $('cItems').innerHTML = items.map(function (it) {
+        var v = Number(it.v) || 0;
+        return '<tr class="' + (v ? '' : 'zero') + '"><th>' + esc(it.k) + '</th>' +
+          '<td>' + v.toLocaleString('ko-KR') + '원</td></tr>';
+      }).join('');
+    } else {
+      $('cBill').hidden = true;
+    }
+
     $('cTotal').textContent = total ? total.toLocaleString('ko-KR') + '원' : '아직 산정 전';
     $('cPaid').textContent = paid ? paid.toLocaleString('ko-KR') + '원' : '아직 입금 전';
 

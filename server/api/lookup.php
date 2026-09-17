@@ -68,11 +68,14 @@ if ((int)$cx['is_open'] !== 1) {
 }
 
 $st = db()->prepare(
-    'SELECT step, memo, step_at
-       FROM households
-      WHERE complex_id = ? AND dong = ? AND ho = ? AND vhash = ?
+    'SELECT h.step, h.memo, h.step_at, h.cost_total, h.cost_paid, h.cost_diff, h.paid_at, h.cost_items,
+            h.cert_sent, h.has_poa
+       FROM households h
+       JOIN household_keys k ON k.household_id = h.id
+      WHERE h.complex_id = ? AND h.dong = ? AND h.ho = ? AND k.vhash = ?
       LIMIT 1'
 );
+// 공동명의면 두 사람 중 누구로 조회해도 맞는다. 열쇠가 세대마다 여럿 걸려 있다.
 $st->execute([$cx['id'], $dong, $ho, verify_hash($name, $birth)]);
 $hh = $st->fetch();
 
@@ -88,12 +91,21 @@ if (!$hh) {
 
 $log->execute([$iph, $cx['id'], 1]);
 
+$items = json_decode((string)($hh['cost_items'] ?? ''), true);
+
 json_out([
-    'ok'      => true,
-    'complex' => $complex,
-    'dong'    => $dong,
-    'ho'      => $ho,
-    'step'    => $hh['step'],
-    'at'      => $hh['step_at'],
-    'memo'    => $hh['memo'],
+    'ok'       => true,
+    'complex'  => $complex,
+    'dong'     => $dong,
+    'ho'       => $ho,
+    'step'     => $hh['step'],
+    'at'       => $hh['step_at'],
+    'memo'     => $hh['memo'],
+    'total'    => (int)$hh['cost_total'],
+    'paid'     => (int)$hh['cost_paid'],
+    'diff'     => (int)$hh['cost_diff'],
+    'paidAt'   => $hh['paid_at'],
+    'items'    => is_array($items) ? $items : [],
+    'certSent' => (bool)$hh['cert_sent'],
+    'poa'      => (bool)$hh['has_poa'],
 ]);

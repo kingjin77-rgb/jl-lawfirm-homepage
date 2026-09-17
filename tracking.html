@@ -6,7 +6,7 @@
 <title>등기 진행 조회 | 법무법인 제이엘</title>
 <meta name="description" content="법무법인 제이엘에 맡기신 등기가 지금 어느 단계인지, 다음에 무엇이 남았는지 확인하실 수 있습니다.">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css?v=114">
+<link rel="stylesheet" href="assets/css/style.css?v=116">
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/tracking.html">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -191,9 +191,22 @@
         </div>
 
         <div class="trk__cost" id="rCost" hidden>
-          <h3>등기비용</h3>
+          <h3>등기비용 명세</h3>
+
+          <!-- 항목별 명세. 합계만 주면 "보수료가 얼마냐" 는 전화가 온다. -->
+          <details class="trk__bill" id="cBill" open>
+            <summary>항목별로 보기 <span id="cBillN"></span></summary>
+            <table>
+              <tbody id="cItems"></tbody>
+            </table>
+            <p class="trk__bill-note">
+              <b>취득세·국민주택채권</b>은 나라에 내는 세금과 채권이고,
+              <b>보수료·부가세</b>가 법무법인 수수료입니다.
+            </p>
+          </details>
+
           <dl>
-            <div><dt>등기비용 합계</dt><dd id="cTotal"></dd></div>
+            <div class="sum"><dt>등기비용 합계</dt><dd id="cTotal"></dd></div>
             <div><dt>입금하신 금액</dt><dd id="cPaid"></dd></div>
             <div id="cDiffRow"><dt id="cDiffLbl">차액</dt><dd id="cDiff"></dd></div>
           </dl>
@@ -218,8 +231,8 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=114" defer></script>
-<script src="assets/js/gnb.js?v=114" defer></script>
-<script src="assets/js/tracking.js?v=114" defer></script>
+<script src="assets/js/main.js?v=116" defer></script>
+<script src="assets/js/gnb.js?v=116" defer></script>
+<script src="assets/js/tracking.js?v=116" defer></script>
 </body>
 </html>

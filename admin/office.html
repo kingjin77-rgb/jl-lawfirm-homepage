@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>등기업무 시스템 | 법무법인 제이엘</title>
+<link rel="stylesheet" href="../assets/css/style.css?v=114">
+<link rel="stylesheet" href="../assets/css/office.css?v=114">
+<!-- SEO:AUTO -->
+<link rel="canonical" href="https://www.jllawfirm.co.kr/admin/office.html">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="법무법인 제이엘">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://www.jllawfirm.co.kr/admin/office.html">
+<meta property="og:title" content="등기업무 시스템 | 법무법인 제이엘">
+<meta property="og:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="법무법인 제이엘">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="등기업무 시스템 | 법무법인 제이엘">
+<meta name="twitter:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
+<meta name="author" content="법무법인 제이엘">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.jllawfirm.co.kr/#website",
+      "url": "https://www.jllawfirm.co.kr/",
+      "name": "법무법인 제이엘",
+      "publisher": {
+        "@id": "https://www.jllawfirm.co.kr/#organization"
+      },
+      "inLanguage": "ko-KR"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.jllawfirm.co.kr/admin/office.html#webpage",
+      "url": "https://www.jllawfirm.co.kr/admin/office.html",
+      "name": "등기업무 시스템 | 법무법인 제이엘",
+      "isPartOf": {
+        "@id": "https://www.jllawfirm.co.kr/#website"
+      },
+      "about": {
+        "@id": "https://www.jllawfirm.co.kr/#organization"
+      },
+      "inLanguage": "ko-KR"
+    }
+  ]
+}
+</script>
+<!-- /SEO:AUTO -->
+</head>
+<body class="of">
+
+<script src="../assets/js/admin-gate.js" data-gate="registry"></script>
+
+<div class="of-app">
+
+  <aside class="of-side">
+    <a class="of-brand" href="index.html">
+      <b>제이엘 등기업무</b>
+      <span>REGISTRATION OFFICE</span>
+    </a>
+    <nav class="of-menu" id="ofMenu" aria-label="업무 메뉴"></nav>
+    <div class="of-side__foot">
+      <p><b>자료는 이 PC 밖으로 나가지 않습니다.</b></p>
+      <p>이름·생년월일·연락처·주소·계좌는 홈페이지 저장소에 올리지 않습니다. 저장은 암호화 파일로 내려받습니다.</p>
+    </div>
+  </aside>
+
+  <div class="of-main">
+    <header class="of-top">
+      <select id="ofComplex" class="of-cxsel" aria-label="단지"></select>
+      <span class="of-state" id="ofSaveState"></span>
+      <span class="of-sp"></span>
+      <button type="button" class="btn" id="ofOpen">저장본 열기</button>
+      <button type="button" class="btn btn--fill" id="ofSave">암호화 저장</button>
+    </header>
+
+    <div class="of-head">
+      <h1 id="ofTitle"></h1>
+      <p id="ofLead"></p>
+    </div>
+
+    <main class="of-body" id="ofBody"></main>
+  </div>
+
+</div>
+
+<div class="of-dialog" id="ofDialog" role="dialog" aria-modal="true" aria-labelledby="ofDialogTitle">
+  <div class="of-dialog__box">
+    <h2 id="ofDialogTitle"></h2>
+    <div id="ofDialogBody"></div>
+    <p class="of-dialog__err" id="ofDialogErr" role="alert"></p>
+    <div class="of-dialog__acts">
+      <button type="button" class="btn" id="ofDialogCancel">닫기</button>
+      <button type="button" class="btn btn--fill" id="ofDialogOk">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="of-toast" id="ofToast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="../assets/js/office/core.js?v=114"></script>
+<script src="../assets/js/office/ui.js?v=114"></script>
+<!-- 메뉴 순서는 옛 조회 시스템을 따른다 -->
+<script src="../assets/js/office/m-home.js?v=114"></script>
+<script src="../assets/js/office/m-settings.js?v=114"></script>
+<script src="../assets/js/office/m-people.js?v=114"></script>
+<script src="../assets/js/office/m-progress.js?v=114"></script>
+<script src="../assets/js/office/m-survey.js?v=114"></script>
+<script src="../assets/js/office/m-intake.js?v=114"></script>
+<script src="../assets/js/office/m-poa.js?v=114"></script>
+<script src="../assets/js/office/m-sms.js?v=114"></script>
+<script>JL.ui.start();</script>
+</body>
+</html>

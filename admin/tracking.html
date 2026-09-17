@@ -2,80 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>등기 진행 관리 | 법무법인 제이엘</title>
-<link rel="stylesheet" href="../assets/css/style.css?v=105">
-<style>
-/* 이 화면에서만 쓰는 것들. 공용 스타일은 style.css 를 그대로 따른다. */
-.tk-wrap { max-width: 1400px; margin: 0 auto; padding: 28px 20px 80px; }
-.tk-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 18px; margin-bottom: 8px; }
-.tk-head h1 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
-.tk-head .en { font-size: 12px; letter-spacing: .18em; color: var(--gold-ink); font-weight: 700; }
-
-.tk-warn { margin: 18px 0 26px; padding: 16px 18px; border-left: 3px solid #c0392b;
-  background: #fdf6f5; font-size: 14.5px; line-height: 1.7; }
-.tk-warn b { color: #c0392b; }
-
-.tk-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-  padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.tk-bar select, .tk-bar input[type=text], .tk-bar input[type=password] {
-  font: inherit; font-size: 14px; padding: 8px 11px; border: 1px solid var(--line);
-  border-radius: 6px; background: #fff; }
-.tk-bar .grow { flex: 1 1 200px; }
-/* display:flex 가 hidden 속성을 이긴다. 명시하지 않으면 숨긴 버튼이 계속 보인다. */
-.tk-bar[hidden], .tk-bar button[hidden], .tk-bar select[hidden] { display: none !important; }
-.tk-sp { flex: 1 1 auto; }
-
-.tk-stat { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
-.tk-stat button { font: inherit; font-size: 13px; padding: 7px 13px; border-radius: 999px;
-  border: 1px solid var(--line); background: #fff; cursor: pointer; letter-spacing: -.01em; }
-.tk-stat button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
-.tk-stat button b { font-variant-numeric: tabular-nums; margin-left: 6px; opacity: .75; }
-
-.tk-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
-table.tk { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 14px; }
-table.tk th, table.tk td { padding: 9px 11px; border-bottom: 1px solid var(--line);
-  text-align: left; white-space: nowrap; }
-table.tk thead th { position: sticky; top: 0; background: var(--navy); color: #fff;
-  font-size: 12.5px; letter-spacing: .02em; z-index: 1; }
-table.tk tbody tr:hover { background: #f7f9fd; }
-table.tk td.num { font-variant-numeric: tabular-nums; }
-table.tk select { font: inherit; font-size: 13px; padding: 4px 7px;
-  border: 1px solid var(--line); border-radius: 5px; background: #fff; }
-table.tk input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--navy); }
-.tk-empty { padding: 44px 20px; text-align: center; color: var(--gray-500); font-size: 15px; }
-
-.tk-step { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px;
-  font-weight: 600; background: var(--navy-soft); color: var(--navy); }
-.tk-step.done { background: #e6f4ec; color: #1f6b4a; }
-
-.tk-modal { position: fixed; inset: 0; z-index: 900; display: none;
-  align-items: center; justify-content: center; background: rgba(8,15,40,.55); padding: 20px; }
-.tk-modal.on { display: flex; }
-.tk-modal__box { background: #fff; width: min(760px, 100%); max-height: 86vh; overflow: auto;
-  border-radius: 10px; padding: 26px 26px 22px; border-top: 3px solid var(--navy); }
-.tk-modal__box h2 { margin: 0 0 6px; font-size: 19px; letter-spacing: -.02em; }
-.tk-modal__box p.d { margin: 0 0 18px; font-size: 14px; color: var(--gray-700); line-height: 1.7; }
-.tk-map { display: grid; grid-template-columns: 120px 1fr; gap: 10px 14px; align-items: center; }
-.tk-map label { font-size: 13.5px; font-weight: 600; }
-.tk-map select { font: inherit; font-size: 14px; padding: 8px 10px;
-  border: 1px solid var(--line); border-radius: 6px; width: 100%; background: #fff; }
-.tk-acts { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
-.tk-msg { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; }
-.tk-msg.err { color: #c0392b; font-weight: 600; }
-.tk-msg.ok { color: #1f6b4a; font-weight: 600; }
-.tk-prev { margin-top: 16px; font-size: 12.5px; color: var(--gray-700); }
-.tk-prev code { background: #f2f4f9; padding: 1px 5px; border-radius: 3px; }
-.tk-hint { margin: -12px 0 22px; font-size: 13.5px; line-height: 1.7; color: var(--gray-700); }
-.tk-co { display: block; font-size: 12.5px; color: var(--gray-500); }
-.tk-minus { color: #c0392b; font-weight: 600; }
-table.tk input[type=text] { width: 100%; box-sizing: border-box; font: inherit; font-size: 13px;
-  padding: 4px 7px; border: 1px solid var(--line); border-radius: 5px; }
-table.tk td:nth-child(8), table.tk td:nth-child(9), table.tk td:nth-child(10) { text-align: right; }
-.tk-poa { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px;
-  font-weight: 700; background: #e6f4ec; color: #1f6b4a; }
-.tk-poa.no { background: #f2f4f9; color: var(--gray-500); font-weight: 500; }
-</style>
+<meta http-equiv="refresh" content="0; url=office.html#progress">
+<title>등기업무 시스템으로 옮겼습니다 | 법무법인 제이엘</title>
+<link rel="stylesheet" href="../assets/css/style.css">
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/admin/tracking.html">
 <meta name="robots" content="noindex, nofollow">
@@ -83,13 +12,13 @@ table.tk td:nth-child(8), table.tk td:nth-child(9), table.tk td:nth-child(10) { 
 <meta property="og:site_name" content="법무법인 제이엘">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:url" content="https://www.jllawfirm.co.kr/admin/tracking.html">
-<meta property="og:title" content="등기 진행 관리 | 법무법인 제이엘">
+<meta property="og:title" content="등기업무 시스템으로 옮겼습니다 | 법무법인 제이엘">
 <meta property="og:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="법무법인 제이엘">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="등기 진행 관리 | 법무법인 제이엘">
+<meta name="twitter:title" content="등기업무 시스템으로 옮겼습니다 | 법무법인 제이엘">
 <meta name="twitter:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
 <meta name="author" content="법무법인 제이엘">
 <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
@@ -111,7 +40,7 @@ table.tk td:nth-child(8), table.tk td:nth-child(9), table.tk td:nth-child(10) { 
       "@type": "WebPage",
       "@id": "https://www.jllawfirm.co.kr/admin/tracking.html#webpage",
       "url": "https://www.jllawfirm.co.kr/admin/tracking.html",
-      "name": "등기 진행 관리 | 법무법인 제이엘",
+      "name": "등기업무 시스템으로 옮겼습니다 | 법무법인 제이엘",
       "isPartOf": {
         "@id": "https://www.jllawfirm.co.kr/#website"
       },
@@ -125,87 +54,11 @@ table.tk td:nth-child(8), table.tk td:nth-child(9), table.tk td:nth-child(10) { 
 </script>
 <!-- /SEO:AUTO -->
 </head>
-<body>
-
-<script src="../assets/js/admin-gate.js" data-gate="registry"></script>
-
-<div class="tk-wrap">
-
-  <div class="tk-head">
-    <span class="en">REGISTRATION TRACKING</span>
-    <h1>등기 진행 관리</h1>
-    <span class="tk-sp"></span>
-    <a class="btn" href="index.html">관리자 홈 &#8594;</a>
-  </div>
-
-  <div class="tk-warn">
-    <b>이 화면의 자료는 이 컴퓨터를 벗어나지 않습니다.</b>
-    세대주 이름과 생년월일은 개인정보이므로 홈페이지 저장소에 올리지 않습니다.
-    저장을 누르면 비밀번호로 암호화한 파일이 이 PC에 내려받아집니다.
-    다음에 그 파일을 다시 열어 이어서 작업하십시오.
-    파일과 비밀번호를 함께 메신저로 주고받지 마십시오.
-  </div>
-
-  <p class="tk-hint">
-    엑셀은 쓰시던 양식 그대로 올리시면 됩니다. 제목 줄과 여덟 단계를 알아서 찾습니다.
-    진행 단계는 "완료" 로 표시된 마지막 칸으로 정합니다.
-    은행·계좌는 읽지 않습니다.<br>
-    단지 플랫폼에서 내려받은 <b>위임장접수내역 CSV</b> 를 합치면 어느 세대가 위임장을 냈는지 함께 보입니다.
-    동·호로 맞추므로 이름이 가려져 있어도 상관없습니다.
-  </p>
-
-  <div class="tk-bar">
-    <select id="complex" class="grow" aria-label="단지 선택"></select>
-    <input type="text" id="q" class="grow" placeholder="동·호·이름으로 검색">
-    <span class="tk-sp"></span>
-    <button type="button" class="btn" id="btnImport">등기 엑셀 불러오기</button>
-    <button type="button" class="btn" id="btnPoa">위임장 CSV 합치기</button>
-    <button type="button" class="btn" id="btnSave">암호화 저장</button>
-    <button type="button" class="btn" id="btnOpen">저장본 열기</button>
-    <button type="button" class="btn btn--fill" id="btnExport">서버 업로드본 내보내기</button>
-  </div>
-
-  <div class="tk-stat" id="stat"></div>
-
-  <div class="tk-bar" id="bulkBar" hidden>
-    <span id="selCount" style="font-size:14px;font-weight:600"></span>
-    <select id="bulkStep" aria-label="일괄 변경할 단계"></select>
-    <button type="button" class="btn" id="btnBulk">선택한 세대 단계 변경</button>
-    <button type="button" class="btn" id="btnClearSel">선택 해제</button>
-    <span class="tk-sp"></span>
-    <button type="button" class="btn" id="btnUndo" hidden>되돌리기</button>
-  </div>
-
-  <div class="tk-table-wrap">
-    <table class="tk">
-      <thead>
-        <tr>
-          <th style="width:36px"><input type="checkbox" id="chkAll" aria-label="전체 선택"></th>
-          <th style="width:70px">동</th>
-          <th style="width:80px">호</th>
-          <th style="width:110px">이름</th>
-          <th style="width:110px">생년월일</th>
-          <th style="width:88px">위임장</th>
-          <th style="width:210px">진행 단계</th>
-          <th style="width:110px">등기비용</th>
-          <th style="width:110px">입금액</th>
-          <th style="width:100px">차액</th>
-          <th>고객 안내</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <div class="tk-empty" id="empty">단지를 고르고 엑셀을 불러오거나, 저장본을 여십시오.</div>
-  </div>
-
-  <p class="tk-msg" id="msg"></p>
-</div>
-
-<input type="file" id="fileXlsx" accept=".xlsx,.xls,.csv" hidden>
-<input type="file" id="fileJson" accept=".jlreg,.json" hidden>
-<input type="file" id="filePoa" accept=".csv,.txt" hidden>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="../assets/js/tracking-admin.js?v=105"></script>
+<body style="padding:60px 24px;font-size:16px">
+<!-- 등기 진행 관리는 등기업무 시스템의 「등기진행」 메뉴로 합쳐졌다.
+     예전 주소를 즐겨찾기한 직원을 위해 넘기기만 남겨 둔다.
+     예전 저장본(.jlreg)도 새 시스템에서 그대로 열린다. -->
+<p><b>등기 진행 관리는 등기업무 시스템으로 옮겼습니다.</b></p>
+<p style="margin-top:10px">예전 저장본도 그대로 열립니다. <a href="office.html">등기업무 시스템으로 가기 →</a></p>
 </body>
 </html>

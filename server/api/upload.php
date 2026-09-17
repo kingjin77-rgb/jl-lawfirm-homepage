@@ -1,11 +1,11 @@
 <?php
-/* 관리자 업로드 — 직원 화면에서 내보낸 파일을 받아 넣는다
+/* 직원 자료 반영 — 등기업무 시스템의 「서버 업로드본」을 받아 넣는다
  *
- * 받는 것 : 관리자 화면의 "서버 업로드본 내보내기" 로 만든 JSON 그대로
- *           {complex, steps, exportedAt, households:[{dong,ho,vhash,step,at,memo}]}
+ * 받는 것 : {complex, steps, exportedAt, households:[{dong, ho, vhash:[...], step, at, memo,
+ *            total, paid, diff, paidAt, items:[{k,v}], lack, certSent, poa}]}
  * 머리글  : X-Upload-Token 에 config.php 의 upload_token
  *
- * 같은 단지를 다시 올리면 동·호로 맞춰 갱신하고 없던 세대만 넣는다.
+ * 같은 단지를 다시 올리면 동·호로 맞춰 갱신한다.
  * 지우지는 않는다. 잘못 올렸을 때 세대가 통째로 사라지면 복구가 어렵다.
  */
 
@@ -31,6 +31,17 @@ if ($complex === '' || !is_array($rows) || !$rows) {
     json_out(['ok' => false, 'message' => '올릴 자료가 없습니다.'], 400);
 }
 
+function num($v): int
+{
+    return is_numeric($v) ? (int)round((float)$v) : 0;
+}
+
+function day($v): ?string
+{
+    $s = (string)$v;
+    return preg_match('/^\d{4}-\d{2}-\d{2}$/', $s) ? $s : null;
+}
+
 $pdo = db();
 $pdo->beginTransaction();
 
@@ -38,55 +49,87 @@ try {
     $st = $pdo->prepare('SELECT id FROM complexes WHERE name = ? LIMIT 1');
     $st->execute([$complex]);
     $cid = $st->fetchColumn();
-
     if (!$cid) {
         $pdo->prepare('INSERT INTO complexes (name) VALUES (?)')->execute([$complex]);
         $cid = (int)$pdo->lastInsertId();
     }
 
-    $up = $pdo->prepare(
-        'INSERT INTO households (complex_id, dong, ho, vhash, step, memo, step_at)
-              VALUES (:c, :d, :h, :v, :s, :m, :a)
-         ON DUPLICATE KEY UPDATE
-              vhash = VALUES(vhash), step = VALUES(step),
-              memo  = VALUES(memo),  step_at = VALUES(step_at)'
+    $find = $pdo->prepare('SELECT id FROM households WHERE complex_id = ? AND dong = ? AND ho = ? LIMIT 1');
+    $ins  = $pdo->prepare(
+        'INSERT INTO households
+           (complex_id, dong, ho, step, step_at, memo, cost_total, cost_paid, cost_diff, paid_at, cost_items,
+            has_lack, cert_sent, has_poa)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
     );
+    $upd  = $pdo->prepare(
+        'UPDATE households SET step=?, step_at=?, memo=?, cost_total=?, cost_paid=?, cost_diff=?, paid_at=?,
+                cost_items=?, has_lack=?, cert_sent=?, has_poa=?
+          WHERE id=?'
+    );
+    $delK = $pdo->prepare('DELETE FROM household_keys WHERE household_id = ?');
+    $addK = $pdo->prepare('INSERT IGNORE INTO household_keys (household_id, vhash) VALUES (?, ?)');
 
-    $ins = 0;
-    $upd = 0;
+    $nIns = 0;
+    $nUpd = 0;
+    $nSkip = 0;
+
     foreach ($rows as $r) {
         $dong = preg_replace('/[^0-9]/', '', (string)($r['dong'] ?? ''));
         $ho   = preg_replace('/[^0-9]/', '', (string)($r['ho'] ?? ''));
-        $v    = strtolower(trim((string)($r['vhash'] ?? '')));
+        if ($dong === '' || $ho === '') { $nSkip++; continue; }
 
-        // 해시가 아닌 값이 오면 넣지 않는다. 실수로 이름이 담겨 오는 것을 막는 빗장이다.
-        if ($dong === '' || $ho === '' || !preg_match('/^[0-9a-f]{64}$/', $v)) {
-            continue;
+        // 해시가 아닌 값은 넣지 않는다. 실수로 이름이 담겨 와도 서버에 들어가지 않게 하는 빗장이다.
+        $keys = $r['vhash'] ?? [];
+        if (!is_array($keys)) $keys = [$keys];
+        $keys = array_values(array_filter(array_map(function ($h) {
+            $h = strtolower(trim((string)$h));
+            return preg_match('/^[0-9a-f]{64}$/', $h) ? $h : null;
+        }, $keys)));
+
+        // 명세는 항목 이름과 금액만. 다른 것이 섞여 오면 버린다.
+        $items = [];
+        foreach ((array)($r['items'] ?? []) as $it) {
+            if (!is_array($it)) continue;
+            $k = mb_substr(trim((string)($it['k'] ?? '')), 0, 30);
+            if ($k === '') continue;
+            $items[] = ['k' => $k, 'v' => num($it['v'] ?? 0)];
         }
 
-        $at = (string)($r['at'] ?? '');
-        $up->execute([
-            ':c' => $cid,
-            ':d' => $dong,
-            ':h' => $ho,
-            ':v' => $v,
-            ':s' => mb_substr(trim((string)($r['step'] ?? '접수')), 0, 40),
-            ':m' => mb_substr(trim((string)($r['memo'] ?? '')), 0, 500),
-            ':a' => preg_match('/^\d{4}-\d{2}-\d{2}$/', $at) ? $at : null,
-        ]);
-        // rowCount 는 새로 넣으면 1, 값이 바뀌면 2 를 준다
-        if ($up->rowCount() === 1) {
-            $ins++;
+        $vals = [
+            mb_substr(trim((string)($r['step'] ?? '접수 전')), 0, 40),
+            day($r['at'] ?? ''),
+            mb_substr(trim((string)($r['memo'] ?? '')), 0, 500),
+            num($r['total'] ?? 0), num($r['paid'] ?? 0), num($r['diff'] ?? 0),
+            day($r['paidAt'] ?? ''),
+            json_encode($items, JSON_UNESCAPED_UNICODE),
+            empty($r['lack']) ? 0 : 1,
+            empty($r['certSent']) ? 0 : 1,
+            empty($r['poa']) ? 0 : 1,
+        ];
+
+        $find->execute([$cid, $dong, $ho]);
+        $hid = $find->fetchColumn();
+        if ($hid) {
+            $upd->execute(array_merge($vals, [$hid]));
+            $nUpd++;
         } else {
-            $upd++;
+            $ins->execute(array_merge([$cid, $dong, $ho], $vals));
+            $hid = (int)$pdo->lastInsertId();
+            $nIns++;
+        }
+
+        // 열쇠는 매번 새로 건다. 명의자가 바뀌면 옛 열쇠로는 더 조회되지 않아야 한다.
+        $delK->execute([$hid]);
+        foreach ($keys as $h) {
+            $addK->execute([$hid, $h]);
         }
     }
 
     $pdo->prepare('INSERT INTO upload_log (complex_id, n_insert, n_update) VALUES (?, ?, ?)')
-        ->execute([$cid, $ins, $upd]);
+        ->execute([$cid, $nIns, $nUpd]);
 
     $pdo->commit();
-    json_out(['ok' => true, 'complex' => $complex, 'inserted' => $ins, 'updated' => $upd]);
+    json_out(['ok' => true, 'complex' => $complex, 'inserted' => $nIns, 'updated' => $nUpd, 'skipped' => $nSkip]);
 
 } catch (Throwable $e) {
     $pdo->rollBack();
