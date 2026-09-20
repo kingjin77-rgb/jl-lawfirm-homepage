@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-14 07:42",
+  "generatedAt": "2026-09-21 07:47",
   "source": "법제처 국가법령정보 공동활용 (law.go.kr)",
   "counts": {
     "law": 12,
@@ -49,6 +49,20 @@
     {
       "type": "prec",
       "category": "단체등기",
+      "title": "제척기간 경과에 따라 소유권이전청구권가등기는 원인 무효로 말소되어야 함",
+      "summary": "인천지방법원-2026-가단-205096",
+      "date": "2026.08.19",
+      "meta": {
+        "caseNo": "인천지방법원-2026-가단-205096",
+        "court": "",
+        "keyword": "소유권이전등기 말소"
+      },
+      "link": "https://www.law.go.kr/판례/(%EC%9D%B8%EC%B2%9C%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2026-%EA%B0%80%EB%8B%A8-205096)",
+      "no": 68
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
       "title": "(심리불속행) 보행자들이 이용하는 대지 안의 공지는 종합부동산세 비과세 대상인 사설도로에 해당한다고 볼 수 없음",
       "summary": "대법원-2026-두-30942",
       "date": "2026.08.12",
@@ -58,7 +72,7 @@
         "keyword": "대지권"
       },
       "link": "https://www.law.go.kr/판례/(%EB%8C%80%EB%B2%95%EC%9B%90-2026-%EB%91%90-30942)",
-      "no": 68
+      "no": 67
     },
     {
       "type": "prec",
@@ -72,7 +86,7 @@
         "keyword": "사해행위취소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%B0%BD%EC%9B%90%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-13934)",
-      "no": 67
+      "no": 66
     },
     {
       "type": "prec",
@@ -86,7 +100,7 @@
         "keyword": "사해행위취소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%9D%B8%EC%B2%9C%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2023-%EA%B0%80%EB%8B%A8-299115)",
-      "no": 66
+      "no": 65
     },
     {
       "type": "prec",
@@ -100,7 +114,7 @@
         "keyword": "사해행위취소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%88%98%EC%9B%90%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EB%82%98-51933)",
-      "no": 65
+      "no": 64
     },
     {
       "type": "prec",
@@ -114,7 +128,7 @@
         "keyword": "근저당권설정등기 말소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%88%9C%EC%B2%9C%EC%A7%80%EC%9B%90-2024-%EA%B0%80%EB%8B%A8-68337)",
-      "no": 64
+      "no": 63
     },
     {
       "type": "prec",
@@ -128,7 +142,7 @@
         "keyword": "근저당권설정등기 말소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%9D%98%EC%A0%95%EB%B6%80%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2026-%EA%B0%80%EB%8B%A8-100719)",
-      "no": 63
+      "no": 62
     },
     {
       "type": "prec",
@@ -142,7 +156,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/판례/(2025%EB%8B%A4215725)",
-      "no": 62
+      "no": 61
     },
     {
       "type": "law",
@@ -155,7 +169,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EA%B3%B5%EB%8F%99%EC%A3%BC%ED%83%9D%EA%B4%80%EB%A6%AC%EB%B2%95",
-      "no": 61
+      "no": 60
     },
     {
       "type": "law",
@@ -168,7 +182,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%8F%84%EC%8B%9C%20%EB%B0%8F%20%EC%A3%BC%EA%B1%B0%ED%99%98%EA%B2%BD%EC%A0%95%EB%B9%84%EB%B2%95",
-      "no": 60
+      "no": 59
     },
     {
       "type": "law",
@@ -181,7 +195,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%B9%88%EC%A7%91%20%EB%B0%8F%20%EC%86%8C%EA%B7%9C%EB%AA%A8%EC%A3%BC%ED%83%9D%20%EC%A0%95%EB%B9%84%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%A1%80%EB%B2%95",
-      "no": 59
+      "no": 58
     },
     {
       "type": "prec",
@@ -195,7 +209,7 @@
         "keyword": "소유권이전등기 말소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%84%9C%EC%9A%B8%EC%A4%91%EC%95%99%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-115655)",
-      "no": 58
+      "no": 57
     },
     {
       "type": "prec",
@@ -209,7 +223,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/판례/(%EC%84%9C%EC%9A%B8%ED%96%89%EC%A0%95%EB%B2%95%EC%9B%90-2024-%EA%B5%AC%ED%95%A9-80873)",
-      "no": 57
+      "no": 56
     },
     {
       "type": "prec",
@@ -223,7 +237,7 @@
         "keyword": "대지권"
       },
       "link": "https://www.law.go.kr/판례/(%EC%84%9C%EC%9A%B8%EC%A4%91%EC%95%99%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EB%82%98-5973)",
-      "no": 56
+      "no": 55
     },
     {
       "type": "prec",
@@ -237,7 +251,7 @@
         "keyword": "근저당권설정등기 말소"
       },
       "link": "https://www.law.go.kr/판례/(%EC%97%AC%EC%A3%BC%EC%A7%80%EC%9B%90-2026-%EA%B0%80%EB%8B%A8-10528)",
-      "no": 55
+      "no": 54
     },
     {
       "type": "prec",
@@ -251,7 +265,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/판례/(2026%EB%8B%A4201517)",
-      "no": 54
+      "no": 53
     },
     {
       "type": "law",
@@ -264,7 +278,7 @@
         "ministry": "국토교통부,법무부"
       },
       "link": "https://www.law.go.kr/법령/%EC%83%81%EA%B0%80%EA%B1%B4%EB%AC%BC%20%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
-      "no": 53
+      "no": 52
     },
     {
       "type": "prec",
@@ -278,7 +292,7 @@
         "keyword": "총회결의 무효"
       },
       "link": "https://www.law.go.kr/판례/(2024%EB%8B%A4321829)",
-      "no": 52
+      "no": 51
     },
     {
       "type": "prec",
@@ -292,7 +306,7 @@
         "keyword": "분양전환"
       },
       "link": "https://www.law.go.kr/판례/(2025%EB%8B%A4220178)",
-      "no": 51
+      "no": 50
     },
     {
       "type": "prec",
@@ -306,7 +320,7 @@
         "keyword": "업무상배임"
       },
       "link": "https://www.law.go.kr/판례/(2025%EB%8F%8421522)",
-      "no": 50
+      "no": 49
     },
     {
       "type": "prec",
@@ -320,7 +334,7 @@
         "keyword": "임대차보증금 반환"
       },
       "link": "https://www.law.go.kr/판례/(%EC%9D%B8%EC%B2%9C%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-216498)",
-      "no": 49
+      "no": 48
     },
     {
       "type": "prec",
@@ -334,7 +348,7 @@
         "keyword": "임대차보증금 반환"
       },
       "link": "https://www.law.go.kr/판례/(2023%EB%8B%A4307116)",
-      "no": 48
+      "no": 47
     },
     {
       "type": "prec",
@@ -348,7 +362,7 @@
         "keyword": "대지권"
       },
       "link": "https://www.law.go.kr/판례/(%EC%84%9C%EC%9A%B8%EA%B3%A0%EB%93%B1%EB%B2%95%EC%9B%90-2025-%EB%88%84-7799)",
-      "no": 47
+      "no": 46
     },
     {
       "type": "prec",
@@ -362,7 +376,7 @@
         "keyword": "주택재개발정비사업조합"
       },
       "link": "https://www.law.go.kr/판례/(2025%EB%8B%A4217883)",
-      "no": 46
+      "no": 45
     },
     {
       "type": "prec",
@@ -376,20 +390,6 @@
         "keyword": "소유권이전등기 말소"
       },
       "link": "https://www.law.go.kr/판례/(2025%EB%8B%A4217707)",
-      "no": 45
-    },
-    {
-      "type": "prec",
-      "category": "단체등기",
-      "title": "이사건 소유권 이전등기 가등기 말소는 소멸시효 10년 완성으로 소멸됨",
-      "summary": "인천지방법원-2025-가단-217326",
-      "date": "2026.03.06",
-      "meta": {
-        "caseNo": "인천지방법원-2025-가단-217326",
-        "court": "",
-        "keyword": "소유권이전등기 말소"
-      },
-      "link": "https://www.law.go.kr/판례/(%EC%9D%B8%EC%B2%9C%EC%A7%80%EB%B0%A9%EB%B2%95%EC%9B%90-2025-%EA%B0%80%EB%8B%A8-217326)",
       "no": 44
     },
     {
@@ -450,15 +450,15 @@
     {
       "type": "prec",
       "category": "기업법무",
-      "title": "산업기술의유출방지및보호에관한법률위반·부정경쟁방지및영업비밀보호에관한법률위반(영업비밀국외누설등)·부정경쟁방지및영업비밀보호에관한법률위반(영업비밀누설등)·업무상배임",
-      "summary": "대법원 · 2025도13231 · 판결",
+      "title": "산업기술의유출방지및보호에관한법률위반·부정경쟁방지및영업비밀보호에관한법률위반(영업비밀국외누설등)·업무상배임",
+      "summary": "대법원 · 2025도11906 · 판결",
       "date": "2026.01.15",
       "meta": {
-        "caseNo": "2025도13231",
+        "caseNo": "2025도11906",
         "court": "대법원",
         "keyword": "업무상배임"
       },
-      "link": "https://www.law.go.kr/판례/(2025%EB%8F%8413231)",
+      "link": "https://www.law.go.kr/판례/(2025%EB%8F%8411906)",
       "no": 39
     },
     {
