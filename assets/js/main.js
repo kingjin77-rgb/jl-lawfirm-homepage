@@ -234,4 +234,20 @@
     var href = (a.getAttribute('href') || '').split('/').pop();
     if (href && href === here) a.setAttribute('aria-current', 'page');
   });
+
+  /* ---------- 카카오톡 상담 ----------
+     PC 브라우저 안에서 카카오톡 대화를 여는 기능은 카카오가 주지 않는다.
+     채널 채팅 주소를 열면 카카오가 손님의 카카오톡(PC 앱·휴대폰)에 대화방을 띄우고
+     브라우저에는 안내문만 남긴다. 큰 빈 탭이 뜨면 고장 난 줄 알므로
+     PC 에서는 카카오 공식 방식처럼 작은 창으로 연다. 휴대폰은 그대로 앱으로 넘어간다. */
+  var KAKAO_CHAT = 'https://pf.kakao.com/_xlDxdhs/chat';
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="' + KAKAO_CHAT + '"]');
+    if (!a) return;
+    var pc = window.matchMedia('(hover: hover) and (pointer: fine)').matches && window.innerWidth > 768;
+    if (!pc) return;
+    var w = window.open(KAKAO_CHAT, 'jl_kakao_chat',
+      'width=460,height=620,left=' + Math.max(0, (screen.width - 460) / 2) + ',top=' + Math.max(0, (screen.height - 620) / 2));
+    if (w) { e.preventDefault(); w.focus(); }   // 팝업이 막히면 링크대로 새 탭으로 연다
+  });
 })();
