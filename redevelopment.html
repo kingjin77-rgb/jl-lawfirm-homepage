@@ -6,7 +6,7 @@
 <title>재건축·재개발 변호사 | 법무법인 제이엘</title>
 <meta name="description" content="조합설립·총회 결의부터 관리처분계획 취소소송, 현금청산·매도청구, 집단 명도까지 — 조합과 조합원 양측을 모두 대리해 본 법무법인 제이엘의 재건축·재개발 전담 서비스.">
 <script>document.documentElement.className+=' js';</script>
-<link rel="stylesheet" href="assets/css/style.css?v=142">
+<link rel="stylesheet" href="assets/css/style.css?v=143">
 <meta name="author" content="법무법인 제이엘">
 <script type="application/ld+json">
 {
@@ -52,95 +52,6 @@
   ]
 }
 </script>
-<style>
-/* ===== 재건축·재개발 전용 컴포넌트 (style.css 토큰 사용) ===== */
-
-/* 방문자 이원 카드 */
-.rdv-doors { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px, 2vw, 28px); }
-.rdv-door {
-  position: relative; display: flex; flex-direction: column;
-  padding: clamp(30px, 3.4vw, 48px);
-  background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--navy);
-  transition: transform .45s var(--ease), box-shadow .45s var(--ease);
-}
-.rdv-door:hover { transform: translateY(-6px); box-shadow: 0 22px 50px rgba(13,33,98,.12); }
-.rdv-door--gold { border-top-color: var(--gold); }
-.rdv-door__tag { font-size:15px; letter-spacing: .2em; font-weight: 700; color: var(--navy); }
-.rdv-door--gold .rdv-door__tag { color: var(--gold); }
-.rdv-door__title { margin-top: 12px; font-size: clamp(20px, 2vw, 25px); }
-.rdv-door__desc { margin-top: 12px; font-size: 15px; color:var(--gray-700); }
-.rdv-door ul { margin-top: 20px; }
-.rdv-door ul li { position: relative; padding-left: 14px; font-size: 14.5px; color: var(--gray-700); line-height: 1.95; }
-.rdv-door ul li::before { content: ""; position: absolute; left: 0; top: 14px; width: 5px; height: 1px; background: var(--gold); }
-.rdv-door__cta { margin-top: auto; padding-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
-
-/* 단계 타임라인 */
-.rdv-flow__tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; counter-reset: flow; }
-.rdv-flow__tab {
-  position: relative; text-align: left;
-  padding: 18px 16px 16px; border: 1px solid var(--line); background: #fff;
-  transition: all .3s var(--ease);
-}
-.rdv-flow__tab .no { display: block; font-size:15px; letter-spacing: .16em; font-weight: 800; color: var(--gray-700); }
-.rdv-flow__tab .t { display: block; margin-top: 8px; font-size: clamp(15px, 1.25vw, 16.5px); font-weight: 700; color: var(--gray-900); line-height: 1.45; word-break: keep-all; }
-.rdv-flow__tab::after {
-  content: ""; position: absolute; left: 0; bottom: -1px; width: 100%; height: 3px;
-  background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease);
-}
-.rdv-flow__tab:hover { border-color: var(--navy); }
-.rdv-flow__tab.is-on { background: var(--navy); border-color: var(--navy); }
-.rdv-flow__tab.is-on .no { color: #cbb27e; }
-.rdv-flow__tab.is-on .t { color: #fff; }
-.rdv-flow__tab.is-on::after { transform: scaleX(1); }
-
-.rdv-flow__panel { margin-top: 22px; border: 1px solid var(--line); background: #fff; padding: clamp(26px, 3vw, 44px); display: none; }
-.rdv-flow__panel.is-on { display: block; animation: rdvfade .5s var(--ease); }
-@keyframes rdvfade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.rdv-flow__lead { max-width: 74ch; font-size: clamp(14.5px, 1.35vw, 16.5px); color: var(--gray-700); }
-.rdv-flow__cols { margin-top: 24px; display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(18px, 2.4vw, 36px); }
-.rdv-flow__col { border-top: 2px solid var(--navy); padding-top: 16px; }
-.rdv-flow__col--m { border-top-color: var(--gold); }
-.rdv-flow__col h4 { font-size: 14px; letter-spacing: .06em; color: var(--navy); }
-.rdv-flow__col--m h4 { color: var(--gold); }
-.rdv-flow__col li { position: relative; padding-left: 14px; font-size: 14.5px; color: var(--gray-700); line-height: 1.9; }
-.rdv-flow__col li::before { content: ""; position: absolute; left: 0; top: 14px; width: 5px; height: 1px; background: var(--gray-300); }
-.rdv-flow__col ul { margin-top: 10px; }
-
-/* 강점 카드 (다크 섹션) */
-.rdv-why { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2vw, 28px); }
-.rdv-why__card { padding: clamp(28px, 3vw, 42px); background: rgba(255,255,255,.05); border: 1px solid var(--line-dark); }
-.rdv-why__no { font-size:15px; letter-spacing: .2em; color: #cbb27e; font-weight: 700; }
-.rdv-why__title { margin-top: 14px; font-size: clamp(18px, 1.8vw, 22px); color: #fff; }
-.rdv-why__desc { margin-top: 14px; font-size: 14.5px; color:rgba(255,255,255,.85); line-height: 1.85; }
-
-/* FAQ */
-.rdv-faq { border-top: 2px solid var(--navy); }
-.rdv-faq details { border-bottom: 1px solid var(--line); }
-.rdv-faq summary {
-  display: flex; align-items: baseline; gap: 16px; cursor: pointer; list-style: none;
-  padding: 22px 8px; font-size: clamp(15.5px, 1.5vw, 17.5px); font-weight: 700; color: var(--ink);
-  transition: color .3s var(--ease);
-}
-.rdv-faq summary::-webkit-details-marker { display: none; }
-.rdv-faq summary::before { content: "Q"; flex: 0 0 auto; font-size: 15px; font-weight: 800; color: var(--gold); }
-.rdv-faq summary::after { content: "+"; margin-left: auto; font-size: 20px; font-weight: 400; color: var(--gray-300); transition: transform .3s var(--ease); }
-.rdv-faq details[open] summary { color: var(--navy); }
-.rdv-faq details[open] summary::after { transform: rotate(45deg); }
-.rdv-faq .a { display: flex; gap: 16px; padding: 0 8px 26px; }
-.rdv-faq .a::before { content: "A"; flex: 0 0 auto; font-size: 15px; font-weight: 800; color: var(--navy); }
-.rdv-faq .a p { font-size: 15px; color: var(--gray-700); max-width: 78ch; }
-
-/* 반응형 */
-@media (max-width: 900px) {
-  .rdv-doors { grid-template-columns: 1fr; }
-  .rdv-flow__tabs { grid-template-columns: repeat(3, 1fr); }
-  .rdv-flow__cols { grid-template-columns: 1fr; }
-  .rdv-why { grid-template-columns: 1fr; }
-}
-@media (max-width: 560px) {
-  .rdv-flow__tabs { grid-template-columns: repeat(2, 1fr); }
-}
-</style>
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/redevelopment.html">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -257,7 +168,7 @@
   <section class="section">
     <div class="container split">
       <div class="reveal">
-        <h2 class="sec-title"><span class="en">JL REDEVELOPMENT</span>양측을 모두 아는<br><strong>정비사업 로펌</strong></h2>
+        <h2 class="sec-title"><span class="en">JL REDEVELOPMENT</span><span data-underline>양측을 모두 아는<br>정비사업 로펌</span></h2>
       </div>
       <div class="reveal prose" data-delay="120">
         <p>
@@ -271,7 +182,7 @@
           <span class="s">총회 결의 절차부터 관리처분계획 쟁송, 현금청산·매도청구, 집단 명도까지 이어집니다.</span>
           <span class="s">전 단계를 담당 변호사가 직접 지휘합니다.</span>
         </p>
-        <div class="quote" style="margin-top:26px">
+        <div class="quote mt-4">
           정비사업 분쟁의 절반은 서류가 아니라 절차에서 시작됩니다. 결의 시점의 절차 관리가 가장 저렴한 보험입니다.
         </div>
       </div>
@@ -295,7 +206,7 @@
         <div class="statcard"><span class="num" data-count="1">1<small>년</small></span><span class="lbl">처분이 있은 날부터 취소소송<br>행정소송법 제20조 제2항</span></div>
         <div class="statcard"><span class="num" data-count="2">2<small>개월</small></span><span class="lbl">회답기간 만료 후 매도청구<br>도시정비법 제64조 제4항</span></div>
       </div>
-      <p class="sec-desc reveal" style="margin-top:22px">
+      <p class="sec-desc reveal mt-4">
         <span class="s">기간에는 예외와 기산일 다툼이 따라붙습니다.</span>
         <span class="s">고시문을 받은 날짜부터 담당 변호사가 직접 계산해 알려드립니다.</span>
       </p>
@@ -532,7 +443,7 @@
         <p class="sec-desc">담당 변호사들이 정리한 최신 판례와 실무 자료입니다.</p>
       </div>
       <div class="pfeed reveal" data-prec-feed="재건축·재개발" data-prec-limit="5"></div>
-      <p class="reveal" style="margin-top:22px;display:flex;flex-wrap:wrap;gap:12px">
+      <p class="reveal btn-row mt-4">
         <a class="btn btn--fill" href="redevelopment-desk.html">정비사업 동향 보기 <span class="arrow">&#8594;</span></a>
         <a class="btn" href="magazine.html">제이엘 매거진 보기 <span class="arrow">&#8594;</span></a>
       </p>
@@ -598,12 +509,12 @@
   <a href="tel:025370123">변호사 상담 02-537-0123</a>
 </div>
 
-<script src="assets/js/main.js?v=142" defer></script>
-<script src="assets/js/motion.js?v=142" defer></script>
-<script src="assets/js/gnb.js?v=142" defer></script>
-<script src="assets/js/regpop.js?v=142" defer></script>
-<script src="assets/js/practice-feed.js?v=142" defer></script>
-<script src="assets/js/fresh.js?v=142" defer></script>
+<script src="assets/js/main.js?v=143" defer></script>
+<script src="assets/js/motion.js?v=143" defer></script>
+<script src="assets/js/gnb.js?v=143" defer></script>
+<script src="assets/js/regpop.js?v=143" defer></script>
+<script src="assets/js/practice-feed.js?v=143" defer></script>
+<script src="assets/js/fresh.js?v=143" defer></script>
 <script>
 /* 단계 타임라인 탭 */
 (function () {

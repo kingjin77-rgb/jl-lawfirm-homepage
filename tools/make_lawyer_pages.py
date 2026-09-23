@@ -55,7 +55,7 @@ def focus_html(focus):
   <section class="section section--alt">
     <div class="container">
       <div class="sec-head reveal">
-        <h2 class="sec-title"><span class="en">PRACTICE FOCUS</span>주력 분야</h2>
+        <h2 class="sec-title"><span class="en">PRACTICE FOCUS</span><span data-underline>주력 분야</span></h2>
       </div>
       <div class="lwp-focus">%s
       </div>
@@ -85,7 +85,7 @@ def workareas_html(workareas):
   <section class="section">
     <div class="container">
       <div class="sec-head reveal">
-        <h2 class="sec-title"><span class="en">WORK AREAS</span>업무 분야</h2>
+        <h2 class="sec-title"><span class="en">WORK AREAS</span><span data-underline>업무 분야</span></h2>
       </div>
       <div class="lwp-work">%s
       </div>
@@ -115,7 +115,7 @@ def columns_html(columns, name):
   <section class="section">
     <div class="container">
       <div class="sec-head reveal">
-        <h2 class="sec-title"><span class="en">COLUMNS</span>%s 변호사의 <strong>글</strong></h2>
+        <h2 class="sec-title"><span class="en">COLUMNS</span><span data-underline>%s 변호사의 글</span></h2>
         <p class="sec-desc">직접 쓴 컬럼과 연재입니다. 실무에서 부딪히는 쟁점을 다룹니다.</p>
       </div>
       <div class="lwp-cols">%s
@@ -226,7 +226,7 @@ def page_html(L, all_lawyers):
   <section class="section">
     <div class="container">
       <div class="sec-head reveal">
-        <h2 class="sec-title"><span class="en">CAREER</span>주요 경력</h2>
+        <h2 class="sec-title"><span class="en">CAREER</span><span data-underline>주요 경력</span></h2>
       </div>
       <div class="lwp-career reveal">
         <ul class="lwslide__career lwp-career__list">%(career)s
@@ -238,7 +238,7 @@ def page_html(L, all_lawyers):
   <section class="section section--alt">
     <div class="container">
       <div class="sec-head reveal">
-        <h2 class="sec-title"><span class="en">MEMBERS</span>다른 구성원</h2>
+        <h2 class="sec-title"><span class="en">MEMBERS</span><span data-underline>다른 구성원</span></h2>
       </div>
       <div class="lwp-others reveal">%(others)s
       </div>
