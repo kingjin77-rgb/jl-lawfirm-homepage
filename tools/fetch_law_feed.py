@@ -11,6 +11,7 @@
 import argparse
 import json
 import os
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -43,37 +44,48 @@ LAWS = [
 ]
 
 # 판례 검색어 — 분야별 핵심 쟁점
+# (검색어, 분야, 사건명에 하나는 있어야 할 말, 사건명에 있으면 버릴 말)
+# 이 API는 검색어를 부분일치로 잡아서 "대지권" → 종합부동산세 사건,
+# "총회결의 무효" → 주주총회 사건이 섞여 온다. 사건명으로 한 번 더 거른다.
+RDV_MUST = ("조합", "정비", "재개발", "재건축", "관리처분", "현금청산", "매도청구", "수용")
+RDV_BAN = ("주주총회", "주식회사")
 PREC_QUERIES = [
     # 하자소송
-    ("하자보수보증금", "하자소송"),
-    ("공동주택 하자담보책임", "하자소송"),
-    ("내력구조부 하자", "하자소송"),
-    ("하자진단 감정", "하자소송"),
-    ("입주자대표회의 손해배상", "하자소송"),
+    ("하자보수보증금", "하자소송", ("하자",), ()),
+    ("공동주택 하자담보책임", "하자소송", ("하자", "손해배상"), ()),
+    ("내력구조부 하자", "하자소송", ("하자",), ()),
+    ("하자진단 감정", "하자소송", ("하자",), ()),
+    ("입주자대표회의 손해배상", "하자소송", ("입주자대표회의", "하자", "손해배상"), ()),
     # 재건축 · 재개발
-    ("관리처분계획 무효", "재건축·재개발"),
-    ("현금청산금", "재건축·재개발"),
-    ("조합설립인가 취소", "재건축·재개발"),
-    ("매도청구", "재건축·재개발"),
-    ("총회결의 무효", "재건축·재개발"),
-    ("주택재개발정비사업조합", "재건축·재개발"),
+    ("관리처분계획 무효", "재건축·재개발", RDV_MUST, RDV_BAN),
+    ("현금청산금", "재건축·재개발", RDV_MUST, RDV_BAN),
+    ("조합설립인가 취소", "재건축·재개발", RDV_MUST, RDV_BAN),
+    ("매도청구", "재건축·재개발", RDV_MUST, RDV_BAN + ("농지",)),
+    ("총회결의 무효", "재건축·재개발", RDV_MUST, RDV_BAN),
+    ("주택재개발정비사업조합", "재건축·재개발", RDV_MUST, RDV_BAN),
     # 단체등기
-    ("소유권이전등기 말소", "단체등기"),
-    ("대지권", "단체등기"),
-    ("분양전환", "단체등기"),
-    ("근저당권설정등기 말소", "단체등기"),
+    ("소유권이전등기 말소", "단체등기", ("소유권이전등기", "말소"), ()),
+    ("대지권", "단체등기", ("대지권", "대지지분", "대지사용권"), ("종합부동산세",)),
+    ("분양전환", "단체등기", ("분양전환", "임대주택"), ()),
+    ("근저당권설정등기 말소", "단체등기", ("근저당",), ()),
     # 민사 · 형사
-    ("사해행위취소", "민사·형사"),
-    ("임대차보증금 반환", "민사·형사"),
-    ("건물명도", "민사·형사"),
-    ("유치권", "민사·형사"),
-    ("업무상횡령", "민사·형사"),
+    ("사해행위취소", "민사·형사", ("사해행위",), ()),
+    ("임대차보증금 반환", "민사·형사", ("임대차", "보증금", "건물인도"), ()),
+    ("건물명도", "민사·형사", ("명도", "인도"), ()),
+    ("유치권", "민사·형사", ("유치권",), ()),
+    ("업무상횡령", "민사·형사", ("횡령",), ()),
     # 기업법무
-    ("주주총회결의 취소", "기업법무"),
-    ("이사 해임", "기업법무"),
-    ("공사대금", "기업법무"),
-    ("업무상배임", "기업법무"),
+    ("주주총회결의 취소", "기업법무", ("주주총회", "결의"), ()),
+    ("이사 해임", "기업법무", ("해임",), ("사립학교", "임시이사")),
+    ("공사대금", "기업법무", ("공사대금",), ()),
+    ("업무상배임", "기업법무", ("배임",), ()),
 ]
+
+# 법원 판결의 표준 사건번호(2025다218322, 2023나2013051 …).
+# "인천지방법원-2026-가단-205096" 처럼 생긴 것은 조세 쪽 자료라
+# 법제처 판례 페이지에서 원문이 열리지 않는다(오류페이지). 싣지 않는다.
+CASE_NO = re.compile(r"^\d{4}[가-힣]{1,3}\d+$")
+PREC_URL = "https://www.law.go.kr/LSW/precInfoP.do?precSeq=%s"
 
 
 def fetch(path, params):
@@ -147,22 +159,36 @@ def collect_laws(oc):
     return out
 
 
-def collect_precedents(oc, per_query=3):
+def collect_precedents(oc, per_query=3, pool=20):
     out = []
     seen = set()
-    for query, cat in PREC_QUERIES:
+    dropped = {"형식": 0, "분야": 0}
+    for query, cat, must, ban in PREC_QUERIES:
         try:
             # sort 를 안 주면 검색 API가 관련도순으로 돌려준다.
             # 페이지 제목이 "판례 동향"인데 관련도 1~3위가 20년 전 판결일 수도 있다.
             # ddes = 선고일자 내림차순 — 각 키워드에서 가장 최근 판결부터 잡는다.
+            # 아래에서 걸러내므로 넉넉히 받아 per_query 건만 싣는다.
             d = fetch("lawSearch.do", {"OC": oc, "target": "prec", "type": "JSON",
-                                       "query": query, "display": per_query, "sort": "ddes"})
+                                       "query": query, "display": pool, "sort": "ddes"})
+            took = 0
             for it in as_list(d.get("PrecSearch", {}).get("prec")):
+                if took >= per_query:
+                    break
                 case_no = (it.get("사건번호") or "").strip()
+                court = (it.get("법원명") or "").strip()
+                seq = str(it.get("판례일련번호") or "").strip()
+                name = (it.get("사건명") or "").strip()
                 if not case_no or case_no in seen:
                     continue
+                if not CASE_NO.match(case_no) or not court or not seq.isdigit():
+                    dropped["형식"] += 1
+                    continue
+                if not any(w in name for w in must) or any(w in name for w in ban):
+                    dropped["분야"] += 1
+                    continue
                 seen.add(case_no)
-                court = (it.get("법원명") or "").strip()
+                took += 1
                 out.append({
                     "type": "prec",
                     "category": cat,
@@ -171,10 +197,13 @@ def collect_precedents(oc, per_query=3):
                     "date": fmt_date(str(it.get("선고일자") or "").replace(".", "")),
                     "sortKey": str(it.get("선고일자") or "").replace(".", ""),
                     "meta": {"caseNo": case_no, "court": court, "keyword": query},
-                    "link": "https://www.law.go.kr/판례/(%s)" % urllib.parse.quote(case_no),
+                    "link": PREC_URL % seq,
                 })
+            if took < per_query:
+                print("  [few ] %s: %d건" % (query, took), file=sys.stderr)
         except Exception as e:
             print("  [err ] 판례 %s: %s" % (query, e), file=sys.stderr)
+    print("  걸러낸 판례 — 원문 없는 형식 %d건, 분야 안 맞음 %d건" % (dropped["형식"], dropped["분야"]))
     return out
 
 
@@ -197,6 +226,13 @@ def main():
     items = laws + precs
     if not items:
         print("법령/판례 0건 — API 응답 없음(네트워크 차단 또는 키 오류로 추정). 기존 파일 보존, 갱신 생략.", file=sys.stderr)
+        return 1
+
+    # 자체 점검 — 원문이 안 열리는 판례가 하나라도 있으면 저장하지 않는다.
+    bad = [p for p in precs
+           if not p["link"].startswith(PREC_URL % "") or not p["meta"]["court"]]
+    if bad:
+        print("원문 링크 형식 불량 %d건 — 기존 파일 보존, 갱신 생략." % len(bad), file=sys.stderr)
         return 1
 
     items.sort(key=lambda x: x.get("sortKey") or "", reverse=True)
