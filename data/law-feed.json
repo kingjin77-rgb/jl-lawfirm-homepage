@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-09-23 09:44",
+  "generatedAt": "2026-09-23 09:49",
   "source": "법제처 국가법령정보 공동활용 (law.go.kr)",
   "counts": {
-    "law": 12,
-    "prec": 50,
-    "total": 62
+    "law": 9,
+    "prec": 59,
+    "total": 68
   },
   "items": [
     {
@@ -18,20 +18,7 @@
         "ministry": "법무부"
       },
       "link": "https://www.law.go.kr/법령/%EC%83%81%EB%B2%95",
-      "no": 62
-    },
-    {
-      "type": "law",
-      "category": "단체등기",
-      "title": "주택법",
-      "summary": "소관 국토교통부 · 시행 2026.09.08 · 최종 공포 2026.09.08",
-      "date": "2026.09.08",
-      "meta": {
-        "lawId": "001809",
-        "ministry": "국토교통부"
-      },
-      "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EB%B2%95",
-      "no": 61
+      "no": 68
     },
     {
       "type": "law",
@@ -44,7 +31,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EA%B3%B5%EC%9D%B5%EC%82%AC%EC%97%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%ED%86%A0%EC%A7%80%20%EB%93%B1%EC%9D%98%20%EC%B7%A8%EB%93%9D%20%EB%B0%8F%20%EB%B3%B4%EC%83%81%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B2%95%EB%A5%A0",
-      "no": 60
+      "no": 67
     },
     {
       "type": "prec",
@@ -58,20 +45,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623711",
-      "no": 59
-    },
-    {
-      "type": "law",
-      "category": "하자소송",
-      "title": "공동주택관리법",
-      "summary": "소관 국토교통부 · 시행 2026.07.01 · 최종 공포 2026.03.05",
-      "date": "2026.07.01",
-      "meta": {
-        "lawId": "012345",
-        "ministry": "국토교통부"
-      },
-      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EB%8F%99%EC%A3%BC%ED%83%9D%EA%B4%80%EB%A6%AC%EB%B2%95",
-      "no": 58
+      "no": 66
     },
     {
       "type": "law",
@@ -84,7 +58,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%8F%84%EC%8B%9C%20%EB%B0%8F%20%EC%A3%BC%EA%B1%B0%ED%99%98%EA%B2%BD%EC%A0%95%EB%B9%84%EB%B2%95",
-      "no": 57
+      "no": 65
     },
     {
       "type": "law",
@@ -97,7 +71,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%B9%88%EC%A7%91%20%EB%B0%8F%20%EC%86%8C%EA%B7%9C%EB%AA%A8%EC%A3%BC%ED%83%9D%20%EC%A0%95%EB%B9%84%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%A1%80%EB%B2%95",
-      "no": 56
+      "no": 64
     },
     {
       "type": "prec",
@@ -111,7 +85,21 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623067",
-      "no": 55
+      "no": 63
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
+      "title": "부당이득금[부동산 양도행위가 사해행위 취소 및 원상회복 판결에 따라 취소 및 원상회복된 후 그 부동산에 관한 강제경매절차가 개시되었고, 강제경매절차 종료 전에 채무자 사망에 따른 상속재산에 대한 파산절차가 개시되어 파산관재인의 요청으로 경매절차가 속행된 경우, 그 부동산의 환가대금이 파산재단에 속하는 재산인지 및 사해행위 이후 부동산 양도소득세를 부과한 대한민국이 채권자로서 파산재단에 속한 재산에 대하여 파산절차에 따른 권리를 행사할 수 있는지 여부가 문제 된 사건]",
+      "summary": "대법원 · 2025다210073 · 판결",
+      "date": "2026.05.20",
+      "meta": {
+        "caseNo": "2025다210073",
+        "court": "대법원",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=622255",
+      "no": 62
     },
     {
       "type": "law",
@@ -124,7 +112,7 @@
         "ministry": "국토교통부,법무부"
       },
       "link": "https://www.law.go.kr/법령/%EC%83%81%EA%B0%80%EA%B1%B4%EB%AC%BC%20%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
-      "no": 54
+      "no": 61
     },
     {
       "type": "prec",
@@ -138,7 +126,7 @@
         "keyword": "이사 해임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=621989",
-      "no": 53
+      "no": 60
     },
     {
       "type": "prec",
@@ -152,7 +140,7 @@
         "keyword": "분양전환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=620455",
-      "no": 52
+      "no": 59
     },
     {
       "type": "prec",
@@ -166,7 +154,7 @@
         "keyword": "업무상배임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=620417",
-      "no": 51
+      "no": 58
     },
     {
       "type": "prec",
@@ -180,7 +168,7 @@
         "keyword": "임대차보증금 반환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=619451",
-      "no": 50
+      "no": 57
     },
     {
       "type": "prec",
@@ -194,7 +182,7 @@
         "keyword": "주택재개발정비사업조합"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618533",
-      "no": 49
+      "no": 56
     },
     {
       "type": "prec",
@@ -208,7 +196,7 @@
         "keyword": "소유권이전등기 말소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618541",
-      "no": 48
+      "no": 55
     },
     {
       "type": "prec",
@@ -222,7 +210,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618133",
-      "no": 47
+      "no": 54
     },
     {
       "type": "prec",
@@ -236,7 +224,7 @@
         "keyword": "업무상배임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=616707",
-      "no": 46
+      "no": 53
     },
     {
       "type": "law",
@@ -249,7 +237,7 @@
         "ministry": "법무부"
       },
       "link": "https://www.law.go.kr/법령/%EB%AF%BC%EC%82%AC%EC%A7%91%ED%96%89%EB%B2%95",
-      "no": 45
+      "no": 52
     },
     {
       "type": "prec",
@@ -263,7 +251,7 @@
         "keyword": "하자보수보증금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=616543",
-      "no": 44
+      "no": 51
     },
     {
       "type": "prec",
@@ -277,7 +265,7 @@
         "keyword": "분양전환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=621927",
-      "no": 43
+      "no": 50
     },
     {
       "type": "prec",
@@ -291,7 +279,7 @@
         "keyword": "업무상배임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=622061",
-      "no": 42
+      "no": 49
     },
     {
       "type": "prec",
@@ -305,7 +293,7 @@
         "keyword": "업무상횡령"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=624105",
-      "no": 41
+      "no": 48
     },
     {
       "type": "prec",
@@ -319,7 +307,7 @@
         "keyword": "업무상횡령"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=616025",
-      "no": 40
+      "no": 47
     },
     {
       "type": "law",
@@ -332,7 +320,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%AF%BC%EA%B0%84%EC%9E%84%EB%8C%80%EC%A3%BC%ED%83%9D%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%B3%84%EB%B2%95",
-      "no": 39
+      "no": 46
     },
     {
       "type": "law",
@@ -345,7 +333,7 @@
         "ministry": "국토교통부,법무부"
       },
       "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
-      "no": 38
+      "no": 45
     },
     {
       "type": "prec",
@@ -359,7 +347,21 @@
         "keyword": "업무상횡령"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=621921",
-      "no": 37
+      "no": 44
+    },
+    {
+      "type": "prec",
+      "category": "민사·형사",
+      "title": "사해행위취소",
+      "summary": "대법원 · 2025다213724 · 판결",
+      "date": "2025.10.16",
+      "meta": {
+        "caseNo": "2025다213724",
+        "court": "대법원",
+        "keyword": "사해행위취소"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618197",
+      "no": 43
     },
     {
       "type": "prec",
@@ -373,7 +375,7 @@
         "keyword": "소유권이전등기 말소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=619159",
-      "no": 36
+      "no": 42
     },
     {
       "type": "prec",
@@ -387,7 +389,7 @@
         "keyword": "하자보수보증금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=617233",
-      "no": 35
+      "no": 41
     },
     {
       "type": "prec",
@@ -401,7 +403,7 @@
         "keyword": "소유권이전등기 말소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=615673",
-      "no": 34
+      "no": 40
     },
     {
       "type": "prec",
@@ -415,7 +417,7 @@
         "keyword": "임대차보증금 반환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=607789",
-      "no": 33
+      "no": 39
     },
     {
       "type": "prec",
@@ -429,7 +431,7 @@
         "keyword": "임대차보증금 반환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=606789",
-      "no": 32
+      "no": 38
     },
     {
       "type": "prec",
@@ -443,7 +445,7 @@
         "keyword": "건물명도"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=613157",
-      "no": 31
+      "no": 37
     },
     {
       "type": "law",
@@ -456,7 +458,7 @@
         "ministry": "법무부"
       },
       "link": "https://www.law.go.kr/법령/%EB%B6%80%EB%8F%99%EC%82%B0%EB%93%B1%EA%B8%B0%EB%B2%95",
-      "no": 30
+      "no": 36
     },
     {
       "type": "prec",
@@ -470,7 +472,7 @@
         "keyword": "분양전환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=423776",
-      "no": 29
+      "no": 35
     },
     {
       "type": "prec",
@@ -484,7 +486,7 @@
         "keyword": "주택재개발정비사업조합"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=600515",
-      "no": 28
+      "no": 34
     },
     {
       "type": "prec",
@@ -498,7 +500,7 @@
         "keyword": "유치권"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=605189",
-      "no": 27
+      "no": 33
     },
     {
       "type": "prec",
@@ -512,7 +514,7 @@
         "keyword": "이사 해임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=241571",
-      "no": 26
+      "no": 32
     },
     {
       "type": "prec",
@@ -526,7 +528,7 @@
         "keyword": "유치권"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=240671",
-      "no": 25
+      "no": 31
     },
     {
       "type": "prec",
@@ -540,20 +542,21 @@
         "keyword": "건물명도"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=241109",
-      "no": 24
+      "no": 30
     },
     {
-      "type": "law",
-      "category": "하자소송",
-      "title": "집합건물의 소유 및 관리에 관한 법률",
-      "summary": "소관 법무부 · 시행 2023.09.29 · 최종 공포 2023.03.28",
-      "date": "2023.09.29",
+      "type": "prec",
+      "category": "단체등기",
+      "title": "대지권이전등기절차이행",
+      "summary": "대법원 · 2022다270613 · 판결",
+      "date": "2023.09.21",
       "meta": {
-        "lawId": "001262",
-        "ministry": "법무부"
+        "caseNo": "2022다270613",
+        "court": "대법원",
+        "keyword": "대지권"
       },
-      "link": "https://www.law.go.kr/법령/%EC%A7%91%ED%95%A9%EA%B1%B4%EB%AC%BC%EC%9D%98%20%EC%86%8C%EC%9C%A0%20%EB%B0%8F%20%EA%B4%80%EB%A6%AC%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B2%95%EB%A5%A0",
-      "no": 23
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=240301",
+      "no": 29
     },
     {
       "type": "prec",
@@ -567,7 +570,7 @@
         "keyword": "조합설립인가 취소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=236785",
-      "no": 22
+      "no": 28
     },
     {
       "type": "prec",
@@ -581,7 +584,7 @@
         "keyword": "건물명도"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=236459",
-      "no": 21
+      "no": 27
     },
     {
       "type": "prec",
@@ -595,7 +598,7 @@
         "keyword": "하자보수보증금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=240583",
-      "no": 20
+      "no": 26
     },
     {
       "type": "prec",
@@ -609,7 +612,7 @@
         "keyword": "관리처분계획 무효"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=235539",
-      "no": 19
+      "no": 25
     },
     {
       "type": "prec",
@@ -623,7 +626,7 @@
         "keyword": "유치권"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=239747",
-      "no": 18
+      "no": 24
     },
     {
       "type": "prec",
@@ -637,7 +640,21 @@
         "keyword": "관리처분계획 무효"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=236917",
-      "no": 17
+      "no": 23
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "근저당권말소[원고가 사인증여를 하면서 사인증여 대상인 부동산에 관하여 근저당권설정등기를 마쳐주었는데 이후 사인증여를 철회하면서 위 근저당권설정등기의 말소를 구한 사건]",
+      "summary": "대법원 · 2017다245330 · 판결",
+      "date": "2022.07.28",
+      "meta": {
+        "caseNo": "2017다245330",
+        "court": "대법원",
+        "keyword": "근저당권설정등기 말소"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=227689",
+      "no": 22
     },
     {
       "type": "prec",
@@ -651,7 +668,7 @@
         "keyword": "조합설립인가 취소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=238671",
-      "no": 16
+      "no": 21
     },
     {
       "type": "prec",
@@ -665,7 +682,49 @@
         "keyword": "총회결의 무효"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=221777",
-      "no": 15
+      "no": 20
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "전세권근저당권설정등기말소",
+      "summary": "대법원 · 2018다268538 · 판결",
+      "date": "2021.12.30",
+      "meta": {
+        "caseNo": "2018다268538",
+        "court": "대법원",
+        "keyword": "근저당권설정등기 말소"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=219763",
+      "no": 19
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "대지권지분이전등기청구의소",
+      "summary": "대법원 · 2020다278170 · 판결",
+      "date": "2021.11.11",
+      "meta": {
+        "caseNo": "2020다278170",
+        "court": "대법원",
+        "keyword": "대지권"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=219761",
+      "no": 18
+    },
+    {
+      "type": "prec",
+      "category": "단체등기",
+      "title": "지료·대지권지분매도",
+      "summary": "대법원 · 2020다286638 · 판결",
+      "date": "2021.06.24",
+      "meta": {
+        "caseNo": "2020다286638",
+        "court": "대법원",
+        "keyword": "대지권"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=219489",
+      "no": 17
     },
     {
       "type": "prec",
@@ -679,7 +738,7 @@
         "keyword": "입주자대표회의 손해배상"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=216693",
-      "no": 14
+      "no": 16
     },
     {
       "type": "prec",
@@ -693,7 +752,7 @@
         "keyword": "현금청산금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=226863",
-      "no": 13
+      "no": 15
     },
     {
       "type": "prec",
@@ -707,7 +766,7 @@
         "keyword": "조합설립인가 취소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=238705",
-      "no": 12
+      "no": 14
     },
     {
       "type": "prec",
@@ -721,7 +780,21 @@
         "keyword": "주주총회결의 취소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=205374",
-      "no": 11
+      "no": 13
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "조합총회결의무효확인",
+      "summary": "대법원 · 2018다227520 · 판결",
+      "date": "2019.01.31",
+      "meta": {
+        "caseNo": "2018다227520",
+        "court": "대법원",
+        "keyword": "총회결의 무효"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=204477",
+      "no": 12
     },
     {
       "type": "prec",
@@ -735,6 +808,20 @@
         "keyword": "관리처분계획 무효"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=204340",
+      "no": 11
+    },
+    {
+      "type": "prec",
+      "category": "재건축·재개발",
+      "title": "조합총회결의무효확인",
+      "summary": "서울고등법원 · 2017나2044269 · 판결",
+      "date": "2018.04.06",
+      "meta": {
+        "caseNo": "2017나2044269",
+        "court": "서울고등법원",
+        "keyword": "총회결의 무효"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=224767",
       "no": 10
     },
     {
