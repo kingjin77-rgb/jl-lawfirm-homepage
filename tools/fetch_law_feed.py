@@ -13,6 +13,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone, timedelta
@@ -52,6 +53,8 @@ RDV_BAN = ("주주총회", "주식회사")
 PREC_QUERIES = [
     # 하자소송
     ("하자보수보증금", "하자소송", ("하자",), ()),
+    ("하자보수", "하자소송", ("하자",), ()),
+    ("하자담보추급", "하자소송", ("하자", "손해배상"), ()),
     ("공동주택 하자담보책임", "하자소송", ("하자", "손해배상"), ()),
     ("내력구조부 하자", "하자소송", ("하자",), ()),
     ("하자진단 감정", "하자소송", ("하자",), ()),
@@ -88,11 +91,18 @@ CASE_NO = re.compile(r"^\d{4}[가-힣]{1,3}\d+$")
 PREC_URL = "https://www.law.go.kr/LSW/precInfoP.do?precSeq=%s"
 
 
-def fetch(path, params):
+def fetch(path, params, tries=3):
+    """일시적인 DNS·네트워크 오류가 잦다. 몇 번 다시 시도한다."""
     url = "%s/%s?%s" % (BASE, path, urllib.parse.urlencode(params))
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode("utf-8", "replace"))
+    for n in range(tries):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.loads(r.read().decode("utf-8", "replace"))
+        except Exception:
+            if n == tries - 1:
+                raise
+            time.sleep(3 * (n + 1))
 
 
 def as_list(v):
@@ -230,6 +240,20 @@ def main():
 
     print("법령 조회…")
     laws = collect_laws(args.oc)
+    # 조회에 실패한 법령은 지난 파일의 항목을 그대로 둔다(목록에서 빠지지 않게).
+    try:
+        with open(args.out, encoding="utf-8") as f:
+            prev = [i for i in json.load(f).get("items", []) if i.get("type") == "law"]
+    except Exception:
+        prev = []
+    have = {i["title"] for i in laws}
+    for i in prev:
+        if i["title"] not in have and any(i["title"] == n for n, _ in LAWS):
+            i = dict(i)
+            i["sortKey"] = i.get("date", "").replace(".", "")
+            i.pop("no", None)
+            laws.append(i)
+            print("  [keep] 지난 값 유지: %s" % i["title"], file=sys.stderr)
     print("판례 조회…")
     precs = collect_precedents(args.oc)
 
