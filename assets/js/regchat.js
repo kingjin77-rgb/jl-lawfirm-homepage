@@ -82,8 +82,8 @@
     },
     group: {
       label: '아파트 단체등기 문의예요',
-      say: ['한 세대가 아니라 아파트 전체를 함께 진행하시는 경우라면 접수 창구가 다릅니다.',
-            '입주예정자협의회 단위 접수는 <b>아파트친구</b>에서 받고, 담당 변호사가 연락드립니다.'],
+      say: ['아파트 전체를 함께 진행하시는 경우도 이 채팅에서 받습니다.',
+            '입주예정자협의회 단위 접수는 담당 변호사가 직접 연락드립니다.'],
       go: '#group', goLabel: '단체등기 안내 보기',
       next: ['call', 'start']
     },
@@ -288,6 +288,15 @@
     if (box.hidden) open(); else close();
   });
   root.querySelector('.rchat__x').addEventListener('click', close);
+  // 본문 단추(data-rchat-open)로도 연다. 스크립트가 없으면 href(전화)로 넘어간다.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('[data-rchat-open]');
+    if (!a) return;
+    e.preventDefault();
+    open();
+    var k = a.getAttribute('data-rchat-open');
+    if (k) render(k);
+  });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !box.hidden) close();
   });

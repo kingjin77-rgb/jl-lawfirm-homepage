@@ -1578,36 +1578,6 @@ a.lwslide__photolink { display: contents; }
 }
 
 /* =========================================================
-   아파트친구 — 메인 소개 블록
-   ========================================================= */
-.aptf {
-  display: grid; grid-template-columns: minmax(0,1fr) minmax(200px, 300px);
-  border: 1px solid var(--line); background: #fff;
-}
-.aptf__body { padding: clamp(30px, 3.6vw, 54px); }
-.aptf__en { font-size: 13px; letter-spacing: .2em; font-weight: 700; color: var(--gold); }
-.aptf h3 { margin-top: 12px; font-size: clamp(24px, 2.8vw, 34px); font-weight: 800; }
-.aptf__lead { margin-top: 16px; max-width: 62ch; font-size: clamp(16px, 1.4vw, 16px); color: var(--gray-700); }
-.aptf__list { margin-top: 22px; display: grid; gap: 7px; }
-.aptf__list li { position: relative; padding-left: 15px; font-size: 16px; color: var(--gray-700); }
-.aptf__list li::before { content: ""; position: absolute; left: 0; top: 13px; width: 6px; height: 1px; background: var(--gold); }
-.aptf__acts { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
-.aptf__side {
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(150deg, var(--navy-deep), var(--navy));
-  border-left: 1px solid var(--line);
-}
-.aptf__mark {
-  font-size: clamp(26px, 2.8vw, 38px); font-weight: 800; line-height: 1.2;
-  letter-spacing: .04em; text-align: center; color: rgba(255,255,255,.16);
-}
-@media (max-width: 860px) {
-  .aptf { grid-template-columns: 1fr; }
-  .aptf__side { min-height: 96px; border-left: 0; border-top: 1px solid var(--line); }
-  .aptf__acts .btn { width: 100%; justify-content: center; }
-}
-
-/* =========================================================
    담보책임기간 계산기 — 하자소송
    ========================================================= */
 .warr { margin-top: 30px; border: 1px solid var(--line); background: #fff; }

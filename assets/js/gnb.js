@@ -37,15 +37,11 @@
     },
     /* 단체등기 아래에 등기센터가 있고, 계산기 · 개별등기 접수는
        등기센터 안의 기능이다. 같은 줄에 늘어놓지 않는다.
-       아파트 단체등기 접수는 아파트친구에서 받는다. */
-    /* 단체등기 업무를 실제로 굴리는 플랫폼이 아파트친구다.
-       메뉴를 둘로 나누면 같은 사업이 두 개로 보인다. 하나로 묶는다. */
+       개별등기와 아파트 단위 단체등기 모두 등기센터 한 곳에서 받는다. */
     'registry.html': {
       lead: { t: '단체등기', d: '입주 아파트 소유권이전등기' },
       items: [
-        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황' },
-        { t: '아파트친구', h: 'https://kingjin77-rgb.github.io/apt-friend/',
-          d: '입주예정자협의회 지원센터', ext: true }
+        { t: '등기센터', h: 'dongtan.html', d: '신청 · 비용 · 진행상황' }
       ]
     },
     'law.html': {
@@ -101,7 +97,7 @@
   var closeTimer = null;
 
   links.forEach(function (a) {
-    // 외부 링크(아파트친구)는 펼치지 않는다
+    // 외부 링크는 펼치지 않는다
     if (a.classList.contains('gnb__ext')) return;
     var key = (a.getAttribute('href') || '').split('/').pop().split('#')[0];
     var conf = MENU[key];

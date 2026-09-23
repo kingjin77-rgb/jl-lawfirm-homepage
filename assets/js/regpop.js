@@ -1,8 +1,8 @@
 /* 오른쪽 위 안내 카드 — 단체등기 페이지(registry.html)에 도착하면 뜬다.
 
-   등기센터와 아파트친구 두 장을 위아래로 세워 둔다.
-   단체등기는 들어가는 문이 둘(개별등기는 등기센터, 아파트 단위는 아파트친구)이라
-   이 페이지에 온 사람에게 어느 쪽인지 먼저 보여 주는 편이 헤매지 않는다.
+   등기센터 카드 한 장을 띄운다.
+   개별등기와 아파트 단위 단체등기 모두 등기센터에서 받으므로
+   이 페이지에 온 사람을 바로 그쪽으로 안내한다.
 
    메뉴 클릭은 그냥 페이지로 넘어간다 — 가로채지 않는다.
    페이지에 도착한 뒤에만 이 카드가 뜬다.
@@ -27,18 +27,9 @@
       en: 'JL REGISTRATION CENTER',
       title: '등기센터',
       desc: '신청부터 등기필증 수령까지 방문 없이 진행합니다.',
-      list: ['개별등기 신청', '진행 현황 조회', '등기비용 계산'],
+      list: ['개별등기 신청', '아파트 단체등기 접수', '진행 현황 조회', '등기비용 계산'],
       href: 'dongtan.html',
       cta: '등기센터 바로가기'
-    },
-    {
-      en: 'APT FRIEND',
-      title: '아파트친구',
-      desc: '입주예정자협의회를 위한 별도 사이트입니다.',
-      list: ['아파트 단체등기 신청', '협의회 전 과정 26단계', '위임장 접수 · 서식 생성'],
-      href: 'https://kingjin77-rgb.github.io/apt-friend/',
-      cta: '아파트친구 열기',
-      ext: true
     }
   ];
 
@@ -74,7 +65,7 @@
     var pop = document.createElement('div');
     pop.className = 'regpop';
     pop.setAttribute('role', 'complementary');
-    pop.setAttribute('aria-label', '제이엘 등기센터 · 아파트친구 안내');
+    pop.setAttribute('aria-label', '제이엘 등기센터 안내');
     pop.innerHTML =
       CARDS.map(card).join('') +
       '<div class="regpop__foot">' +
