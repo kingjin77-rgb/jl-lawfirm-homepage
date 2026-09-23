@@ -169,10 +169,20 @@ def collect_precedents(oc, per_query=3, pool=20):
             # 페이지 제목이 "판례 동향"인데 관련도 1~3위가 20년 전 판결일 수도 있다.
             # ddes = 선고일자 내림차순 — 각 키워드에서 가장 최근 판결부터 잡는다.
             # 아래에서 걸러내므로 넉넉히 받아 per_query 건만 싣는다.
-            d = fetch("lawSearch.do", {"OC": oc, "target": "prec", "type": "JSON",
-                                       "query": query, "display": pool, "sort": "ddes"})
+            # 최근 판결 상위권을 조세 쪽 자료가 채우는 일이 많아 몇 쪽 더 넘겨 본다.
+            rows = []
+            for page in range(1, 6):
+                d = fetch("lawSearch.do", {"OC": oc, "target": "prec", "type": "JSON",
+                                           "query": query, "display": pool, "sort": "ddes",
+                                           "page": page})
+                got = as_list(d.get("PrecSearch", {}).get("prec"))
+                rows += got
+                ok = [r for r in rows if CASE_NO.match((r.get("사건번호") or "").strip())
+                      and any(w in (r.get("사건명") or "") for w in must)]
+                if len(got) < pool or len(ok) >= per_query * 2:
+                    break
             took = 0
-            for it in as_list(d.get("PrecSearch", {}).get("prec")):
+            for it in rows:
                 if took >= per_query:
                     break
                 case_no = (it.get("사건번호") or "").strip()
