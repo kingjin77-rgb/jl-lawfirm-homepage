@@ -2148,20 +2148,3 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
 .lwfilter__cap { margin-bottom: 12px; font-size: 16px; font-weight: 700; color: var(--navy); }
 .lwgrade__areas { margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--gold-ink); font-weight: 600; word-break: keep-all; }
 .lwgrade__list > li[hidden], .lwgrade[hidden] { display: none; }
-
-/* ── 500세대 이상 집단등기 실적 (track-500.js) ───────────────── */
-.tr500__sum { margin-top: 10px; font-size: 17px; line-height: 1.7; color: var(--ink); word-break: keep-all; }
-.tr500__sum b { color: var(--navy); }
-.tr500 .magfilter { margin-bottom: 18px; }
-.tr500__cnt { margin-bottom: 10px; font-size: 15px; font-weight: 700; color: var(--navy); }
-.tr500 table.dtable { display: table; width: 100%; }
-.tr500 .dtable thead th, .tr500 .dtable td { padding: 14px 18px; }
-.tr500 .dtable thead th:first-child { width: auto; }
-.tr500 .dtable td { color: var(--ink); font-size: 16px; }
-.tr500 .dtable .num, .tr500 .dtable .ym { width: 1%; white-space: nowrap; text-align: right; }
-.tr500 .dtable thead th.num, .tr500 .dtable thead th.ym { text-align: right; }
-.tr500 .dtable tbody tr:nth-child(even) td { background: var(--paper-alt); }
-.tr500__note { margin-top: 14px; font-size: 15px; line-height: 1.7; color: var(--gray-700); word-break: keep-all; }
-@media (max-width: 640px) {
-  .tr500 .dtable thead th, .tr500 .dtable td { padding: 12px 10px; font-size: 15px; }
-}
