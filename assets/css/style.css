@@ -2056,3 +2056,11 @@ body.has-rchat .quick { bottom: 84px; }
 .hero__lead .s + .s { margin-top: .35em; }
 .statcard .desc .s { display: block; }
 .statcard .desc .s + .s { margin-top: .3em; }
+/* 목록·표 칸 안에서도 문장마다 줄을 바꾼다 */
+li > .s, td > .s, dd > .s { display: block; }
+li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
+
+/* 좁은 화면에서 칸 많은 표는 표만 옆으로 밀어 본다. 페이지 전체가 가로로 흔들리지 않게. */
+@media (max-width: 640px) {
+  table.dtable { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
