@@ -2043,7 +2043,8 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
 .greet__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
 .greet__text { margin-top: 26px; font-size: 18px; line-height: 1.9; color: var(--ink); }
 .greet__text .s { display: block; }
-.greet__text .s + .s { margin-top: .5em; }
+.greet__text .s + .s { margin-top: .35em; }
+.greet__text p + p { margin-top: 1.1em; }
 .greet__sign { margin-top: 28px; font-size: 17px; color: var(--gray-700); }
 .greet__sign b { margin-left: 6px; font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: .04em; }
 .greet__more { margin-top: 24px; }
