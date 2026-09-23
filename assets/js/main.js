@@ -98,9 +98,11 @@
 
   /* ---------- 히어로 배경 영상 ----------
      파일이 없거나 재생 실패하면 이미지 슬라이드가 그대로 유지된다.
-     모바일 · 데이터 절약 모드 · 모션 최소화 설정에서는 로드하지 않는다. */
+     데이터 절약 모드 · 모션 최소화 설정에서는 로드하지 않는다.
+     휴대폰은 첫 영상(도시) 한 편만 받는다 — 세 편을 다 받으면 데이터가 아깝다. */
   var videos = [].slice.call(document.querySelectorAll('.hero__video'));
-  if (videos.length && !reduced && window.innerWidth > 768 &&
+  if (window.innerWidth <= 768) videos = videos.slice(0, 1);
+  if (videos.length && !reduced &&
       !(navigator.connection && navigator.connection.saveData)) {
     var ready = [];   // 실제로 재생되는 것만 모은다. 없는 파일은 조용히 빠진다
     var at = 0;
@@ -136,7 +138,7 @@
     function joined(v) {
       var shown = ready[at];
       ready.push(v);
-      // 먼저 불러와진 순서가 아니라 적어 둔 순서(도시 → 사무실 → 상담)대로 돌린다
+      // 먼저 불러와진 순서가 아니라 적어 둔 순서(도시 → 빌딩 → 서류)대로 돌린다
       ready.sort(function (a, b) { return videos.indexOf(a) - videos.indexOf(b); });
       if (shown) at = ready.indexOf(shown);
       if (ready.length === 1) {
@@ -154,14 +156,28 @@
       if (ready.length === 2 && !turn) turn = setInterval(step, 9000);
     }
 
-    videos.forEach(function (v) {
+    /* 첫 영상(도시)부터 받고, 그것이 재생 준비되면 나머지를 받는다.
+       한꺼번에 받으면 용량이 작은 영상이 먼저 떠서 순서가 뒤바뀐다. */
+    function fetchVideo(v) {
       var src = v.dataset.src;
       if (!src) return;
       v.addEventListener('canplay', function () { joined(v); }, { once: true });
       v.addEventListener('error', function () { v.classList.remove('is-ready'); });
       v.src = src;
       v.load();
-    });
+    }
+    var first = videos[0];
+    var rest = videos.slice(1);
+    var restStarted = false;
+    function startRest() {
+      if (restStarted) return;
+      restStarted = true;
+      rest.forEach(fetchVideo);
+    }
+    first.addEventListener('canplay', startRest, { once: true });
+    first.addEventListener('error', startRest, { once: true });
+    setTimeout(startRest, 4000);   // 첫 영상이 늦어도 나머지는 받는다
+    fetchVideo(first);
   }
 
   /* ---------- 글자 단위 스태거 리빌 ---------- */
