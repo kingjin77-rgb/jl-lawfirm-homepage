@@ -2,7 +2,10 @@
    페이지마다 헤더를 고쳐 넣지 않고, 이 파일 하나로 20개 페이지에 같은 메뉴를 붙인다.
    - 상위 메뉴 링크는 그대로 살아 있다 (눌러서 그 페이지로 갈 수 있다)
    - 마우스 · 키보드(Tab) 어느 쪽으로도 열린다
-   - 모바일에서는 펼침을 쓰지 않고 전체 목록을 세로로 보여준다
+   - 모바일(1024px 이하)에서는 마우스 펼침을 쓰지 않는다.
+     상위 메뉴 옆 ▾ 단추를 누르면 그 메뉴의 하위 항목만 아래로 펼쳐진다(아코디언).
+     상위 메뉴 글자를 누르면 종전대로 그 페이지로 간다.
+     메뉴 맨 아래에 카카오톡 상담 · 전화 상담 단추를 붙인다.
 */
 (function () {
   'use strict';
@@ -95,6 +98,9 @@
 
   var links = Array.prototype.slice.call(gnb.querySelectorAll('a'));
   var open = null;
+  // 햄버거 메뉴로 바뀌는 폭. style.css 의 @media (max-width: 1024px) 와 같아야 한다
+  var mobile = window.matchMedia('(max-width: 1024px)');
+  var accSeq = 0;
 
   links.forEach(function (a) {
     // 외부 링크는 펼치지 않는다
@@ -123,7 +129,31 @@
       '</div>';
     wrap.appendChild(panel);
 
+    /* 모바일 아코디언 단추 — 데스크톱에서는 CSS 로 감춘다 */
+    var accId = 'gnbacc-' + (++accSeq);
+    panel.id = accId;
+    var tog = document.createElement('button');
+    tog.type = 'button';
+    tog.className = 'gnb__tog';
+    tog.setAttribute('aria-expanded', 'false');
+    tog.setAttribute('aria-controls', accId);
+    tog.setAttribute('aria-label', a.textContent.trim() + ' 하위 메뉴 펼치기');
+    tog.innerHTML = '<span aria-hidden="true">▾</span>';
+    wrap.insertBefore(tog, panel);
+    tog.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var on = !wrap.classList.contains('is-acc');
+      wrap.classList.toggle('is-acc', on);
+      // 사이트 전체에 [hidden] { display:none !important } 가 있어 hidden 속성을 직접 푼다
+      panel.hidden = !on;
+      tog.setAttribute('aria-expanded', String(on));
+      tog.setAttribute('aria-label', a.textContent.trim() + ' 하위 메뉴 ' + (on ? '접기' : '펼치기'));
+    });
+
     function show() {
+      // 모바일에서는 마우스 펼침을 쓰지 않는다. 터치하면 mouseenter 가 흉내로 들어오기 때문이다
+      if (mobile.matches) return;
       clearTimeout(closeTimer);
       // 이미 열려 있는 메뉴로 돌아온 경우 — 다시 재면 이미 늘어난 헤더 높이를 기준으로 계산돼
       // 늘어난 만큼이 도로 줄어든다(펼침 글자가 어두운 배경 위로 빠진다). 그대로 둔다.
@@ -152,6 +182,8 @@
     }
     function hide(w) {
       w = w || wrap;
+      // 모바일 아코디언은 마우스 펼침과 따로 논다. 펼쳐 둔 것을 포커스 이동으로 닫지 않는다
+      if (mobile.matches && !w.classList.contains('is-open')) return;
       var p = w.querySelector('.gnbdrop');
       var link = w.querySelector('a');
       w.classList.remove('is-open');
@@ -192,4 +224,12 @@
   });
 
   gnb.classList.add('gnb--drop');
+
+  /* 모바일 메뉴 맨 아래 상담 단추 — 데스크톱에서는 CSS 로 감춘다 */
+  var cta = document.createElement('div');
+  cta.className = 'gnb__cta';
+  cta.innerHTML =
+    '<a class="gnb__cta-kakao" href="https://pf.kakao.com/_xlDxdhs/chat" target="_blank" rel="noopener">카카오톡 상담</a>' +
+    '<a class="gnb__cta-tel" href="tel:025370123">전화 02-537-0123</a>';
+  gnb.appendChild(cta);
 })();

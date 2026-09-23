@@ -215,6 +215,8 @@ body.nav-open .logo__img--color { display: block; }
 .header.is-solid .gnbdrop, .header.is-sub .gnbdrop { color: var(--line); }
 .header.is-solid .gnbdrop__list b,
 .header.is-sub .gnbdrop__list b { color: var(--gray-700); }
+/* 모바일 아코디언 단추 · 상담 단추는 1024px 이하에서만 보인다 */
+.gnb__tog, .gnb__cta { display: none; }
 
 /* 펼침이 열리면 헤더가 그 한 줄만큼 아래로 늘어난다 */
 .header.has-drop {
@@ -1018,16 +1020,37 @@ p > .s + .s { margin-top: .6em; }
   .gnb a { color: var(--navy) !important; font-size: 22px; padding-block: 14px; border-bottom: 1px solid var(--line); }
   .gnb a::after { display: none; }
 
-  /* 모바일에는 마우스를 올릴 수가 없다. 펼침을 감춰 두면 기업법무·재건축·질의응답처럼
-     펼침 안에만 있는 페이지에 메뉴로 갈 방법이 사라진다. 접지 말고 그대로 펴 둔다. */
+  /* 모바일에는 마우스를 올릴 수가 없다. 하위 항목을 전부 펴 두면 목록이 너무 길어져
+     상위 메뉴 옆 ▾ 단추로 하나씩 펼친다(아코디언). 상위 메뉴 글자는 그대로 그 페이지로 간다. */
   .gnb { overflow-y: auto; justify-content: flex-start; padding-block: calc(var(--header-h) + 12px) 40px; }
-  .gnb__item { display: block; width: 100%; }
-  /* gnb.js 가 마우스로 열기 전까지 hidden 을 걸어 둔다. 모바일에서는 처음부터 펴 둬야 하므로 푼다 */
-  .gnbdrop, .gnbdrop[hidden] {
-    display: block;
-    position: static; opacity: 1; transform: none; pointer-events: auto;
-    margin: 0; padding: 6px 0 10px; z-index: auto;
+  /* 데스크톱의 .gnb--drop 가운데 정렬을 풀어 하위 메뉴 없는 항목도 왼쪽 끝에서 시작한다 */
+  .gnb.gnb--drop { align-items: stretch; }
+  .gnb__item { display: flex; flex-wrap: wrap; align-items: stretch; width: 100%; border-bottom: 1px solid var(--line); }
+  .gnb__item > a { flex: 1 1 auto; min-width: 0; border-bottom: 0; }
+  .gnb__tog {
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 52px; width: 52px; min-height: 52px;
+    font-size: 26px; line-height: 1; color: var(--navy);
+    border-left: 1px solid var(--line);
   }
+  .gnb__tog span { display: inline-block; transition: transform .25s var(--ease); }
+  .gnb__item.is-acc .gnb__tog span { transform: rotate(180deg); }
+  /* gnb.js 가 hidden 을 걸어 둔다. 모바일에서는 is-acc 로만 연다 */
+  .gnbdrop, .gnbdrop[hidden] {
+    display: none; flex: 0 0 100%;
+    position: static; opacity: 1; transform: none; pointer-events: auto;
+    margin: 0; padding: 0 0 12px; z-index: auto;
+  }
+  .gnb__item.is-acc .gnbdrop { display: block; }
+  /* 모바일 메뉴 맨 아래 상담 단추 */
+  .gnb__cta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 24px; }
+  .gnb .gnb__cta a {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 52px; padding: 0 12px; border-bottom: 0;
+    font-size: 16.5px; font-weight: 800; white-space: nowrap;
+  }
+  .gnb .gnb__cta a.gnb__cta-kakao { background: #fee500; color: #191919 !important; }
+  .gnb .gnb__cta a.gnb__cta-tel { background: var(--navy); color: #fff !important; }
   .gnbdrop__in { padding: 0; }
   .gnbdrop__lead { display: none; }
   .gnbdrop__list { display: block; }
@@ -2096,3 +2119,49 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
 /* 메뉴 바로가기 앵커 — 고정 헤더에 가리지 않게 */
 .anchor { display: block; position: relative; top: calc(-1 * var(--header-h) - 12px); visibility: hidden; }
 [id] { scroll-margin-top: calc(var(--header-h) + 12px); }
+
+/* ── 메인 최신 법률정보 (latest-law.js) ─────────────────────── */
+.lawnew { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.8vw, 24px); }
+.lawnew > li { display: flex; }
+.lawnew__card {
+  display: flex; flex-direction: column; gap: 12px; width: 100%;
+  padding: 26px 24px 24px; background: #fff; border: 1px solid var(--line);
+  transition: border-color .3s var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease);
+}
+.lawnew__card:hover { border-color: var(--navy); transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgba(13,33,98,.35); }
+.lawnew__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.lawnew__kind, .lawnew__cat { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; font-size: 14px; font-weight: 700; }
+.lawnew__kind--law { background: var(--navy); color: #fff; }
+.lawnew__kind--prec { background: var(--gold-ink); color: #fff; }
+.lawnew__cat { background: var(--navy-soft); color: var(--navy); }
+.lawnew__title {
+  font-size: 18px; font-weight: 800; line-height: 1.5; letter-spacing: -.02em; color: var(--ink); word-break: keep-all;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.lawnew__sum { font-size: 15px; line-height: 1.6; color: var(--gray-700); word-break: keep-all; }
+.lawnew__date { margin-top: auto; padding-top: 4px; font-size: 15px; font-weight: 700; color: var(--navy); }
+.lawnew__more { margin-top: clamp(24px, 3vw, 36px); text-align: center; }
+@media (max-width: 900px) { .lawnew { grid-template-columns: 1fr; } }
+
+/* ── 구성원 분야별 보기 (lawyers.js) ───────────────────────── */
+.lwfilter { margin-bottom: 0; }
+.lwfilter__cap { margin-bottom: 12px; font-size: 16px; font-weight: 700; color: var(--navy); }
+.lwgrade__areas { margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--gold-ink); font-weight: 600; word-break: keep-all; }
+.lwgrade__list > li[hidden], .lwgrade[hidden] { display: none; }
+
+/* ── 500세대 이상 집단등기 실적 (track-500.js) ───────────────── */
+.tr500__sum { margin-top: 10px; font-size: 17px; line-height: 1.7; color: var(--ink); word-break: keep-all; }
+.tr500__sum b { color: var(--navy); }
+.tr500 .magfilter { margin-bottom: 18px; }
+.tr500__cnt { margin-bottom: 10px; font-size: 15px; font-weight: 700; color: var(--navy); }
+.tr500 table.dtable { display: table; width: 100%; }
+.tr500 .dtable thead th, .tr500 .dtable td { padding: 14px 18px; }
+.tr500 .dtable thead th:first-child { width: auto; }
+.tr500 .dtable td { color: var(--ink); font-size: 16px; }
+.tr500 .dtable .num, .tr500 .dtable .ym { width: 1%; white-space: nowrap; text-align: right; }
+.tr500 .dtable thead th.num, .tr500 .dtable thead th.ym { text-align: right; }
+.tr500 .dtable tbody tr:nth-child(even) td { background: var(--paper-alt); }
+.tr500__note { margin-top: 14px; font-size: 15px; line-height: 1.7; color: var(--gray-700); word-break: keep-all; }
+@media (max-width: 640px) {
+  .tr500 .dtable thead th, .tr500 .dtable td { padding: 12px 10px; font-size: 15px; }
+}

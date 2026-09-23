@@ -89,10 +89,50 @@
     if (curEl) curEl.textContent = 1;
   }
 
+  /* 분야별 보기 — 업무분야 차례는 상단 메뉴(gnb.js)와 같다.
+     각 변호사의 분야는 data/lawyers.json 의 areas 에 적는다.
+     해당 변호사가 한 명도 없는 분야는 단추를 만들지 않는다(눌러서 빈 화면이 나오지 않게). */
+  var AREAS = ['기업법무', '민사·형사', '하자소송', '재건축·재개발', '가사·상속·이혼', '공동주택 단체등기'];
+
+  function filterHtml(items) {
+    var used = AREAS.filter(function (a) {
+      return items.some(function (p) { return (p.areas || []).indexOf(a) > -1; });
+    });
+    if (!used.length) return '';
+    return '' +
+      '<div class="lwfilter__wrap">' +
+        '<p class="lwfilter__cap">분야별로 보기</p>' +
+        '<div class="magfilter lwfilter" data-lw-filter role="group" aria-label="업무분야로 변호사 찾기">' +
+          '<button type="button" class="is-on" data-area="" aria-pressed="true">전체</button>' +
+          used.map(function (a) {
+            return '<button type="button" data-area="' + esc(a) + '" aria-pressed="false">' + esc(a) + '</button>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+  }
+
+  function applyFilter(area) {
+    roster.querySelectorAll('[data-lw-filter] button').forEach(function (b) {
+      var on = b.getAttribute('data-area') === area;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+    roster.querySelectorAll('.lwgrade').forEach(function (g) {
+      var shown = 0;
+      g.querySelectorAll('.lwgrade__list > li').forEach(function (li) {
+        var areas = (li.getAttribute('data-areas') || '').split('|');
+        var ok = !area || areas.indexOf(area) > -1;
+        li.hidden = !ok;
+        if (ok) shown++;
+      });
+      g.hidden = !shown;
+    });
+  }
+
   /* 등급별 명단 — 슬라이드 순서와 별개로 구성원변호사 · 소속변호사를 나눠 보여준다 */
   function renderRoster(items) {
     if (!roster) return;
-    roster.innerHTML = TIERS.map(function (t) {
+    roster.innerHTML = filterHtml(items) + TIERS.map(function (t) {
       var group = items.filter(function (p) { return tierOf(p).key === t.key; });
       if (!group.length) return '';
       return '' +
@@ -111,14 +151,23 @@
               '<span class="lwgrade__txt">' +
                 '<b>' + esc(p.name) + '</b>' +
                 '<small>' + esc(p.short || t.label) + (p.role ? ' · ' + esc(p.role) : '') + '</small>' +
+                ((p.areas || []).length
+                  ? '<span class="lwgrade__areas">' + p.areas.map(esc).join(', ') + '</span>'
+                  : '') +
               '</span>';
-            return '<li>' + (page
+            return '<li data-areas="' + esc((p.areas || []).join('|')) + '">' + (page
               ? '<a href="' + page + '">' + inner + '<span class="lwgrade__go">→</span></a>'
               : '<span class="lwgrade__no">' + inner + '</span>') + '</li>';
           }).join('') +
         '</ul>' +
       '</div>';
     }).join('');
+
+    var fbar = roster.querySelector('[data-lw-filter]');
+    if (fbar) fbar.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-area]');
+      if (b) applyFilter(b.getAttribute('data-area'));
+    });
   }
 
   function show(n) {
