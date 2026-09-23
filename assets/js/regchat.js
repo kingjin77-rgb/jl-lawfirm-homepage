@@ -15,6 +15,7 @@
 
   var TEL = '1899-4252';
   var TEL_HREF = 'tel:18994252';
+  var KAKAO = 'https://pf.kakao.com/_xlDxdhs/chat';   // 카카오톡 채널 상담 — 누르면 바로 대화창
   /* 대화 시나리오.
      go: 이동할 섹션 / say: 답변 문단 / next: 이어지는 선택지 */
   var NODES = {
@@ -117,7 +118,10 @@
       '</header>' +
       '<div class="rchat__log" role="log" aria-live="polite"></div>' +
       '<div class="rchat__opts"></div>' +
-      '<a class="rchat__note" href="' + TEL_HREF + '">상담은 전화로 받습니다<b>' + TEL + '</b></a>' +
+      '<div class="rchat__note">' +
+        '<a href="' + TEL_HREF + '">전화 상담<b>' + TEL + '</b></a>' +
+        '<a class="is-kakao" href="' + KAKAO + '" target="_blank" rel="noopener">카카오톡 상담</a>' +
+      '</div>' +
     '</section>';
   document.body.appendChild(root);
   document.body.classList.add('has-rchat');

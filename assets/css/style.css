@@ -976,6 +976,9 @@ p > .s + .s { margin-top: .6em; }
 .quick a:hover { background: var(--navy-deep); }
 .quick a.is-alt { background: var(--gold); }
 .quick a.is-alt:hover { background: #97763d; }
+/* 카카오톡 상담 — 카카오 고유색으로 한눈에 알아보게 */
+.quick a.is-kakao { background: #fee500; color: #191919; font-weight: 800; }
+.quick a.is-kakao:hover { background: #f5d800; }
 
 /* =========================================================
    Responsive
@@ -1784,11 +1787,14 @@ a.lwslide__photolink { display: contents; }
 .rchat__opts button:hover { border-color: var(--navy); background: var(--navy-soft); }
 
 /* 바닥 띠 — 상담은 여기서 받지 않는다는 것을 전화 단추로 보여 준다 */
-.rchat__note { display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  margin: 0; padding: 14px 18px; background: var(--navy); color: #fff;
-  font-size: 15px; font-weight: 600; text-decoration: none; }
-.rchat__note b { font-size: 17px; font-weight: 800; letter-spacing: .02em; }
-.rchat__note:hover { background: var(--navy-deep); }
+.rchat__note { display: grid; grid-template-columns: 1fr 1fr; margin: 0; }
+.rchat__note a { display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  padding: 12px 16px; background: var(--navy); color: #fff;
+  font-size: 14.5px; font-weight: 600; text-decoration: none; }
+.rchat__note a b { font-size: 17px; font-weight: 800; letter-spacing: .02em; }
+.rchat__note a:hover { background: var(--navy-deep); }
+.rchat__note a.is-kakao { background: #fee500; color: #191919; font-size: 16px; font-weight: 800; align-items: center; }
+.rchat__note a.is-kakao:hover { background: #f5d800; }
 
 /* 채팅에서 보낸 섹션을 잠깐 표시해 준다 — 어디로 왔는지 알 수 있게 */
 .is-flash { animation: rchatFlash 1.6s var(--ease); }
@@ -2045,4 +2051,16 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
   .greet__inner { grid-template-columns: 1fr; }
   .greet__photo { max-width: 280px; }
   .greet__text { font-size: 17px; }
+}
+
+/* =========================================================
+   휴대폰 하단 상담 바 — 카카오톡 · 전화를 화면 아래 반반으로
+   (버튼 두 개를 오른쪽에 쌓으면 첫 화면 단추를 가린다)
+   ========================================================= */
+@media (max-width: 640px) {
+  .quick { left: 0; right: 0; bottom: 0; flex-direction: row; gap: 0; }
+  .quick a { flex: 1; justify-content: center; height: 54px; padding-inline: 8px; font-size: 15px; box-shadow: none; }
+  body { padding-bottom: 54px; }
+  body.has-rchat .quick { bottom: 0; }
+  body.has-rchat .rchat { bottom: 70px; }
 }
