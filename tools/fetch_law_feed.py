@@ -227,6 +227,48 @@ def collect_precedents(oc, per_query=3, pool=20):
     return out
 
 
+def verify(it, tries=3):
+    """링크를 실제로 열어, 그 페이지가 이 항목의 원문인지 확인한다.
+
+    법령: 페이지 제목이 법령명과 같아야 한다.
+    판례: 오류페이지가 아니고, 본문에 사건번호와 사건명 앞부분이 있어야 한다.
+    """
+    url = it["link"]
+    scheme, rest = url.split("://", 1)
+    url = scheme + "://" + urllib.parse.quote(rest, safe="/:?=&%()")
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    html = None
+    for n in range(tries):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                html = r.read().decode("utf-8", "replace")
+            break
+        except Exception:
+            time.sleep(3 * (n + 1))
+    why = None
+    if html is None:
+        why = "열리지 않음"
+    else:
+        m = re.search(r"<title>([^<]*)", html)
+        title = (m.group(1) if m else "").strip()
+        if "오류" in title:
+            why = "오류페이지"
+        elif it["type"] == "law":
+            if title.split("|")[0].strip() != it["title"]:
+                why = "제목 불일치(%s)" % title[:30]
+        else:
+            if it["meta"]["caseNo"] not in html:
+                why = "사건번호 없음"
+            else:
+                head = re.sub(r"\[.*$", "", it["title"])[:8]
+                if head and head not in html.replace("&middot;", "·"):
+                    why = "사건명 불일치"
+    if why:
+        print("  [drop] %s %s: %s" % (it["type"], it["title"][:30], why), file=sys.stderr)
+        return False
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--oc", default=os.getenv("LAW_GO_KR_OC"))
@@ -260,6 +302,15 @@ def main():
     items = laws + precs
     if not items:
         print("법령/판례 0건 — API 응답 없음(네트워크 차단 또는 키 오류로 추정). 기존 파일 보존, 갱신 생략.", file=sys.stderr)
+        return 1
+
+    # 원문 대조 — 법무법인 사이트다. 원문을 직접 열어 확인한 항목만 싣는다.
+    print("원문 대조…")
+    laws = [i for i in laws if verify(i)]
+    precs = [i for i in precs if verify(i)]
+    items = laws + precs
+    if not laws or not precs:
+        print("원문 대조 후 법령 또는 판례 0건 — 기존 파일 보존, 갱신 생략.", file=sys.stderr)
         return 1
 
     # 자체 점검 — 원문이 안 열리는 판례가 하나라도 있으면 저장하지 않는다.
