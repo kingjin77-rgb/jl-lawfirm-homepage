@@ -1776,8 +1776,12 @@ a.lwslide__photolink { display: contents; }
   transition: border-color .25s var(--ease), background .25s var(--ease); }
 .rchat__opts button:hover { border-color: var(--navy); background: var(--navy-soft); }
 
-.rchat__note { margin: 0; padding: 10px 16px 13px; background: #fff;
-  font-size: 12.5px; color: var(--gray-300); border-top: 1px solid var(--line); }
+/* 바닥 띠 — 상담은 여기서 받지 않는다는 것을 전화 단추로 보여 준다 */
+.rchat__note { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 0; padding: 14px 18px; background: var(--navy); color: #fff;
+  font-size: 15px; font-weight: 600; text-decoration: none; }
+.rchat__note b { font-size: 17px; font-weight: 800; letter-spacing: .02em; }
+.rchat__note:hover { background: var(--navy-deep); }
 
 /* 채팅에서 보낸 섹션을 잠깐 표시해 준다 — 어디로 왔는지 알 수 있게 */
 .is-flash { animation: rchatFlash 1.6s var(--ease); }
@@ -1792,23 +1796,6 @@ a.lwslide__photolink { display: contents; }
 body.has-rchat .quick { bottom: 84px; }
 @media (max-width: 460px) { body.has-rchat .quick { bottom: 78px; } }
 
-/* 채팅 안 문의 폼 */
-.rchat__form { display: grid; gap: 9px; }
-.rchat__form label { display: grid; gap: 4px; font-size: 14px; font-weight: 700; color: var(--navy); }
-.rchat__form input, .rchat__form textarea {
-  width: 100%; box-sizing: border-box; padding: 9px 11px;
-  border: 1px solid var(--line); border-radius: 8px;
-  font: inherit; font-size: 15.5px; font-weight: 400; color: var(--ink);
-}
-.rchat__form input:focus, .rchat__form textarea:focus { outline: 0; border-color: var(--navy); }
-.rchat__form textarea { resize: vertical; }
-.rchat__chk { grid-template-columns: 18px 1fr; align-items: start; font-weight: 500;
-  font-size: 13px; color: var(--gray-700); }
-.rchat__chk input { width: 16px; height: 16px; accent-color: var(--navy); padding: 0; }
-.rchat__form button { margin-top: 2px; }
-.rchat__err { margin: 0; font-size: 14px; color: var(--warn, #c0392b); font-weight: 600; }
-.rchat__copy { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px;
-  padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; resize: vertical; }
 
 /* =========================================================
    구성원 단체컷 — 흉상 밴드
