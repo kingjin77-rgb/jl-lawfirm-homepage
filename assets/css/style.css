@@ -2092,3 +2092,7 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
   .parea { grid-template-columns: 1fr; gap: 14px; }
   .parea__card { padding: 26px 22px 24px; }
 }
+
+/* 메뉴 바로가기 앵커 — 고정 헤더에 가리지 않게 */
+.anchor { display: block; position: relative; top: calc(-1 * var(--header-h) - 12px); visibility: hidden; }
+[id] { scroll-margin-top: calc(var(--header-h) + 12px); }

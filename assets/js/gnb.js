@@ -15,9 +15,11 @@
      lead 는 펼침 왼쪽에 놓이는 소개글이다. */
   var MENU = {
     'about.html': {
-      lead: { t: '법인소개', d: '소통 · 공감 · 신뢰' },
+      lead: { t: '법인소개', d: '법무법인 제이엘 소개' },
       items: [
-        { t: '법인 개요', h: 'about.html#intro', d: '설립 배경과 운영 원칙' },
+        { t: '법인 소개', h: 'about.html#intro', d: '업무 범위와 사무소' },
+        { t: '구성원의 전문 배경', h: 'about.html#background', d: '자격과 실무 경력' },
+        { t: '법률자문 활동', h: 'about.html#advisory', d: '법률자문과 위원 활동' },
         { t: '구성원', h: 'lawyers.html', d: '구성원변호사 3인 · 소속변호사 3인' },
         { t: '오시는 길', h: 'contact.html', d: '서초 본사무소 · 동탄 분사무소' }
       ]

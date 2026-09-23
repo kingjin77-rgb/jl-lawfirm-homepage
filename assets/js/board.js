@@ -21,6 +21,12 @@
   var page = 1;
   var cat = 'all';
   var keyword = '';
+  // 메뉴의 법령(#acts)·판례(#cases) 바로가기 — 주소의 # 로 종류를 거른다
+  var kind = 'all';
+  function kindFromHash() {
+    kind = location.hash === '#acts' ? 'law' : location.hash === '#cases' ? 'prec' : 'all';
+  }
+  kindFromHash();
 
   var esc = function (s) {
     return String(s == null ? '' : s)
@@ -31,6 +37,7 @@
   function apply() {
     var kw = keyword.trim().toLowerCase();
     view = all.filter(function (it) {
+      if (kind !== 'all' && it.type !== kind) return false;
       if (cat !== 'all' && it.category !== cat) return false;
       if (!kw) return true;
       return (it.title + ' ' + it.summary + ' ' + it.category).toLowerCase().indexOf(kw) > -1;
@@ -113,6 +120,8 @@
     });
   }
 
+  window.addEventListener('hashchange', function () { kindFromHash(); if (all.length) apply(); });
+
   fetch('data/law-feed.json', { cache: 'no-cache' })
     .then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -121,6 +130,7 @@
     .then(function (d) {
       all = d.items || [];
       view = all.slice();
+      if (kind !== 'all') { apply(); return; }
       if (stampEl && d.generatedAt) {
         stampEl.textContent = d.generatedAt + ' 기준 · 출처 ' + (d.source || 'law.go.kr');
       }
