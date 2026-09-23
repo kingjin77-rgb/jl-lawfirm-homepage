@@ -71,7 +71,6 @@ PRIORITY = {
     "registry-detail.html": "0.8",
     "magazine.html": "0.7",
     "law.html": "0.7",
-    "qna.html": "0.9",
 }
 
 # 이동경로(빵부스러기) — 검색결과에 "홈 > 업무분야" 형태로 노출된다
@@ -86,7 +85,6 @@ CRUMBS = {
     "registry-detail.html": ["단체등기", "상세안내"],
     "dongtan.html": ["단체등기", "제이엘 등기센터"],
     "law.html": ["법률정보"],
-    "qna.html": ["질의응답"],
     "magazine.html": ["제이엘 매거진"],
     "contact.html": ["오시는 길"],
     "privacy.html": ["개인정보처리방침"],

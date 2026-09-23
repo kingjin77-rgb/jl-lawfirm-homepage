@@ -47,7 +47,6 @@
     'law.html': {
       lead: { t: '법률정보', d: '법제처 자료를 매일 06시에 자동으로 받아옵니다.' },
       items: [
-        { t: '자주 묻는 법률상식', h: 'qna.html', d: '실무에서 반복되는 질문과 답', hot: true },
         { t: '공동주택 관련 법령', h: 'law.html#acts', d: '주택법 등 12종' },
         { t: '최신 판례', h: 'law.html#cases', d: '하자 · 재건축 · 등기 쟁점' }
       ]
@@ -94,7 +93,6 @@
 
   var links = Array.prototype.slice.call(gnb.querySelectorAll('a'));
   var open = null;
-  var closeTimer = null;
 
   links.forEach(function (a) {
     // 외부 링크는 펼치지 않는다
@@ -125,6 +123,10 @@
 
     function show() {
       clearTimeout(closeTimer);
+      // 이미 열려 있는 메뉴로 돌아온 경우 — 다시 재면 이미 늘어난 헤더 높이를 기준으로 계산돼
+      // 늘어난 만큼이 도로 줄어든다(펼침 글자가 어두운 배경 위로 빠진다). 그대로 둔다.
+      if (open === wrap && wrap.classList.contains('is-open')) return;
+      if (open && open !== wrap && open._cancelClose) open._cancelClose();
       if (open && open !== wrap) hide(open);
       panel.hidden = false;
       // 판의 윗변을 메뉴 글자 밑줄에 맞춘다. 헤더 위쪽부터 잰 거리다
@@ -136,7 +138,9 @@
         Math.round(gnb.getBoundingClientRect().left - hb.left) + 'px');
       // 항목 수가 메뉴마다 달라 헤더가 늘어날 높이도 그때그때 재야 한다.
       // 판이 헤더 아래로 삐져나가는 만큼만 늘린다
-      var over = top + panel.offsetHeight + 12 - Math.round(hb.height);
+      // 늘어나기 전 헤더 높이(--header-h)를 기준으로 잰다. 다른 메뉴에서 넘어오면 이미 늘어나 있다
+      var baseH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || Math.round(hb.height);
+      var over = top + panel.offsetHeight + 20 - baseH;
       header.style.setProperty('--drop-h', Math.max(0, over) + 'px');
       // hidden 해제 직후 전환이 먹도록 한 프레임 뒤에 상태를 준다
       requestAnimationFrame(function () { wrap.classList.add('is-open'); });
@@ -154,10 +158,27 @@
       setTimeout(function () { if (!w.classList.contains('is-open')) p.hidden = true; }, 260);
     }
 
-    wrap.addEventListener('mouseenter', show);
+    /* 하위 항목은 메뉴 첫 글자 아래(왼쪽)에서 시작한다.
+       오른쪽 메뉴에서 하위 항목으로 비스듬히 내려가면 다른 상위 메뉴 위를 지나가는데,
+       지나가는 순간 바로 바꾸면 가려던 펼침이 사라진다.
+       다른 펼침이 열려 있을 때는 그 메뉴 위에 잠시 머물러야 바꾼다. */
+    var switchTimer = null;
+    // 닫기 예약은 메뉴마다 따로 둔다. 하나를 공유하면 옆 메뉴를 지나가며 예약이 덮여
+    // 원래 메뉴의 닫기가 취소되지 않고 그대로 실행돼 펼침이 사라진다.
+    var closeTimer = null;
+    wrap.addEventListener('mouseenter', function () {
+      clearTimeout(switchTimer);
+      if (open && open !== wrap) {
+        switchTimer = setTimeout(show, 280);
+      } else {
+        show();
+      }
+    });
+    wrap._cancelClose = function () { clearTimeout(closeTimer); };
     wrap.addEventListener('mouseleave', function () {
+      clearTimeout(switchTimer);
       // 마우스가 잠깐 벗어났다 돌아오는 경우가 잦아 여유를 둔다
-      closeTimer = setTimeout(function () { hide(); }, 260);
+      closeTimer = setTimeout(function () { hide(); }, 450);
     });
     wrap.addEventListener('focusin', show);
     wrap.addEventListener('focusout', function (e) {

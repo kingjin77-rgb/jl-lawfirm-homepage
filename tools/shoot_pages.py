@@ -21,7 +21,7 @@ OUT = os.path.join(ROOT, 'tools', 'shots')
 PAGES = ['index.html', 'about.html', 'lawyers.html', 'practice.html', 'corporate.html',
          'redevelopment.html', 'redevelopment-desk.html', 'registry.html',
          'registry-detail.html', 'dongtan.html', 'law.html', 'magazine.html',
-         'contact.html', 'qna.html']
+         'contact.html']
 
 RAISE = "document.querySelectorAll('.reveal').forEach(e=>e.classList.add('is-in'))"
 COUNT = """document.querySelectorAll('.statcard .num').forEach(el=>{
