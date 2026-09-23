@@ -1,0 +1,28 @@
+name: 법령 원문 받기 (본문 인용 검증용)
+
+# 홈페이지 본문의 조문 인용을 원문과 대조할 때 수동으로 돌린다.
+# 결과는 저장소에 커밋하지 않고 아티팩트로만 남긴다.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 조문 받기
+        env:
+          LAW_GO_KR_OC: ${{ secrets.LAW_GO_KR_OC }}
+        run: python tools/dump_law_articles.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: law-articles
+          path: law_articles.json
+          retention-days: 7
