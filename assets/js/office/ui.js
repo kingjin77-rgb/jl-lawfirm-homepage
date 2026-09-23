@@ -193,7 +193,11 @@
     $('ofComplex').addEventListener('change', function () { if (current) ui.go(current); });
 
     $('ofSave').addEventListener('click', function () {
-      if (!JL.complexNames().length && !JL.db.surveys.length) {
+      // 접수·설정·문자 기록만 있어도 저장할 자료다
+      var db = JL.db;
+      var any = JL.complexNames().length || db.surveys.length || db.intake.length ||
+        db.sms.log.length || db.sms.templates.length;
+      if (!JL.dirty && !any) {
         return ui.toast('저장할 자료가 없습니다.', 'err');
       }
       ui.askPassword('암호화해 저장', true, function (pw) {

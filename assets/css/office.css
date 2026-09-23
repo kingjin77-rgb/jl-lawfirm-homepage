@@ -34,7 +34,7 @@ body.of { background: var(--paper-alt); font-size: 15px; }
 
 /* ── 위쪽 ──────────────────────────────────── */
 .of-main { min-width: 0; }
-.of-top { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 10px;
+.of-top { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
   padding: 12px 32px; background: #fff; border-bottom: 1px solid var(--line); }
 .of-cxsel { font: inherit; font-size: 15.5px; font-weight: 700; padding: 10px 14px; min-width: 300px;
   border: 1px solid var(--line); border-radius: 9px; background: #fff; }
@@ -262,8 +262,9 @@ body.of-print { padding: 40px; font-family: var(--ff); }
 
 /* ── 좁은 화면 ─────────────────────────────── */
 @media (max-width: 1080px) {
-  .of-app { grid-template-columns: 1fr; }
-  .of-side { position: static; height: auto; }
+  /* 1fr 만 쓰면 가로로 늘어선 메뉴 폭만큼 화면이 넓어진다. 0 까지 줄 수 있게 한다. */
+  .of-app { grid-template-columns: minmax(0, 1fr); }
+  .of-side { position: static; height: auto; min-width: 0; }
   .of-menu { flex-direction: row; overflow-x: auto; }
   .of-menu button { flex: 0 0 auto; width: auto; }
   .of-side__foot { display: none; }
@@ -274,6 +275,23 @@ body.of-print { padding: 40px; font-family: var(--ff); }
 @media (max-width: 640px) {
   .of-form.two, .of-form.three, .of-form.q { grid-template-columns: 1fr; }
   .of-cards { grid-template-columns: 1fr; }
+  /* 휴대폰 폭 — 위쪽 단추는 단지 선택 아래 한 줄로, 검색칸은 줄 전체로 */
+  .of-top { padding-top: 10px; padding-bottom: 10px; }
+  .of-top .of-sp { display: none; }
+  .of-top .btn { flex: 1 1 0; }
+  .of-top .of-state { flex: 1 1 100%; }
+  .of-state:empty { display: none; }
+  /* 알림이 화면 절반 폭으로 좁아지지 않게 양옆에 붙인다 */
+  .of-toast { left: 16px; right: 16px; max-width: none; transform: translateY(16px); }
+  .of-toast.on { transform: none; }
+  .of-head { padding-top: 22px; }
+  .of-head h1 { font-size: 23px; }
+  .of-search { min-width: 0; flex: 1 1 100%; }
+  .of-panel { padding: 18px 16px; }
+  .of-dialog { padding: 10px; }
+  .of-dialog__box { padding: 22px 18px 18px; }
+  .of-barrow { grid-template-columns: minmax(70px, 110px) 1fr 90px; gap: 8px; }
+  .of-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .of-bulk.quiet { background: #fff; border-color: var(--line); }
 .of-dialog__box h2:empty { display: none; }

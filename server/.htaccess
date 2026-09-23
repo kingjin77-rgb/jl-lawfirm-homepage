@@ -1,6 +1,13 @@
 # 설정 파일이 브라우저로 그대로 읽히면 DB 비밀번호가 새어 나간다.
-<FilesMatch "^(config\.php|config\.sample\.php|schema\.sql)$">
-  Require all denied
+# Apache 2.4 는 Require, 2.2 는 Order/Deny 를 쓴다. 호스팅이 어느 쪽이든 막히게 둘 다 둔다.
+<FilesMatch "^(config\.php|config\.sample\.php|schema\.sql|README\.md)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
 </FilesMatch>
 
 # 디렉터리 목록을 보여주지 않는다

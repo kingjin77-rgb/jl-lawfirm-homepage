@@ -95,9 +95,12 @@
           if (!qs[i].t.trim()) return (i + 1) + '번 질문이 비어 있습니다.';
           if ((qs[i].k === 'one' || qs[i].k === 'many') && qs[i].o.length < 2) return (i + 1) + '번 질문의 보기를 두 개 이상 적어 주십시오.';
         }
-        if (!isNew && s.complex !== $('svC').value && s.responses.length) {
+        // 지워진 단지의 설문은 다른 단지로 옮길 수 있게 둔다
+        if (!isNew && s.complex !== $('svC').value && s.responses.length && JL.db.complexes[s.complex]) {
           return '응답이 들어온 설문은 대상 단지를 바꿀 수 없습니다.';
         }
+        // 지워진 단지에서 옮기면 앞 단지 동·호로 받은 응답은 새 단지와 맞지 않는다
+        if (!isNew && s.complex !== $('svC').value && !JL.db.complexes[s.complex]) s.responses = [];
         s.title = t; s.complex = $('svC').value; s.org = $('svO').value.trim();
         s.body = $('svB').value.trim(); s.sign = $('svS').checked; s.questions = qs;
         s.updatedAt = JL.now();
@@ -129,7 +132,15 @@
     return '<textarea rows="2" name="a' + qi + '">' + esc(v || '') + '</textarea>';
   }
 
+  /** 대상 단지가 지워진 설문이면 알려 주고 true. */
+  function gone(s) {
+    if (JL.db.complexes[s.complex]) return false;
+    ui.toast('「' + s.complex + '」 단지가 지워져 이 설문에 응답을 넣을 수 없습니다. 설문을 수정해 대상 단지를 다시 고르십시오.', 'err');
+    return true;
+  }
+
   function enterAnswer(s) {
+    if (gone(s)) return;
     var units = targetUnits(s);
     ui.dialog({
       title: '응답 넣기 · ' + s.title,
@@ -146,6 +157,7 @@
       onOk: function (box) {
         var key = JL.unitKey($('anD').value, $('anH').value);
         if (!JL.digits($('anD').value) || !JL.digits($('anH').value)) return '동과 호를 입력해 주십시오.';
+        if (!JL.db.complexes[s.complex]) return '대상 단지가 지워졌습니다. 설문을 수정해 단지를 다시 고르십시오.';
         if (!JL.db.complexes[s.complex].units[key]) return s.complex + ' 명단에 없는 세대입니다.';
         var ans = [];
         for (var i = 0; i < s.questions.length; i++) {
@@ -169,25 +181,53 @@
     });
   }
 
-  /** 단지 플랫폼 투표 CSV 합치기 — 동·호와 질문 제목이 같은 칸을 찾는다. */
+  /** 제목 비교용. 앞 번호("1.")·공백·물음표 같은 문장부호를 떼고 본다. */
+  function normHead(h) {
+    var s = String(h == null ? '' : h);
+    if (s.normalize) s = s.normalize('NFC');
+    return s.replace(/^\s*(Q\s*)?\d+\s*[.)]\s*/i, '').replace(/[\s?？!.,:;'"「」『』()[\]]/g, '');
+  }
+
+  // 질문이 아닌 칸 — 이름·일시·연락처 같은 것. 순서로 맞출 때 건너뛴다.
+  var META = /^(동|호|호수|성명|이름|명의자|일시|접수일시|제출일시|응답일시|날짜|시간|휴대폰|핸드폰|전화|연락처|번호|비고|메모)$/;
+
+  /** 단지 플랫폼 투표 CSV 합치기 — 동·호와 질문 제목이 같은 칸을 찾는다.
+   *  "동" 이 "동의하십니까" 에 들어 있다고 그 칸을 동으로 보면 안 된다. 제목은 똑같을 때만 맞춘다. */
   function mergeCsv(s) {
+    if (gone(s)) return;
     JL.pickFile('.csv', function (file) {
-      file.text().then(function (t) {
-        var lines = JL.readCsvLines(t);
-        if (lines.length < 2) return ui.toast('CSV 에 읽을 줄이 없습니다.', 'err');
-        var head = JL.splitCsv(lines[0]);
+      JL.readText(file).then(function (t) {
+        var rows = JL.parseCsv(t);
+        if (rows.length < 2) return ui.toast('CSV 에 읽을 줄이 없습니다.', 'err');
+        var head = rows[0].map(normHead);
         var cD = head.indexOf('동'), cH = head.findIndex(function (h) { return h === '호' || h === '호수'; });
-        if (cD < 0 || cH < 0) return ui.toast('CSV 에서 동·호 칸을 찾지 못했습니다.', 'err');
-        var qCols = s.questions.map(function (q, i) {
-          var k = head.findIndex(function (h) { return h && (h === q.t || q.t.indexOf(h) >= 0 || h.indexOf(q.t) >= 0); });
-          return k >= 0 ? k : (head.length > 2 + i ? 2 + i : -1);
+        if (cD < 0 || cH < 0) return ui.toast('CSV 에서 동·호 칸을 찾지 못했습니다. 제목 줄에 "동", "호" 칸이 있어야 합니다.', 'err');
+        var used = {}; used[cD] = 1; used[cH] = 1;
+        // 1) 제목이 똑같은 칸
+        var qCols = s.questions.map(function (q) {
+          var t = normHead(q.t);
+          var k = head.findIndex(function (h, j) { return !used[j] && h && h === t; });
+          if (k >= 0) used[k] = 1;
+          return k;
         });
-        var c = JL.db.complexes[s.complex], hit = 0, miss = 0;
-        lines.slice(1).forEach(function (line) {
-          var r = JL.splitCsv(line), key = JL.unitKey(r[cD], r[cH]);
+        // 2) 못 찾은 질문은 남은 질문 칸에 차례대로
+        var rest = head.map(function (h, j) { return j; })
+          .filter(function (j) { return !used[j] && head[j] && !META.test(head[j]); });
+        var byOrder = 0;
+        qCols = qCols.map(function (k) {
+          if (k >= 0) return k;
+          if (!rest.length) return -1;
+          byOrder++;
+          return rest.shift();
+        });
+        var c = JL.db.complexes[s.complex];
+        if (!c) return ui.toast('대상 단지가 지워졌습니다.', 'err');
+        var hit = 0, miss = 0;
+        rows.slice(1).forEach(function (r) {
+          var key = JL.unitKey(r[cD], r[cH]);
           if (!c.units[key]) { miss++; return; }
           var ans = s.questions.map(function (q, i) {
-            var v = qCols[i] >= 0 ? r[qCols[i]] : '';
+            var v = qCols[i] >= 0 ? (r[qCols[i]] || '') : '';
             return q.k === 'many' ? v.split(/[\/;·]/).map(function (x) { return x.trim(); }).filter(Boolean) : v;
           });
           s.responses = s.responses.filter(function (x) { return x.unit !== key; });
@@ -195,7 +235,12 @@
           hit++;
         });
         JL.touch(); ui.go('survey');
-        ui.toast('응답 ' + hit + '건을 합쳤습니다' + (miss ? ' · 명단에 없는 세대 ' + miss : '') + '.', 'ok');
+        var lost = qCols.filter(function (k) { return k < 0; }).length;
+        ui.toast('응답 ' + hit + '건을 합쳤습니다' + (miss ? ' · 명단에 없는 세대 ' + miss : '') +
+          (byOrder ? ' · 제목이 다른 질문 ' + byOrder + '개는 칸 순서로 맞췄습니다' : '') +
+          (lost ? ' · 칸을 못 찾은 질문 ' + lost + '개' : '') + '.', lost ? 'err' : (byOrder ? '' : 'ok'));
+      }).catch(function () {
+        ui.toast('CSV 를 읽지 못했습니다.', 'err');
       });
     });
   }
@@ -234,6 +279,9 @@
         '<button type="button" class="btn" id="svEdit">수정</button>' +
         '<button type="button" class="btn" id="svCsvIn">응답 CSV 합치기</button>' +
         '<button type="button" class="btn btn--fill" id="svAns">응답 넣기</button></div>' +
+      (JL.db.complexes[s.complex] ? '' :
+        '<div class="of-callout warn"><b>대상 단지 「' + esc(s.complex) + '」가 지워졌습니다.</b><br>' +
+        '응답을 더 넣으려면 「수정」에서 대상 단지를 다시 고르십시오. 옮기면 앞 단지에서 받은 응답은 지워집니다.</div>') +
       '<header class="of-svhead"><span class="of-pill">' + esc(s.complex) + '</span>' +
         '<h3>' + esc(s.title) + '</h3>' +
         (s.org ? '<p class="of-p">주최 · ' + esc(s.org) + '</p>' : '') +

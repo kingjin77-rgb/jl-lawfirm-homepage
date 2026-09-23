@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>질의응답 관리 | 법무법인 제이엘</title>
-<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/style.css?v=132">
 <style>
   body { background: var(--paper-alt); }
   .adm { max-width: 1080px; margin-inline: auto; padding: 40px 24px 80px; }
@@ -45,6 +45,15 @@
   .log .ok { color: #7fe0a0; }
   .log .bad { color: #ff9d92; }
   .log .dim { color: #7f8db0; }
+  /* 휴대폰: 2·3단 입력칸을 한 줄씩 쌓는다 (390px 에서 가로 넘침 방지) */
+  @media (max-width: 640px) {
+    .adm { padding: 28px 16px 64px; }
+    .panel { padding: 20px 16px; }
+    .row.c2, .row.c3 { grid-template-columns: minmax(0, 1fr); }
+    .item__top { flex-wrap: wrap; }
+    .item__top .ttl { flex-basis: 100%; min-width: 0; }
+    .log { overflow-wrap: anywhere; }
+  }
 </style>
 <!-- SEO:AUTO -->
 <link rel="canonical" href="https://www.jllawfirm.co.kr/admin/qna.html">
@@ -143,7 +152,7 @@
   </section>
 </div>
 
-<script src="../assets/js/admin-gate.js" data-gate="home"></script>
+<script src="../assets/js/admin-gate.js?v=132" data-gate="home"></script>
 <script src="qna-admin.js"></script>
 </body>
 </html>

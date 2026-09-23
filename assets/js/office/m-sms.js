@@ -26,7 +26,9 @@
     { t: '진행 상황 안내', b: '[법무법인 제이엘] {이름}님, {단지} {동}동 {호}호 등기는 현재 「{단계}」 단계입니다.\n{조회링크}' }
   ];
 
-  var state = { body: '', target: 'all', keys: null, label: '' };
+  // keys 는 넘겨받은 단지(keysComplex)에만 쓴다. 다른 단지로 바꾸면 버린다.
+  // 같은 동·호 번호가 다른 단지에도 있어 엉뚱한 세대에 문자가 갈 수 있다.
+  var state = { body: '', target: 'all', keys: null, keysComplex: '', label: '' };
 
   /** 한글 2바이트, 영문·숫자·기호 1바이트. 통신사 계산과 같다. */
   function bytes(s) {
@@ -35,23 +37,23 @@
     return n;
   }
 
-  function fill(body, cx, u) {
-    var o = u.owners[0] || {};
+  /** o 를 주면 그 명의자 이름으로 채운다. 공동명의 두 분이 각자 자기 이름을 받게. */
+  function fill(body, cx, u, o) {
+    o = o || u.owners[0] || {};
     var d = u.cost.diff;
-    var base = location.origin + location.pathname.replace(/admin\/[^/]*$/, '');
     var map = {
       '{이름}': o.name || '고객', '{단지}': cx, '{동}': u.dong, '{호}': u.ho,
       '{단계}': u.step, '{등기비용}': JL.won(u.cost.total),
       '{차액}': d ? JL.won(Math.abs(d)) + '원' + (d > 0 ? ' 환급' : ' 추가납부') : '없음',
       '{미비서류}': u.lack || '',
-      '{조회링크}': base + 'tracking.html?c=' + encodeURIComponent(cx)
+      '{조회링크}': JL.trackUrl(cx)
     };
     return body.replace(/\{[^}]+\}/g, function (t) { return map[t] != null ? map[t] : t; });
   }
 
   function targets(cx) {
     var units = JL.units(cx);
-    if (state.keys) {
+    if (state.keys && state.keysComplex === cx) {
       var set = {};
       state.keys.forEach(function (k) { set[k] = 1; });
       return units.filter(function (u) { return set[JL.unitKey(u.dong, u.ho)]; });
@@ -78,9 +80,14 @@
       // 설문·위임장 화면에서 대상을 넘겨받았으면 그걸 쓴다
       if (JL.smsTarget && JL.smsTarget.complex === cx) {
         state.keys = JL.smsTarget.keys; state.label = JL.smsTarget.label;
+        state.keysComplex = cx;
         JL.smsTarget = null;
       } else if (JL.smsTarget) {
         JL.smsTarget = null;
+      }
+      // 단지를 바꿨으면 앞 단지에서 넘겨받은 대상은 버리고 조건 고르기로 돌아간다
+      if (state.keys && state.keysComplex !== cx) {
+        state.keys = null; state.keysComplex = ''; state.label = '';
       }
 
       var list = targets(cx);
@@ -92,7 +99,20 @@
         if (needLack && !u.lack) return false;
         return u.owners.some(function (o) { return o.phone; });
       });
-      var b = bytes(state.body), kind = b <= 90 ? '단문' : '장문', over = b > 2000;
+      // 바이트는 채운 뒤의 문자로 센다. {이름}·{단지}·{조회링크} 가 늘어나 단문이 장문이 되곤 한다.
+      // 받는 사람마다 길이가 다르니 가장 긴 문자를 기준으로 한다.
+      var b = state.body ? bytes(state.body) : 0, longest = null, maxB = -1;
+      if (state.body) {
+        reach.forEach(function (u) {
+          u.owners.forEach(function (o) {
+            if (!o.phone) return;
+            var n = bytes(fill(state.body, cx, u, o));
+            if (n > maxB) { maxB = n; longest = u; }
+          });
+        });
+        if (maxB >= 0) b = maxB;
+      }
+      var kind = b <= 90 ? '단문' : '장문', over = b > 2000;
       var sample = reach[0] ||
         (needLack ? list.filter(function (u) { return u.lack; })[0] : null) || list[0];
       var st = JL.db.settings;
@@ -131,7 +151,8 @@
           }).join('') + '</div>' +
           '<textarea id="smBody" class="of-ta" rows="7" placeholder="[법무법인 제이엘] {이름}님, ...">' + esc(state.body) + '</textarea>' +
           '<div class="of-count ' + (over ? 'err' : '') + '"><b>' + b.toLocaleString() + '</b> / ' +
-            (kind === '단문' ? '90바이트 · 단문' : '2,000바이트 · 장문') + (over ? ' · 너무 깁니다' : '') + '</div>' +
+            (kind === '단문' ? '90바이트 · 단문' : '2,000바이트 · 장문') + (over ? ' · 너무 깁니다' : '') +
+            (longest ? '<br>이름·동호를 채운 뒤 가장 긴 문자 기준 (' + esc(longest.dong) + '동 ' + esc(longest.ho) + '호)' : '') + '</div>' +
           '<div class="of-tags">' + TAGS.map(function (t) {
             return '<button type="button" data-tag="' + t[0] + '" title="' + t[1] + '">' + t[0] + '</button>';
           }).join('') + '</div>' +
@@ -163,7 +184,7 @@
         ], JL.db.sms.log, { empty: '아직 발송 기록이 없습니다.', max: 50 });
 
       if ($('smT')) $('smT').addEventListener('change', function () { state.target = this.value; ui.go('sms'); });
-      if ($('smClearT')) $('smClearT').addEventListener('click', function () { state.keys = null; state.label = ''; ui.go('sms'); });
+      if ($('smClearT')) $('smClearT').addEventListener('click', function () { state.keys = null; state.keysComplex = ''; state.label = ''; ui.go('sms'); });
 
       var ta = $('smBody');
       var redraw = function () {
@@ -193,9 +214,8 @@
         }
         var rows = [['수신번호', '이름', '동', '호', '메시지']];
         reach.forEach(function (u) {
-          var msg = fill(state.body, cx, u);
           u.owners.forEach(function (o) {
-            if (o.phone) rows.push([o.phone, o.name, u.dong, u.ho, msg]);
+            if (o.phone) rows.push([o.phone, o.name, u.dong, u.ho, fill(state.body, cx, u, o)]);
           });
         });
         JL.csv(rows, '문자발송_' + cx.replace(/\s+/g, '') + '_' + JL.today() + '.csv');

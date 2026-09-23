@@ -404,7 +404,7 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate
 .statcard .lbl { font-size: clamp(16.5px, 1.4vw, 18px); font-weight: 600; color: rgba(255,255,255,.82); }
 .statcard .num { font-size: clamp(34px, 4.4vw, 54px); font-weight: 800; letter-spacing: -.05em; line-height: 1.1; }
 .statcard .num small { font-size: .42em; margin-left: 4px; color: #cbb27e; font-weight: 700; }
-.statcard .desc { margin-top: 6px; font-size: 15.5px; color: rgba(255,255,255,.62); line-height: 1.7; }
+.statcard .desc { margin-top: 6px; font-size: 16px; color: rgba(255,255,255,.8); line-height: 1.7; }
 
 /* =========================================================
    Business accordion (eulaw — 주요업무)
@@ -1438,8 +1438,8 @@ a.lwslide__photolink { display: contents; }
 .staffbar__acts .btn { height: 46px; font-size: 15.5px; }
 
 /* 직원용 링크 — 방문자에게 튀지 않되, 직원은 찾을 수 있어야 한다 */
-.footer__adm { font-size: 13px; color: rgba(255,255,255,.34); }
-.footer__adm a { color: rgba(255,255,255,.52); text-underline-offset: 3px; }
+.footer__adm { font-size: 15px; color: rgba(255,255,255,.72); }
+.footer__adm a { color: rgba(255,255,255,.85); text-underline-offset: 3px; }
 .footer__adm a:hover { color: #fff; text-decoration: underline; }
 
 /* =========================================================
@@ -2020,4 +2020,22 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
 /* 좁은 화면에서 칸 많은 표는 표만 옆으로 밀어 본다. 페이지 전체가 가로로 흔들리지 않게. */
 @media (max-width: 640px) {
   table.dtable { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+/* =========================================================
+   대표변호사 인사말 — 메인
+   ========================================================= */
+.greet__inner { display: grid; grid-template-columns: minmax(220px, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.greet__photo { margin: 0; aspect-ratio: 3 / 4; overflow: hidden; background: var(--navy-soft); }
+.greet__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.greet__text { margin-top: 26px; font-size: 18px; line-height: 1.9; color: var(--ink); }
+.greet__text .s { display: block; }
+.greet__text .s + .s { margin-top: .5em; }
+.greet__sign { margin-top: 28px; font-size: 17px; color: var(--gray-700); }
+.greet__sign b { margin-left: 6px; font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: .04em; }
+.greet__more { margin-top: 24px; }
+@media (max-width: 760px) {
+  .greet__inner { grid-template-columns: 1fr; }
+  .greet__photo { max-width: 280px; }
+  .greet__text { font-size: 17px; }
 }

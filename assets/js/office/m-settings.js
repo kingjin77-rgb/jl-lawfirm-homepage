@@ -90,17 +90,26 @@
       el.querySelectorAll('[data-del]').forEach(function (b) {
         b.addEventListener('click', function () {
           var n = b.dataset.del, cnt = Object.keys(JL.db.complexes[n].units).length;
+          // 이 단지를 대상으로 한 설문은 단지가 사라지면 열 수 없다. 같이 지운다.
+          var svs = JL.db.surveys.filter(function (s) { return s.complex === n; });
+          var nResp = svs.reduce(function (a, s) { return a + s.responses.length; }, 0);
           ui.dialog({
             title: '단지 삭제',
             body: '<p class="of-p"><b>' + esc(n) + '</b> 와 세대 ' + cnt.toLocaleString() +
               '개를 지웁니다. 되돌릴 수 없습니다.</p>' +
+              (svs.length
+                ? '<div class="of-callout warn"><b>이 단지 설문 ' + svs.length + '건과 응답 ' + nResp.toLocaleString() + '건도 함께 지웁니다.</b><br>' +
+                  '결과가 필요하면 먼저 설문 화면에서 CSV 로 받아 두십시오.</div>'
+                : '') +
               '<label class="of-fld"><span>확인을 위해 단지명을 그대로 입력하십시오</span><input id="delName"></label>',
             ok: '지우기',
             onOk: function () {
               if ($('delName').value.trim() !== n) return '단지명이 다릅니다.';
               delete JL.db.complexes[n];
+              JL.db.surveys = JL.db.surveys.filter(function (s) { return s.complex !== n; });
+              if (JL.smsTarget && JL.smsTarget.complex === n) JL.smsTarget = null;
               JL.touch(); ui.drawComplexes(); ui.go('settings');
-              ui.toast(n + ' 단지를 지웠습니다.', 'ok');
+              ui.toast(n + ' 단지를 지웠습니다' + (svs.length ? ' · 설문 ' + svs.length + '건도 지웠습니다' : '') + '.', 'ok');
               return true;
             }
           });
@@ -109,8 +118,7 @@
 
       el.querySelectorAll('[data-link]').forEach(function (b) {
         b.addEventListener('click', function () {
-          var base = location.origin + location.pathname.replace(/admin\/[^/]*$/, '');
-          var url = base + 'tracking.html?c=' + encodeURIComponent(b.dataset.link);
+          var url = JL.trackUrl(b.dataset.link);
           var done = function () { ui.toast('링크를 복사했습니다. 문자에 붙여 넣으십시오.', 'ok'); };
           if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt('이 링크를 복사하십시오', url); });
           else prompt('이 링크를 복사하십시오', url);

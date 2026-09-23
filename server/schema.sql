@@ -46,7 +46,8 @@ CREATE TABLE IF NOT EXISTS households (
 
 -- 본인확인 열쇠 --------------------------------------------------------
 -- 공동명의는 두 사람 모두 조회할 수 있어야 한다. 그래서 세대 하나에 열쇠가 여럿이다.
--- vhash = SHA-256( verify_salt | 이름 | 생년월일6자리 )
+-- vhash = SHA-256( verify_salt | norm(이름) | 생년월일6자리 )
+--   norm = NFC 로 모으고, 공백을 모두 빼고, 영문은 대문자로
 -- 직원 화면의 「서버 업로드본」이 같은 방식으로 만든다.
 CREATE TABLE IF NOT EXISTS household_keys (
   household_id BIGINT UNSIGNED NOT NULL,
@@ -59,16 +60,26 @@ CREATE TABLE IF NOT EXISTS household_keys (
 -- 조회 시도 기록 ------------------------------------------------------
 -- 이름과 생년월일은 찍어서 맞힐 수 있는 조합이다.
 -- 같은 곳에서 계속 두드리면 막는다. 옛 시스템에는 이 장치가 없었다.
+-- 여러 곳에서 나눠 두드려도 막히게 세대(단지·동·호)별 실패도 센다.
+-- 30일 지난 기록은 lookup.php 가 가끔 지운다.
 CREATE TABLE IF NOT EXISTS lookup_log (
   id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   ip_hash    CHAR(64) NOT NULL COMMENT 'IP 도 개인정보다. 해시로만 남긴다',
   complex_id INT UNSIGNED DEFAULT NULL,
+  dong       VARCHAR(10) NOT NULL DEFAULT '',
+  ho         VARCHAR(10) NOT NULL DEFAULT '',
   ok         TINYINT(1) NOT NULL,
   at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_ip_at (ip_hash, at),
-  KEY idx_cx_at (complex_id, at)
+  KEY idx_cx_at (complex_id, at),
+  KEY idx_unit_at (complex_id, dong, ho, at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 이 파일을 예전 판으로 이미 실행했다면 위 CREATE 는 건너뛰어진다. 아래 세 줄을 한 번만 실행한다.
+-- ALTER TABLE lookup_log ADD COLUMN dong VARCHAR(10) NOT NULL DEFAULT '' AFTER complex_id;
+-- ALTER TABLE lookup_log ADD COLUMN ho   VARCHAR(10) NOT NULL DEFAULT '' AFTER dong;
+-- ALTER TABLE lookup_log ADD KEY idx_unit_at (complex_id, dong, ho, at);
 
 -- 업로드 이력 --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS upload_log (

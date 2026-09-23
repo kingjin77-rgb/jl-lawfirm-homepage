@@ -23,9 +23,19 @@
     registry: { label: '등기센터 관리자', hash: PW }
   };
   var gate = GATES[kind] || GATES.home;
-  var KEY = 'jladmin.gate.' + kind;
+  // 통과 기록은 화면 종류와 무관하게 하나로 둔다.
+  // 비밀번호가 같은데 화면마다 키를 나누면, 콘텐츠 관리 → 등기센터 관리로
+  // 넘어갈 때마다 같은 번호를 또 묻게 된다. 탭을 닫으면 사라지는 건 그대로다.
+  var KEY = 'jladmin.gate';
 
-  if (sessionStorage.getItem(KEY) === gate.hash) return;   // 이미 통과
+  function passed() {
+    try { return sessionStorage.getItem(KEY) === gate.hash; } catch (e) { return false; }
+  }
+  if (passed()) return;   // 이미 통과
+
+  // crypto.subtle 은 https 또는 localhost 에서만 열린다.
+  // 사내망에서 http://192.168.x.x 로 열면 없어서, 입장 버튼이 아무 반응 없이 멈춘다.
+  var canHash = !!(window.crypto && window.crypto.subtle && window.TextEncoder);
 
   function sha256(text) {
     var data = new TextEncoder().encode(text);
@@ -58,6 +68,14 @@
     var msg = wrap.querySelector('[data-gate-msg]');
     input.focus();
 
+    if (!canHash) {
+      msg.textContent = '이 주소(보안 연결 아님)에서는 비밀번호를 확인할 수 없습니다. ' +
+        'https:// 주소나 이 PC의 localhost 주소로 다시 열어 주세요.';
+      input.disabled = true;
+      wrap.querySelector('button').disabled = true;
+      return;
+    }
+
     // 엔터로도 들어갈 수 있어야 한다. 브라우저에 따라 form 의 기본 제출이
     // 일어나지 않는 경우가 있어 키 입력을 직접 받는다.
     input.addEventListener('keydown', function (e) {
@@ -71,7 +89,7 @@
     function tryOpen() {
       sha256(input.value).then(function (h) {
         if (h === gate.hash) {
-          sessionStorage.setItem(KEY, gate.hash);
+          try { sessionStorage.setItem(KEY, gate.hash); } catch (e) { /* 저장 불가 브라우저: 이번 화면만 연다 */ }
           wrap.remove();
           document.body.style.overflow = '';
         } else {
@@ -79,6 +97,8 @@
           input.value = '';
           input.focus();
         }
+      }, function () {
+        msg.textContent = '비밀번호를 확인하지 못했습니다. 브라우저를 새로 고친 뒤 다시 시도해 주세요.';
       });
     }
   });

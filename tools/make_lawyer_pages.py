@@ -8,6 +8,10 @@
 프로필·경력·전문분야·컬럼 전부 lawyers.json 이 원본이다.
 JSON 을 고치고 이 스크립트를 다시 실행하면 페이지가 갱신된다.
 컬럼이 없는 변호사는 컬럼 섹션 자체가 생성되지 않는다.
+
+주의 (2026-09-23): 지금 lawyers/*.html 은 생성 뒤 손으로 다듬었다
+(문장 줄바꿈, 상담 문의 단추, 푸터 링크). 이 스크립트를 그대로 돌리면 그 수정이 되돌아간다.
+템플릿을 현재 페이지에 맞춰 고치기 전까지는 페이지를 직접 고칠 것.
 """
 import html
 import json
@@ -181,7 +185,7 @@ def page_html(L, all_lawyers):
       <a href="../contact.html">오시는 길</a>
     </nav>
     <div class="header__util">
-      <a class="btn-track" href="https://www.jllawfirm.kr/member/login.php" target="_blank" rel="noopener">등기진행조회</a>
+      <a class="btn-track" href="../tracking.html">등기 진행 조회</a>
       <a class="header__tel" href="tel:025370123">
         <span class="lbl">LEGAL CONSULTATION</span>
         <span class="num">02-537-0123</span>

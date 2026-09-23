@@ -22,6 +22,9 @@
     '건설사 등기서류수령', '등기소서류접수', '등기완료', '권리증교부'
   ];
   JL.NOT_YET = '접수 전';
+  // 고객에게 나가는 조회 링크는 늘 공식 주소로. 직원 PC 의 미리보기 주소가 문자에 섞이면 안 된다.
+  JL.SITE = 'https://www.jllawfirm.co.kr/';
+  JL.trackUrl = function (cx) { return JL.SITE + 'tracking.html?c=' + encodeURIComponent(cx); };
   JL.DONE_FROM = 6;
 
   /* ── 자료 한 벌 ────────────────────────────── */
@@ -83,15 +86,36 @@
     return /^#(REF|N\/A|VALUE|DIV|NAME|NULL|NUM)/i.test(s) ? '' : s;
   };
 
+  /** 생년월일 6자리.
+   *  엑셀이 숫자로 저장한 값은 앞자리 0 을 잃는다. 010203 이 10203 으로,
+   *  주민번호 0102033xxxxxx 가 12자리로 온다. 자르기 전에 0 을 되살린다. */
   JL.birth6 = function (v) {
     if (v instanceof Date) {
       return String(v.getFullYear()).slice(2) +
         String(v.getMonth() + 1).padStart(2, '0') + String(v.getDate()).padStart(2, '0');
     }
-    var s = JL.digits(JL.clean(v));
+    var s;
+    if (typeof v === 'number' && isFinite(v)) {
+      s = String(Math.round(Math.abs(v)));
+      if (s.length <= 6) s = s.padStart(6, '0');
+      else if (s.length === 12) s = s.padStart(13, '0');
+    } else {
+      s = JL.digits(JL.clean(v));
+      // 엑셀에서 열었다 저장한 CSV 도 같은 일을 겪는다
+      if (s.length === 5) s = s.padStart(6, '0');
+      else if (s.length === 12) s = s.padStart(13, '0');
+    }
     if (s.length >= 13) return s.slice(0, 6);
     if (s.length === 8) return s.slice(2);
     return s.slice(0, 6);
+  };
+
+  /** 조회 해시에 넣는 이름 모양. tracking.js·서버 PHP 와 글자 하나까지 같아야 한다.
+   *  NFC 로 맞추고, 공백은 모두 빼고, 영문은 대문자로. */
+  JL.norm = function (name) {
+    var s = String(name == null ? '' : name);
+    if (s.normalize) s = s.normalize('NFC');
+    return s.replace(/\s+/g, '').replace(/[a-z]/g, function (c) { return c.toUpperCase(); });
   };
 
   JL.dateOnly = function (v) {
@@ -161,13 +185,60 @@
       .filter(function (l) { return l.trim(); });
   };
 
+  /** CSV 전체를 줄·칸으로. 따옴표 안의 쉼표와 줄바꿈을 지킨다.
+   *  주소·메모 칸은 엑셀에서 Alt+Enter 로 줄을 바꾼 채 오는 일이 흔하다. */
+  JL.parseCsv = function (text) {
+    if (text.charCodeAt(0) === 65279) text = text.slice(1);
+    var rows = [], row = [], cur = '', q = false;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (q) {
+        if (c === '"' && text[i + 1] === '"') { cur += '"'; i++; }
+        else if (c === '"') q = false;
+        else cur += c;
+      } else if (c === '"') q = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\r') { /* 줄 끝의 CR 은 버린다 */ }
+      else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+      else cur += c;
+    }
+    row.push(cur); rows.push(row);
+    return rows.map(function (r) { return r.map(function (v) { return v.trim(); }); })
+      .filter(function (r) { return r.some(function (v) { return v; }); });
+  };
+
+  /** 파일을 글자로. 엑셀이 "CSV" 로 저장하면 한글 윈도에서는 CP949(EUC-KR) 로 나온다.
+   *  UTF-8 로 풀어 깨진 글자(U+FFFD)가 나오면 EUC-KR 로 다시 푼다. */
+  JL.readText = function (file) {
+    return file.arrayBuffer().then(function (ab) {
+      var t = new TextDecoder('utf-8').decode(ab);
+      if (t.indexOf('�') >= 0) {
+        try { t = new TextDecoder('euc-kr').decode(ab); } catch (e) { /* 그대로 둔다 */ }
+      }
+      return t;
+    });
+  };
+
+  /** 엑셀 읽기 도구가 CDN 에서 안 왔으면 알려 주고 멈춘다. */
+  JL.needXlsx = function () {
+    if (W.XLSX) return true;
+    JL.ui.toast('엑셀 읽기 도구를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침(F5)한 뒤 다시 해 주십시오. CSV 파일은 그대로 올릴 수 있습니다.', 'err');
+    return false;
+  };
+
   JL.pickFile = function (accept, cb) {
+    // 앞에서 취소하고 남은 입력칸이 있으면 치운다
+    document.querySelectorAll('input[data-jl-pick]').forEach(function (n) { n.remove(); });
     var inp = document.createElement('input');
     inp.type = 'file'; inp.accept = accept; inp.hidden = true;
+    inp.setAttribute('data-jl-pick', '');
+    var done = function () { if (inp.parentNode) inp.parentNode.removeChild(inp); };
     inp.addEventListener('change', function () {
-      if (inp.files[0]) cb(inp.files[0]);
-      document.body.removeChild(inp);
+      var f = inp.files[0];
+      done();
+      if (f) cb(f);
     });
+    inp.addEventListener('cancel', done);
     document.body.appendChild(inp);
     inp.click();
   };

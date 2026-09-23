@@ -49,6 +49,16 @@
       .then(function (d) { demoDb = d; return d; });
   }
 
+  /**
+   * 이름 맞춤. 관리자 화면(office/core.js)·서버(verify_hash)와 한 글자도 다르면 안 된다.
+   * 맥에서 넣은 한글은 자모가 풀려 올 수 있어 NFC 로 모으고,
+   * "홍 길동" 처럼 띄어 쓴 것과 영문 대소문자 차이로 막히지 않게 한다.
+   */
+  function norm(name) {
+    return String(name || '').normalize('NFC').replace(/\s+/g, '')
+      .replace(/[a-z]/g, function (c) { return c.toUpperCase(); });
+  }
+
   function sha256hex(text) {
     return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function (buf) {
       return Array.prototype.map.call(new Uint8Array(buf), function (x) {
@@ -93,7 +103,7 @@
       if (!guided) return demoMake(p);
 
       var list = d.complexes[p.complex] || [];
-      return sha256hex(d.salt + '|' + p.name + '|' + p.birth).then(function (vh) {
+      return sha256hex(d.salt + '|' + norm(p.name) + '|' + p.birth).then(function (vh) {
         var u = list.filter(function (x) {
           return x.dong === p.dong && x.ho === p.ho && x.vhash.indexOf(vh) >= 0;
         })[0];
@@ -141,9 +151,11 @@
 
   /* ── 거들기 ───────────────────────────────── */
 
-  /** 문장마다 줄을 바꾼다. "니다." "주십시오." "해요." 뒤에서 끊는다. */
+  /** 문장마다 줄을 바꾼다. "니다." "주십시오." "해요." 뒤에서 끊는다.
+      뒤돌아보기 정규식((?<=…))은 iOS 16.4 이전 사파리에서 스크립트 전체를 멈춘다. 쓰지 않는다. */
   function lines(text) {
-    return String(text || '').replace(/\s*(문의 [\d-]+)\s*$/, '\n$1').split(/(?<=[다오요]\.)\s+|\n/).filter(Boolean).map(function (t) {
+    return String(text || '').replace(/\s*(문의 [\d-]+)\s*$/, '\n$1')
+      .replace(/([다오요]\.)\s+/g, '$1\n').split('\n').filter(Boolean).map(function (t) {
       return '<span class="s">' + esc(t) + '</span>';
     }).join('');
   }
@@ -170,21 +182,52 @@
   }
 
   /* ── 단지 목록 ─────────────────────────────
-     registry.json 에 이미 단지가 있다. 따로 관리하지 않는다. */
+     서버가 붙어 있으면 자료가 실제로 올라온 단지(complexes.php)를 먼저 본다.
+     서버가 대답하지 않으면 registry.json 으로 넘어간다. 둘 다 안 되면 전화 안내 카드를 띄운다. */
+  function fromRegistry() {
+    return fetch('data/registry.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var list = (d.tracking && d.tracking.complexes || []).map(function (c) { return c.name; });
+        if (!list.length) list = d.complexes || [];
+        return list;
+      });
+  }
+
+  function fromServer() {
+    var url = ENDPOINT.replace(/lookup\.php(\?.*)?$/, 'complexes.php');
+    return fetch(url, { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok || !Array.isArray(d.complexes)) throw new Error('bad');
+        return d.complexes;
+      });
+  }
+
+  /** 목록을 못 받으면 고객은 아무것도 할 수 없다. 작은 글씨로 깔지 않고 카드로 띄운다. */
+  function listFailed(empty) {
+    var box = document.createElement('div');
+    box.className = 'trk__err';
+    box.setAttribute('role', 'alert');
+    box.innerHTML = lines(empty
+      ? '지금 온라인으로 조회할 수 있는 아파트가 없습니다. 진행 상황은 전화로 안내해 드립니다. 문의 1899-4252'
+      : '아파트 목록을 불러오지 못했습니다. 잠시 뒤 새로고침해 주십시오. 문의 1899-4252') +
+      '<a class="btn btn--fill trk__help-cta" href="tel:18994252">전화로 문의하기</a>';
+    var f = $('fComplex');
+    f.parentNode.insertBefore(box, f.nextSibling);
+    $('inComplex').disabled = true;
+  }
+
   function loadComplexes() {
     var pre = qs.get('c');
+    var failed = false;
     var src = DEMO
       ? loadDemo().then(function (d) { return Object.keys(d.complexes); })
-      : fetch('data/registry.json', { cache: 'no-cache' })
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var list = (d.tracking && d.tracking.complexes || []).map(function (c) { return c.name; });
-            if (!list.length) list = d.complexes || [];
-            return list;
-          });
+      : (ENDPOINT ? fromServer().catch(fromRegistry) : fromRegistry());
     return src
-      .catch(function () { return []; })
+      .catch(function () { failed = true; return []; })
       .then(function (list) {
+        if (!list.length) { listFailed(!failed); return; }
         var sel = $('inComplex');
         sel.innerHTML = '<option value="">— 아파트를 선택해 주십시오 —</option>' +
           list.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
@@ -204,14 +247,16 @@
   function validate() {
     var dong = $('inDong').value.trim(),
         ho = $('inHo').value.trim(),
-        name = $('inName').value.trim(),
+        name = norm($('inName').value),
         birth = $('inBirth').value.trim();
 
     if (!$('inComplex').value) return '아파트를 선택해 주십시오.';
     if (!dong) return '동을 입력해 주십시오.';
+    if (!/^\d+$/.test(dong)) return '동은 숫자만 입력해 주십시오.';
     if (!ho) return '호를 입력해 주십시오.';
+    if (!/^\d+$/.test(ho)) return '호는 숫자만 입력해 주십시오.';
     if (!name) return '이름을 입력해 주십시오.';
-    if (birth.length !== 6) return '생년월일을 6자리로 입력해 주십시오. 1990년 3월 5일이면 900305입니다.';
+    if (!/^\d{6}$/.test(birth)) return '생년월일을 6자리로 입력해 주십시오. 1990년 3월 5일이면 900305입니다.';
     return null;
   }
 
@@ -224,7 +269,8 @@
       complex: $('inComplex').value,
       dong: $('inDong').value.trim(),
       ho: $('inHo').value.trim(),
-      name: $('inName').value.trim(),
+      // 서버에 intl 확장이 없어도 해시가 맞게, 맞춘 이름을 보낸다. 서버도 한 번 더 맞춘다.
+      name: norm($('inName').value),
       birth: $('inBirth').value.trim()
     };
 
@@ -267,17 +313,24 @@
   /* ── 결과 ─────────────────────────────────── */
 
   function show(res) {
+    // '접수 전' 이나 모르는 단계를 첫 단계로 끌어올리면 서류를 받은 것처럼 보인다.
+    // 그때는 지금 단계를 비워 두고 0% 로 둔다.
     var i = STEPS.map(function (s) { return s.n; }).indexOf(res.step);
-    if (i < 0) i = 0;
 
     $('rAt').textContent = res.complex + (DEMO ? '  ·  체험 화면' : '');
     $('rTitle').textContent = res.dong + '동 ' + res.ho + '호';
-    $('rStep').textContent = res.step;
+    $('rStep').textContent = res.step || NOT_YET;
     $('rDate').textContent = res.at ? res.at + ' 기준' : '';
 
-    var pct = Math.round((i + 1) / STEPS.length * 100);
+    var pct = i < 0 ? 0 : Math.round((i + 1) / STEPS.length * 100);
     $('rBar').style.width = pct + '%';
-    $('rPct').textContent = STEPS.length + '단계 중 ' + (i + 1) + '번째 · ' + pct + '%';
+    if (i >= 0) {
+      $('rPct').textContent = STEPS.length + '단계 중 ' + (i + 1) + '번째 · ' + pct + '%';
+    } else if (!res.step || res.step === NOT_YET) {
+      $('rPct').innerHTML = lines('아직 등기 서류를 받기 전입니다. 서류가 저희에게 들어오면 여덟 단계 진행이 여기에 나옵니다.');
+    } else {
+      $('rPct').innerHTML = lines('진행 단계를 정리하고 있습니다. 자세한 내용은 전화로 안내해 드립니다. 문의 1899-4252');
+    }
 
     if (res.memo) {
       $('rMemo').hidden = false;
@@ -299,7 +352,15 @@
 
     $('form').hidden = true;
     $('result').hidden = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 맨 위로 올리면 큰 제목 그림만 보이고 결과는 화면 밖이다. 결과 첫 줄로 데려간다.
+    toResult();
+  }
+
+  function toResult() {
+    var head = document.querySelector('.header');
+    var y = $('result').getBoundingClientRect().top + window.pageYOffset -
+            (head ? head.offsetHeight : 0) - 16;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
   }
 
   /** 등기비용. 고객이 가장 자주 묻는 것이 "얼마고 얼마 냈나"다. */
@@ -328,12 +389,14 @@
     $('cTotal').textContent = total ? total.toLocaleString('ko-KR') + '원' : '아직 산정 전';
     $('cPaid').textContent = paid ? paid.toLocaleString('ko-KR') + '원' : '아직 입금 전';
 
-    var diff = Number(res.diff);
-    if (!isFinite(diff)) diff = paid ? paid - total : 0;
+    // 차액은 화면에 보이는 두 숫자에서 바로 뺀다.
+    // 올라온 diff 가 비어 0 으로 오면 "정산이 맞았다" 고 잘못 말하게 된다.
+    // 합계가 아직 없으면 뺄 수 없으니 차액을 말하지 않는다.
+    var diff = paid > 0 && total > 0 ? paid - total : 0;
 
-    if (!paid || diff === 0) {
+    if (!paid || !total || diff === 0) {
       $('cDiffRow').hidden = true;
-      $('cNote').textContent = paid ? '정산이 맞아떨어졌습니다.' : '';
+      $('cNote').textContent = paid && total && paid === total ? '정산이 맞아떨어졌습니다.' : '';
       return;
     }
     $('cDiffRow').hidden = false;

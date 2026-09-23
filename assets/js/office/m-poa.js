@@ -15,10 +15,10 @@
 
   function mergeCsv(cx) {
     JL.pickFile('.csv', function (file) {
-      file.text().then(function (t) {
-        var lines = JL.readCsvLines(t);
-        if (lines.length < 2) return ui.toast('CSV 에 읽을 줄이 없습니다.', 'err');
-        var head = JL.splitCsv(lines[0]);
+      JL.readText(file).then(function (t) {
+        var rows = JL.parseCsv(t);
+        if (rows.length < 2) return ui.toast('CSV 에 읽을 줄이 없습니다.', 'err');
+        var head = rows[0].map(function (h) { return h.replace(/\s+/g, ''); });
         var find = function (re) { return head.findIndex(function (h) { return re.test(h); }); };
         var cD = head.indexOf('동'), cH = head.findIndex(function (h) { return h === '호' || h === '호수'; });
         var cJ = find(/명의/), cA = find(/접수일|일시/);
@@ -26,8 +26,9 @@
           return ui.toast('동·호 칸을 찾지 못했습니다. 플랫폼의 위임장접수내역 CSV 가 맞는지 확인해 주십시오.', 'err');
         }
         var c = JL.complex(cx), hit = 0, added = 0, seen = {};
-        lines.slice(1).forEach(function (line) {
-          var r = JL.splitCsv(line), key = JL.unitKey(r[cD], r[cH]);
+        rows.slice(1).forEach(function (r) {
+          // 칸이 모자란 줄도 온다. 없는 칸은 빈칸으로 본다.
+          var key = JL.unitKey(r[cD], r[cH]);
           if (!JL.digits(r[cD]) || !JL.digits(r[cH]) || seen[key]) return;
           seen[key] = 1;
           var u = c.units[key];
@@ -37,7 +38,7 @@
             c.units[key] = u;
             added++;
           }
-          u.poa = { at: cA >= 0 ? r[cA] : JL.today(), joint: cJ >= 0 && r[cJ].indexOf('공동') >= 0 };
+          u.poa = { at: (cA >= 0 && r[cA]) || JL.today(), joint: cJ >= 0 && (r[cJ] || '').indexOf('공동') >= 0 };
           hit++;
         });
         JL.touch(); ui.drawComplexes(cx); ui.go('poa');

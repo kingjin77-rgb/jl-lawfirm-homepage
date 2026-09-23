@@ -184,8 +184,8 @@ def org_node():
         "logo": SITE + "/" + OG_IMAGE,
         "image": SITE + "/" + OG_IMAGE,
         "email": "jllaw2020@naver.com",
-        # 대표번호는 1899-4252 로 통일한다. 사무소별 번호는 각 지점 항목에 둔다.
-        "telephone": "+82-1899-4252",
+        # 법인 대표번호는 서초 본사 02-537-0123. 등기센터 1899-4252 는 동탄 지점 항목에 둔다.
+        "telephone": "+82-2-537-0123",
         "foundingDate": "2020",
         "priceRange": "상담 후 협의",
         "areaServed": [

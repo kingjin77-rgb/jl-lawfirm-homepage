@@ -19,12 +19,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 
 $in      = body_json();
 $complex = trim((string)($in['complex'] ?? ''));
-$dong    = preg_replace('/[^0-9]/', '', (string)($in['dong'] ?? ''));
-$ho      = preg_replace('/[^0-9]/', '', (string)($in['ho'] ?? ''));
-$name    = trim((string)($in['name'] ?? ''));
-$birth   = preg_replace('/[^0-9]/', '', (string)($in['birth'] ?? ''));
+$dong    = substr(preg_replace('/[^0-9]/', '', (string)($in['dong'] ?? '')), 0, 10);
+$ho      = substr(preg_replace('/[^0-9]/', '', (string)($in['ho'] ?? '')), 0, 10);
+$name    = norm_name((string)($in['name'] ?? ''));
+$birth   = (string)($in['birth'] ?? '');
 
-if ($complex === '' || $dong === '' || $ho === '' || $name === '' || strlen($birth) !== 6) {
+// 생년월일은 숫자 여섯 자리만 받는다. 섞인 글자를 걸러 맞춰 주면 관리자 화면 해시와 어긋난다.
+if ($complex === '' || $dong === '' || $ho === '' || $name === '' || !preg_match('/^\d{6}$/', $birth)) {
     json_out(['ok' => false, 'message' => '입력하신 내용을 다시 확인해 주십시오.'], 400);
 }
 
@@ -52,15 +53,35 @@ $st = db()->prepare('SELECT id, is_open FROM complexes WHERE name = ? LIMIT 1');
 $st->execute([$complex]);
 $cx = $st->fetch();
 
-$log = db()->prepare('INSERT INTO lookup_log (ip_hash, complex_id, ok) VALUES (?, ?, ?)');
+$log = db()->prepare('INSERT INTO lookup_log (ip_hash, complex_id, dong, ho, ok) VALUES (?, ?, ?, ?, ?)');
+prune_log();
 
 if (!$cx) {
-    $log->execute([$iph, null, 0]);
+    $log->execute([$iph, null, $dong, $ho, 0]);
     json_out(['ok' => false, 'message' => '선택하신 아파트를 찾지 못했습니다.']);
 }
 
+/* ── 세대별 잠금 ────────────────────────────
+ * IP 제한만으로는 여러 곳에서 나눠 두드리면 한 세대를 계속 맞춰 볼 수 있다.
+ * 한 세대에 실패가 쌓이면 어디서 오든 그 세대 조회를 잠시 닫는다. */
+$unitWin  = (int)($rate['unit_window_min'] ?? 60);
+$unitFail = (int)($rate['unit_max_fail'] ?? 10);
+
+$st = db()->prepare(
+    'SELECT COUNT(*) FROM lookup_log
+      WHERE complex_id = ? AND dong = ? AND ho = ? AND ok = 0 AND at > (NOW() - INTERVAL ? MINUTE)'
+);
+$st->execute([$cx['id'], $dong, $ho, $unitWin]);
+
+if ((int)$st->fetchColumn() >= $unitFail) {
+    json_out([
+        'ok'      => false,
+        'message' => '이 세대는 조회 실패가 여러 번 있어 잠시 조회를 막아 두었습니다. 한 시간쯤 뒤 다시 시도해 주십시오. 문의 1899-4252',
+    ], 429);
+}
+
 if ((int)$cx['is_open'] !== 1) {
-    $log->execute([$iph, $cx['id'], 0]);
+    $log->execute([$iph, $cx['id'], $dong, $ho, 0]);
     json_out([
         'ok'      => false,
         'message' => '이 아파트는 등기가 모두 끝나 온라인 조회를 닫았습니다. 문의 1899-4252',
@@ -80,7 +101,7 @@ $st->execute([$cx['id'], $dong, $ho, verify_hash($name, $birth)]);
 $hh = $st->fetch();
 
 if (!$hh) {
-    $log->execute([$iph, $cx['id'], 0]);
+    $log->execute([$iph, $cx['id'], $dong, $ho, 0]);
     // 어느 항목이 틀렸는지 알려주지 않는다. 알려주면 하나씩 맞춰 볼 수 있다.
     json_out([
         'ok'      => false,
@@ -89,9 +110,14 @@ if (!$hh) {
     ]);
 }
 
-$log->execute([$iph, $cx['id'], 1]);
+$log->execute([$iph, $cx['id'], $dong, $ho, 1]);
 
 $items = json_decode((string)($hh['cost_items'] ?? ''), true);
+
+// 입금액이 있으면 차액은 늘 두 숫자에서 다시 뺀다. 올라온 diff 가 비어 있어도 틀리지 않게.
+$total = (int)$hh['cost_total'];
+$paid  = (int)$hh['cost_paid'];
+$diff  = ($paid > 0 && $total > 0) ? $paid - $total : (int)$hh['cost_diff'];
 
 json_out([
     'ok'       => true,
@@ -101,9 +127,9 @@ json_out([
     'step'     => $hh['step'],
     'at'       => $hh['step_at'],
     'memo'     => $hh['memo'],
-    'total'    => (int)$hh['cost_total'],
-    'paid'     => (int)$hh['cost_paid'],
-    'diff'     => (int)$hh['cost_diff'],
+    'total'    => $total,
+    'paid'     => $paid,
+    'diff'     => $diff,
     'paidAt'   => $hh['paid_at'],
     'items'    => is_array($items) ? $items : [],
     'certSent' => (bool)$hh['cert_sent'],

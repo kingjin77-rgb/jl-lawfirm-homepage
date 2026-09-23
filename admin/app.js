@@ -9,6 +9,8 @@
 
   var data = { updatedAt: '', issues: [], reports: [] };
   var dirty = false;
+  var base = '';        // 불러온 원본(JSON 문자열) — 저장 직전 GitHub 최신본과 대조한다
+  var savedSha = null;  // 이 화면에서 마지막으로 커밋한 파일 sha — 내 커밋이면 대조를 건너뛴다
 
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) {
@@ -49,14 +51,23 @@
       el.textContent = 'GitHub 미연결';
       el.className = 'adm__state';
     }
+    // 저장된 토큰은 입력칸에 다시 채우지 않는다.
+    // 비밀번호 칸이라도 개발자도구·자동완성 저장으로 그대로 읽히기 때문이다.
+    // 대신 칸 안내문으로 "저장된 토큰 사용 중" 상태만 보여 준다.
+    $('ghToken').placeholder = (gh && gh.token)
+      ? '저장된 토큰 사용 중 (바꿀 때만 새로 입력)'
+      : 'github_pat_...';
   }
 
   $('btnSaveGh').addEventListener('click', function () {
     var repo = $('ghRepo').value.trim();
-    var token = $('ghToken').value.trim();
+    var prev = ghGet();
+    // 토큰 칸을 비워 두면 저장된 토큰을 그대로 쓴다 (저장소·브랜치만 바꾸는 경우)
+    var token = $('ghToken').value.trim() || (prev && prev.token) || '';
     var branch = $('ghBranch').value.trim() || 'main';
     if (!repo || !token) { log('저장소와 토큰을 모두 입력하세요.', 'bad'); return; }
     ghSet({ repo: repo, token: token, branch: branch });
+    $('ghToken').value = '';
     log('연결 정보를 저장했습니다 — ' + repo + ' (' + branch + ')', 'ok');
   });
 
@@ -68,21 +79,33 @@
 
   $('btnTest').addEventListener('click', async function () {
     var gh = ghGet();
-    if (!gh) { log('먼저 연결 정보를 저장하세요.', 'bad'); return; }
+    if (!gh || !gh.token) { log('먼저 연결 정보를 저장하세요.', 'bad'); return; }
     log('연결 확인 중…');
     try {
       var r = await fetch('https://api.github.com/repos/' + gh.repo, {
         headers: { Authorization: 'Bearer ' + gh.token, Accept: 'application/vnd.github+json' }
       });
-      if (!r.ok) throw new Error(r.status + ' ' + (await r.text()).slice(0, 120));
+      if (!r.ok) throw new Error(ghStatus(r.status) || (r.status + ' ' + (await r.text()).slice(0, 120)));
       var j = await r.json();
       log('확인 완료 — ' + j.full_name + ' / 기본 브랜치 ' + j.default_branch +
           ' / 쓰기권한 ' + (j.permissions && j.permissions.push ? '있음' : '없음'),
           j.permissions && j.permissions.push ? 'ok' : 'bad');
     } catch (e) {
-      log('확인 실패: ' + e.message, 'bad');
+      log('확인 실패: ' + netMsg(e), 'bad');
     }
   });
+
+  /* GitHub 상태코드를 직원이 할 일로 옮긴다 — 'HTTP 401' 만으로는 무엇을 해야 할지 알 수 없다. */
+  function ghStatus(s) {
+    if (s === 401) return '토큰이 만료되었거나 잘못되었습니다. 새 토큰으로 다시 연결해 주세요.';
+    if (s === 403) return '토큰에 이 저장소 권한이 없거나 GitHub 요청 한도를 넘었습니다. Contents 쓰기 권한을 확인해 주세요.';
+    if (s === 404) return '저장소 또는 경로를 찾을 수 없습니다. 저장소 이름과 토큰의 저장소 범위를 확인해 주세요.';
+    return '';
+  }
+  // fetch 자체가 실패(오프라인·차단)하면 'Failed to fetch' 만 남는다
+  function netMsg(e) {
+    return (e instanceof TypeError) ? 'GitHub에 연결할 수 없습니다. 인터넷 연결을 확인해 주세요.' : e.message;
+  }
 
   /* ---------- 데이터 로드 ---------- */
   async function load() {
@@ -90,6 +113,7 @@
       var r = await fetch('../data/magazine.json?cb=' + Date.now(), { cache: 'no-cache' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
       data = await r.json();
+      base = JSON.stringify(data);   // 기본값 채우기 전 원본 그대로 보관
       data.issues = data.issues || [];
       data.reports = data.reports || [];
       dirty = false;
@@ -256,6 +280,14 @@
     return btoa(bin);
   }
 
+  // GitHub Contents API 의 base64(UTF-8) 본문을 객체로
+  function unb64(b) {
+    var bin = atob(String(b || '').replace(/\n/g, ''));
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
   $('btnDownload').addEventListener('click', function () {
     var blob = new Blob([serialize()], { type: 'application/json' });
     var u = URL.createObjectURL(blob);
@@ -272,7 +304,7 @@
 
   $('btnPublish').addEventListener('click', async function () {
     var gh = ghGet();
-    if (!gh) { log('GitHub 연결 정보가 없습니다.', 'bad'); return; }
+    if (!gh || !gh.token) { log('GitHub 연결 정보가 없습니다. 1번에서 저장소와 토큰을 저장하세요.', 'bad'); return; }
     if (!confirm(gh.repo + ' (' + (gh.branch || 'main') + ') 에 커밋합니다. 진행할까요?')) return;
 
     var btn = this;
@@ -282,10 +314,20 @@
       var url = 'https://api.github.com/repos/' + gh.repo + '/contents/' + DATA_PATH;
       var h = { Authorization: 'Bearer ' + gh.token, Accept: 'application/vnd.github+json' };
 
+      // 화면은 배포된 data/magazine.json 을 불러온다. 저장 직전 GitHub 최신본을 받아
+      // 불러온 내용과 다르면(다른 직원 저장·배포 전 커밋) 덮어쓰지 않고 멈춘다.
+      // 최신 sha 만 받아 그대로 PUT 하면 그사이 들어간 남의 수정이 조용히 사라진다.
       var sha = null;
       var g = await fetch(url + '?ref=' + (gh.branch || 'main'), { headers: h });
-      if (g.ok) sha = (await g.json()).sha;
-      else if (g.status !== 404) throw new Error('조회 실패 ' + g.status);
+      if (g.ok) {
+        var cur = await g.json();
+        if (cur.sha !== savedSha && JSON.stringify(unb64(cur.content)) !== base)
+          throw new Error('GitHub에 있는 최신본이 지금 화면에 불러온 내용과 다릅니다. '
+                        + '[서버 내용 다시 불러오기]로 최신본을 연 뒤 수정 내용을 다시 입력해 주세요. '
+                        + '(방금 저장한 직후라면 배포 반영까지 1~2분 기다린 뒤 다시 불러오세요)');
+        sha = cur.sha;
+      }
+      else if (g.status !== 404) throw new Error(ghStatus(g.status) || ('조회 실패 ' + g.status));
 
       var body = {
         message: '매거진 콘텐츠 수정 (관리자 페이지)',
@@ -313,10 +355,12 @@
 
       var j = await r.json();
       dirty = false;
+      if (j.content && j.content.sha) savedSha = j.content.sha;
+      base = JSON.stringify(data);
       log('저장 완료 — 커밋 ' + (j.commit && j.commit.sha ? j.commit.sha.slice(0, 8) : ''), 'ok');
       log('배포가 자동으로 이어집니다. 반영까지 1~2분 걸릴 수 있습니다.', 'dim');
     } catch (e) {
-      log('저장 실패: ' + e.message, 'bad');
+      log('저장 실패: ' + netMsg(e), 'bad');
     } finally {
       btn.disabled = false;
     }
@@ -331,7 +375,6 @@
   if (gh) {
     $('ghRepo').value = gh.repo || '';
     $('ghBranch').value = gh.branch || 'main';
-    $('ghToken').value = gh.token || '';
   } else {
     $('ghRepo').value = 'kingjin77-rgb/jl-lawfirm-homepage';
     $('ghBranch').value = 'main';

@@ -31,11 +31,13 @@ def main():
 
     os.chdir(BASE)
     changed = 0
-    for p in sorted(glob.glob('*.html') + glob.glob('lawyers/*.html') + glob.glob('magazine/*.html')):
+    # 직원용 admin 페이지도 함께 올린다 — 안 올리면 고친 등기업무 스크립트가 옛 캐시로 뜬다
+    for p in sorted(glob.glob('*.html') + glob.glob('lawyers/*.html') + glob.glob('magazine/*.html')
+                    + glob.glob('admin/*.html')):
         s = io.open(p, encoding='utf-8').read()
         orig = s
-        s = re.sub(r'(href="(?:\.\./)?assets/css/style\.css)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
-        s = re.sub(r'(src="(?:\.\./)?assets/js/([a-z-]+)\.js)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
+        s = re.sub(r'(href="(?:\.\./)?assets/css/(?:style|office)\.css)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
+        s = re.sub(r'(src="(?:\.\./)?assets/js/(?:office/)?([a-z-]+)\.js)(\?v=[^"]*)?"', r'\1?v=%s"' % ver, s)
         if s != orig:
             io.open(p, 'w', encoding='utf-8').write(s)
             print('갱신', p)

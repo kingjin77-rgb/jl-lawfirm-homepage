@@ -57,12 +57,17 @@
         if (!n1) return '명의자 성명을 입력해 주십시오.';
         var b1 = JL.digits($('o1b').value);
         if (b1 && b1.length !== 6) return '생년월일은 6자리입니다.';
-        var owners = [{ name: n1, birth: b1, phone: JL.phone($('o1p').value) }];
+        // 번호를 잘못 넣으면 조용히 비우지 않고 알린다. 비우면 문자 대상에서 말없이 빠진다.
+        var p1 = JL.phone($('o1p').value);
+        if ($('o1p').value.trim() && !p1) return '명의자 휴대폰 번호를 확인해 주십시오.';
+        var owners = [{ name: n1, birth: b1, phone: p1 }];
         var n2 = $('o2n').value.trim();
         if (n2) {
           var b2 = JL.digits($('o2b').value);
           if (b2 && b2.length !== 6) return '공동명의자 생년월일은 6자리입니다.';
-          owners.push({ name: n2, birth: b2, phone: JL.phone($('o2p').value) });
+          var p2 = JL.phone($('o2p').value);
+          if ($('o2p').value.trim() && !p2) return '공동명의자 휴대폰 번호를 확인해 주십시오.';
+          owners.push({ name: n2, birth: b2, phone: p2 });
         }
         if (isNew) { u.dong = dong; u.ho = ho; c.units[key] = u; }
         u.owners = owners;
@@ -77,8 +82,9 @@
   function mergePhones(cx) {
     JL.pickFile('.csv,.xlsx,.xls', function (file) {
       var isCsv = /\.csv$/i.test(file.name);
+      if (!isCsv && !JL.needXlsx()) return;
       var rowsP = isCsv
-        ? file.text().then(function (t) { return JL.readCsvLines(t).map(JL.splitCsv); })
+        ? JL.readText(file).then(JL.parseCsv)
         : file.arrayBuffer().then(function (ab) {
             var wb = XLSX.read(new Uint8Array(ab), { type: 'array' });
             return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' });
@@ -132,11 +138,30 @@
       var withPhone = units.filter(function (u) { return u.owners.some(function (o) { return o.phone; }); }).length;
       var joint = units.filter(function (u) { return u.owners.length > 1; }).length;
 
-      var list = units.filter(function (u) {
-        if (!q) return true;
-        var hay = u.dong + ' ' + u.ho + ' ' + u.owners.map(function (o) { return o.name + ' ' + o.phone; }).join(' ');
-        return hay.indexOf(q) >= 0;
-      });
+      /* 검색은 표만 다시 그린다. 입력칸까지 새로 그리면 한글 조합 중인 글자가 끊긴다. */
+      function drawList() {
+        var list = units.filter(function (u) {
+          if (!q) return true;
+          var hay = u.dong + ' ' + u.ho + ' ' + u.owners.map(function (o) { return o.name + ' ' + o.phone; }).join(' ');
+          return hay.indexOf(q) >= 0;
+        });
+        var box = $('pList');
+        box.innerHTML = ui.table([
+          { t: '동', k: 'dong', cls: 'num' },
+          { t: '호', k: 'ho', cls: 'num' },
+          { t: '명의자 · 생년월일', f: ownerCell },
+          { t: '휴대폰', f: phoneCell },
+          { t: '진행 단계', f: function (u) { return esc(u.step); } },
+          { t: '', f: function (u) {
+              return '<button type="button" class="btn sm" data-edit="' + JL.unitKey(u.dong, u.ho) + '">수정</button>';
+          } }
+        ], list, { empty: q ? '찾는 세대가 없습니다.' : '세대가 없습니다. 등기진행에서 엑셀을 올리거나 세대를 등록하십시오.' });
+        box.querySelectorAll('[data-edit]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            editUnit(cx, JL.db.complexes[cx].units[b.dataset.edit]);
+          });
+        });
+      }
 
       el.innerHTML =
         ui.stats([
@@ -152,23 +177,15 @@
           '<button type="button" class="btn" id="pCsv">CSV 내려받기</button>' +
           '<button type="button" class="btn btn--fill" id="pAdd">세대 등록</button>' +
         '</div>' +
-        ui.table([
-          { t: '동', k: 'dong', cls: 'num' },
-          { t: '호', k: 'ho', cls: 'num' },
-          { t: '명의자 · 생년월일', f: ownerCell },
-          { t: '휴대폰', f: phoneCell },
-          { t: '진행 단계', f: function (u) { return esc(u.step); } },
-          { t: '', f: function (u) {
-              return '<button type="button" class="btn sm" data-edit="' + JL.unitKey(u.dong, u.ho) + '">수정</button>';
-          } }
-        ], list, { empty: q ? '찾는 세대가 없습니다.' : '세대가 없습니다. 등기진행에서 엑셀을 올리거나 세대를 등록하십시오.' });
+        '<div id="pList"></div>';
+      drawList();
 
-      $('pQ').addEventListener('input', function () {
-        q = this.value.trim();
-        var pos = this.selectionStart;
-        ui.go('people');
-        var n = $('pQ'); n.focus(); n.setSelectionRange(pos, pos);
+      var pQ = $('pQ');
+      pQ.addEventListener('input', function (e) {
+        if (e.isComposing) return;          // 조합이 끝나면 compositionend 가 다시 부른다
+        q = this.value.trim(); drawList();
       });
+      pQ.addEventListener('compositionend', function () { q = this.value.trim(); drawList(); });
       $('pAdd').addEventListener('click', function () { editUnit(cx, null); });
       $('pPhones').addEventListener('click', function () { mergePhones(cx); });
       $('pCsv').addEventListener('click', function () {
@@ -179,11 +196,6 @@
         });
         JL.csv(rows, cx + '_인적사항_' + JL.today() + '.csv');
         ui.toast('CSV 를 내려받았습니다. 개인정보가 들어 있으니 다 쓰면 지우십시오.', 'ok');
-      });
-      el.querySelectorAll('[data-edit]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          editUnit(cx, JL.db.complexes[cx].units[b.dataset.edit]);
-        });
       });
     }
   });

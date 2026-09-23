@@ -16,7 +16,9 @@
   var stepFilter = null;
   var costFilter = '';
   var sel = {};
-  var undo = null;
+  var undo = null;     // { cx, label, snap } — 되돌리기는 그 단지에만 쓴다
+  var lastCx = null;   // 단지가 바뀌면 선택·되돌리기·단계 필터를 비운다
+  var TABLE_MAX = 500; // 진행 현황 표에 그리는 줄 수
 
   /* ── 엑셀 읽기 ─────────────────────────────── */
 
@@ -25,9 +27,27 @@
     return -1;
   }
 
+  /** 날짜 서식 칸을 'YYYY-MM-DD' 글자로 바꾼다.
+   *  cellDates 로 Date 를 받으면 SheetJS 가 시간대를 거치며 한국 시각에서 하루 앞당겨지는 일이 있다
+   *  (옛 생년월일은 서울 표준시가 달랐던 때라 더 잘 틀린다). 엑셀 일련번호를 달력으로 직접 푼다. */
+  function datesToText(ws) {
+    Object.keys(ws).forEach(function (ref) {
+      if (ref.charAt(0) === '!') return;
+      var c = ws[ref];
+      if (!c || c.t !== 'n' || !c.z || !XLSX.SSF.is_date(c.z)) return;
+      var d = XLSX.SSF.parse_date_code(c.v);
+      if (!d || !d.y) return;
+      c.t = 's';
+      c.v = d.y + '-' + String(d.m).padStart(2, '0') + '-' + String(d.d).padStart(2, '0');
+      delete c.w;
+    });
+  }
+
   function parseWorkbook(ab) {
-    var wb = XLSX.read(new Uint8Array(ab), { type: 'array', cellDates: true });
-    var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, blankrows: false, defval: '' });
+    var wb = XLSX.read(new Uint8Array(ab), { type: 'array', cellNF: true });
+    var ws = wb.Sheets[wb.SheetNames[0]];
+    datesToText(ws);
+    var aoa = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: '' });
 
     var hi = -1;
     for (var i = 0; i < Math.min(aoa.length, 12); i++) {
@@ -38,11 +58,15 @@
     if (hi < 0) throw new Error('제목 줄을 찾지 못했습니다. 동·호·성명이 있는 줄이 필요합니다.');
 
     var h = aoa[hi].map(function (c) { return String(c).replace(/\s+/g, ''); });
+    // 공동명의자 칸 — "공동명의자", "공유자", "성명2", "생년월일2" 처럼 제목에 드러난 것만 본다
+    var isCo = function (x) { return /공동|공유자|부부/.test(x) || /2$|\(2\)$|②$/.test(x); };
+    var isBirth = function (x) { return x.indexOf('주민') >= 0 || x.indexOf('생년') >= 0; };
+    var isName = function (x) { return x.indexOf('성명') >= 0 || x.indexOf('명의자') >= 0 || x === '이름'; };
     var C = {
       dong: col(h, function (x) { return x === '동'; }),
       ho: col(h, function (x) { return x === '호' || x === '호수'; }),
-      name: col(h, function (x) { return x.indexOf('성명') >= 0; }),
-      birth: col(h, function (x) { return x.indexOf('주민') >= 0 || x.indexOf('생년') >= 0; }),
+      name: col(h, function (x) { return x.indexOf('성명') >= 0 && !isCo(x); }),
+      birth: col(h, function (x) { return isBirth(x) && !isCo(x); }),
       total: col(h, function (x) { return x.indexOf('등기비용합계') >= 0; }),
       paidAt: col(h, function (x) { return x === '입금일'; }),
       paid: col(h, function (x) { return x === '입금액'; }),
@@ -76,15 +100,26 @@
     if (steps.filter(function (c) { return c >= 0; }).length < 4) {
       throw new Error('진행 단계 열을 찾지 못했습니다. 제목에 "1.서류수령" 같은 칸이 있어야 합니다.');
     }
-    // 공동명의 — 성명 바로 오른쪽이 두 번째 이름, 주민번호 바로 오른쪽이 두 번째 생년월일
-    var cName2 = C.name + 1 !== C.birth ? C.name + 1 : -1;
-    var cBirth2 = C.birth >= 0 ? C.birth + 1 : -1;
+    // 공동명의 — 제목으로 찾는다. "옆 칸" 으로 짐작하면 전화·금액 칸을 이름으로 읽는다.
+    // 쓰던 양식은 "성명" 제목을 두 칸에 병합해 오른쪽 칸 제목이 비어 있다. 그때만 옆 칸을 본다.
+    var cName2 = col(h, function (x) { return isCo(x) && isName(x) && !isBirth(x); });
+    if (cName2 < 0) cName2 = col(h, function (x) { return /^(공동명의|공동명의자|공유자|공동소유자)$/.test(x); });
+    if (cName2 < 0 && C.name >= 0 && h[C.name + 1] === '' && C.name + 1 !== C.birth) cName2 = C.name + 1;
+    var cBirth2 = col(h, function (x) { return isCo(x) && isBirth(x); });
+    if (cBirth2 < 0 && C.birth >= 0 && h[C.birth + 1] === '') cBirth2 = C.birth + 1;
 
+    /** 금액. 숫자는 반올림만, 글자는 쉼표·원 표시를 떼고 소수점은 살려 반올림한다.
+     *  예전에는 숫자만 남겨 12,345.6 이 123456 이 됐다. */
     var num = function (v) {
+      if (typeof v === 'number') return isFinite(v) ? Math.round(v) : 0;
       var s = JL.clean(v);
       if (!s) return 0;
-      var n = Number(JL.digits(s)) || 0;
-      return String(s).trim().charAt(0) === '-' ? -n : n;
+      var t = s.replace(/[,\s원₩]/g, '');
+      var neg = /^[-−△▲]/.test(t) || /^\(.*\)$/.test(t);
+      var m = t.match(/\d+(?:\.\d+)?/);
+      if (!m) return 0;
+      var n = Math.round(Number(m[0])) || 0;
+      return neg ? -n : n;
     };
 
     var out = [], skipped = 0, broken = 0;
@@ -131,6 +166,7 @@
   }
 
   function importExcel(cx) {
+    if (!JL.needXlsx()) return;
     JL.pickFile('.xlsx,.xls', function (file) {
       var start = function (name) {
         file.arrayBuffer().then(parseWorkbook).then(function (res) {
@@ -201,12 +237,22 @@
         '<p class="of-note">서버 설정과 글자 하나까지 같아야 조회가 됩니다.</p>',
       ok: '내려받기',
       onOk: function () {
-        var salt = $('exSalt').value;
+        // 해시 규칙은 tracking.js·서버 PHP 와 같다.
+        //   sha256( salt.trim() + '|' + norm(이름) + '|' + 생년월일 6자리 )
+        var salt = $('exSalt').value.trim();
         if (!salt) return '확인용 문구를 입력해 주십시오.';
         var units = JL.units(cx);
-        Promise.all(units.map(function (u) {
-          return Promise.all(u.owners.filter(function (o) { return o.name && o.birth; })
-            .map(function (o) { return JL.sha256(salt + '|' + o.name + '|' + o.birth); }))
+        var noBirth = [], partial = 0;
+        var ok = function (o) { return JL.norm(o.name) && /^\d{6}$/.test(o.birth || ''); };
+        var go = units.filter(function (u) {
+          var n = u.owners.filter(ok).length;
+          if (!n) { noBirth.push(u); return false; }
+          if (n < u.owners.length) partial++;
+          return true;
+        });
+        Promise.all([JL.sha256(salt + '|chk')].concat(go.map(function (u) {
+          return Promise.all(u.owners.filter(ok)
+            .map(function (o) { return JL.sha256(salt + '|' + JL.norm(o.name) + '|' + o.birth); }))
             .then(function (hs) {
               return {
                 dong: u.dong, ho: u.ho, vhash: hs, step: u.step, at: u.stepAt, memo: u.memo,
@@ -215,11 +261,34 @@
                 lack: u.lack ? 1 : 0, certSent: u.cert.sentAt ? 1 : 0, poa: u.poa ? 1 : 0
               };
             });
-        })).then(function (list) {
+        }))).then(function (res) {
+          var chk = res[0], list = res.slice(1);
           JL.download(new Blob([JSON.stringify({
-            complex: cx, steps: JL.STEPS, exportedAt: JL.today(), households: list
+            complex: cx, steps: JL.STEPS, exportedAt: JL.today(), saltCheck: chk, households: list
           })], { type: 'application/json' }), 'upload_' + cx.replace(/\s+/g, '_') + '_' + JL.today() + '.json');
-          ui.toast('서버 업로드본을 내려받았습니다.', 'ok');
+          if (noBirth.length || partial) {
+            // 빠진 세대는 고객이 조회해도 "없는 세대" 로 나온다. 작게 흘리지 않고 창으로 띄운다.
+            ui.dialog({
+              title: '서버 업로드본을 내려받았습니다',
+              body:
+                (noBirth.length
+                  ? '<div class="of-callout warn"><b>' + noBirth.length.toLocaleString() + '세대는 생년월일이 없어 조회할 수 없습니다.</b><br>' +
+                    '업로드본에서 뺐습니다. 인적사항에서 생년월일 6자리를 채운 뒤 다시 내보내십시오.</div>' +
+                    '<p class="of-p">' + noBirth.slice(0, 40).map(function (u) { return esc(u.dong) + '동 ' + esc(u.ho) + '호'; }).join(', ') +
+                    (noBirth.length > 40 ? ' 외 ' + (noBirth.length - 40) + '세대' : '') + '</p>'
+                  : '') +
+                (partial
+                  ? '<div class="of-callout warn"><b>공동명의 ' + partial + '세대는 한 분만 조회할 수 있습니다.</b><br>' +
+                    '다른 한 분의 생년월일이 없습니다.</div>'
+                  : '') +
+                '<p class="of-p">담긴 세대 ' + list.length.toLocaleString() + ' / 전체 ' + units.length.toLocaleString() + '</p>',
+              ok: '확인'
+            });
+          } else {
+            ui.toast('서버 업로드본을 내려받았습니다. ' + list.length.toLocaleString() + '세대.', 'ok');
+          }
+        }).catch(function () {
+          ui.toast('업로드본을 만들지 못했습니다. 브라우저를 최신판으로 올린 뒤 다시 해 주십시오.', 'err');
         });
         return true;
       }
@@ -271,16 +340,19 @@
           return '<input class="of-inline" data-memo="' + JL.unitKey(u.dong, u.ho) + '" value="' + esc(u.memo) +
             '" placeholder="예: 주민등록등본 다시 보내주십시오">';
       } }
-    ], list, { empty: q || stepFilter ? '조건에 맞는 세대가 없습니다.' : '세대가 없습니다. 위쪽 「등기 엑셀 불러오기」를 누르십시오.' });
+    ], list, { max: TABLE_MAX, empty: q || stepFilter ? '조건에 맞는 세대가 없습니다.' : '세대가 없습니다. 위쪽 「등기 엑셀 불러오기」를 누르십시오.' });
 
     /* 일괄 막대 — 체크할 때마다 표를 다시 그리면 수백 줄이 깜빡이고 보던 자리를 잃는다.
        막대만 제자리에서 갈아 끼운다. */
+    // 표는 500줄까지만 그린다. "보이는 세대 모두 선택" 은 화면에 그려진 줄만 고른다.
+    var shown = list.slice(0, TABLE_MAX);
+    if (undo && undo.cx !== cx) undo = null;
     function drawBulk() {
       var nSel = Object.keys(sel).filter(function (k) { return sel[k]; }).length;
       var box = $('pgBulk');
       if (!nSel && !undo) {
         box.innerHTML = list.length
-          ? '<div class="of-bulk quiet"><button type="button" class="btn sm" id="bAll">보이는 ' + list.length.toLocaleString() + '세대 모두 선택</button>' +
+          ? '<div class="of-bulk quiet"><button type="button" class="btn sm" id="bAll">보이는 ' + shown.length.toLocaleString() + '세대 모두 선택</button>' +
             '<span class="of-p" style="margin:0">체크하면 여러 세대의 단계를 한 번에 바꿀 수 있습니다.</span></div>'
           : '';
       } else {
@@ -289,13 +361,13 @@
             '<select id="bStep">' + [JL.NOT_YET].concat(JL.STEPS).map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select>' +
             '<button type="button" class="btn btn--fill sm" id="bApply">선택한 세대 단계 바꾸기</button>' +
             '<button type="button" class="btn sm" id="bClear">선택 풀기</button>'
-            : '<button type="button" class="btn sm" id="bAll">보이는 ' + list.length.toLocaleString() + '세대 모두 선택</button>') +
+            : '<button type="button" class="btn sm" id="bAll">보이는 ' + shown.length.toLocaleString() + '세대 모두 선택</button>') +
           '<span class="of-sp"></span>' +
           (undo ? '<button type="button" class="btn sm" id="bUndo">되돌리기 · ' + esc(undo.label) + '</button>' : '') +
           '</div>';
       }
       if ($('bAll')) $('bAll').addEventListener('click', function () {
-        list.forEach(function (u) { sel[JL.unitKey(u.dong, u.ho)] = true; });
+        shown.forEach(function (u) { sel[JL.unitKey(u.dong, u.ho)] = true; });
         el.querySelectorAll('[data-sel]').forEach(function (b) { b.checked = true; });
         drawBulk();
       });
@@ -312,14 +384,17 @@
           snap.push({ k: k, step: u.step, at: u.stepAt });
           u.step = to; u.stepAt = JL.today();
         });
-        undo = { label: snap.length + '세대 → ' + to, snap: snap };
+        undo = { cx: cx, label: snap.length + '세대 → ' + to, snap: snap };
         sel = {};
         JL.touch(); ui.go('progress');
         ui.toast(snap.length + '세대를 "' + to + '" 로 바꿨습니다. 잘못 눌렀으면 되돌리기를 누르십시오.', 'ok');
       });
       if ($('bUndo')) $('bUndo').addEventListener('click', function () {
+        // 되돌리기는 기록한 단지의 세대에만 쓴다. 다른 단지의 같은 동·호를 건드리지 않게.
+        var uc = JL.db.complexes[undo.cx];
+        if (!uc || undo.cx !== cx) { undo = null; ui.go('progress'); return; }
         undo.snap.forEach(function (s) {
-          var u = c.units[s.k];
+          var u = uc.units[s.k];
           if (u) { u.step = s.step; u.stepAt = s.at; }
         });
         var label = undo.label;
@@ -339,7 +414,7 @@
     el.querySelectorAll('[data-step-of]').forEach(function (s) {
       s.addEventListener('change', function () {
         var u = c.units[s.dataset.stepOf];
-        undo = { label: u.dong + '동 ' + u.ho + '호', snap: [{ k: s.dataset.stepOf, step: u.step, at: u.stepAt }] };
+        undo = { cx: cx, label: u.dong + '동 ' + u.ho + '호', snap: [{ k: s.dataset.stepOf, step: u.step, at: u.stepAt }] };
         u.step = s.value; u.stepAt = JL.today();
         JL.touch(); ui.go('progress');
       });
@@ -452,6 +527,8 @@
         var w = window.open('', '_blank', 'width=720,height=900');
         if (!w) { ui.toast('팝업이 막혀 있습니다. 브라우저에서 팝업을 허용해 주십시오.', 'err'); return false; }
         w.document.write('<!doctype html><meta charset="utf-8"><title>등기비용 명세서</title>' +
+          // 팝업은 이 화면(admin/office.html) 주소를 기준으로 경로를 푼다. 글꼴·색 변수는 style.css 에 있다.
+          '<link rel="stylesheet" href="../assets/css/style.css">' +
           '<link rel="stylesheet" href="../assets/css/office.css">' +
           '<body class="of-print">' + JL.billHtml(cx, u) + '<script>onload=function(){print()}<\/script>');
         w.document.close();
@@ -564,6 +641,11 @@
     lead: '진행 단계, 등기비용, 권리증 수령주소, 채권환불을 세대별로 관리합니다.',
 
     render: function (el, cx) {
+      // 선택·되돌리기·필터는 단지마다 따로다. 다른 단지로 넘어가면 비운다.
+      if (cx !== lastCx) {
+        sel = {}; undo = null; stepFilter = null; costFilter = '';
+        lastCx = cx;
+      }
       var TABS = [
         ['flow', '진행 현황'], ['cost', '등기비용'], ['cert', '권리증 수령주소'], ['refund', '채권환불']
       ];
@@ -590,21 +672,24 @@
         }).join('') + '</nav>' +
         '<div id="pgBody"></div>';
 
-      var units = JL.units(cx);
       var body = $('pgBody');
-      ({ flow: renderFlow, cost: renderCost, cert: renderCert, refund: renderRefund }[tab])(body, cx, units);
+      var drawTab = function () {
+        ({ flow: renderFlow, cost: renderCost, cert: renderCert, refund: renderRefund }[tab])(body, cx, JL.units(cx));
+      };
+      drawTab();
 
       $('pgImport').addEventListener('click', function () { importExcel(cx); });
       $('pgExport').addEventListener('click', function () { exportServer(cx); });
       el.querySelectorAll('[data-tab]').forEach(function (b) {
         b.addEventListener('click', function () { tab = b.dataset.tab; sel = {}; ui.go('progress'); });
       });
-      $('pgQ').addEventListener('input', function () {
-        q = this.value.trim();
-        var pos = this.selectionStart;
-        ui.go('progress');
-        var n = $('pgQ'); n.focus(); n.setSelectionRange(pos, pos);
+      // 검색은 탭 본문만 다시 그린다. 입력칸을 새로 그리면 한글 조합 중인 글자가 끊긴다.
+      var pgQ = $('pgQ');
+      pgQ.addEventListener('input', function (e) {
+        if (e.isComposing) return;          // 조합이 끝나면 compositionend 가 다시 부른다
+        q = this.value.trim(); sel = {}; drawTab();
       });
+      pgQ.addEventListener('compositionend', function () { q = this.value.trim(); sel = {}; drawTab(); });
     }
   });
 
