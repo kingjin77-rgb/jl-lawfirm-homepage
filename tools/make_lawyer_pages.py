@@ -279,6 +279,7 @@ def page_html(L, all_lawyers):
     </div>
     <div class="footer__copy">
       <span>EMAIL jllaw2020@naver.com</span>
+      <span>광고책임변호사 박종일</span>
       <a class="is-strong" href="../privacy.html">개인정보처리방침</a>
       <span class="footer__adm">직원용 — <a href="../admin/index.html">홈페이지 관리자</a> · <a href="../admin/registry.html">등기센터 관리자</a></span>
       <span>© JL LAW FIRM. All rights reserved.</span>
