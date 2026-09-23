@@ -225,11 +225,15 @@
 
   gnb.classList.add('gnb--drop');
 
-  /* 모바일 메뉴 맨 아래 상담 단추 — 데스크톱에서는 CSS 로 감춘다 */
+  /* 모바일 메뉴 맨 아래 상담 단추 — 데스크톱에서는 CSS 로 감춘다.
+     카카오톡 상담은 등기 문의용이라 단체등기 계열 페이지에서만 둔다 (2026-09-23 지시). */
+  var here = (location.pathname.split('/').pop() || 'index.html');
+  var regPage = /^(registry|registry-detail|dongtan)\.html$/.test(here);
   var cta = document.createElement('div');
-  cta.className = 'gnb__cta';
-  cta.innerHTML =
-    '<a class="gnb__cta-kakao" href="https://pf.kakao.com/_xlDxdhs/chat" target="_blank" rel="noopener">카카오톡 상담</a>' +
-    '<a class="gnb__cta-tel" href="tel:025370123">전화 02-537-0123</a>';
+  cta.className = 'gnb__cta' + (regPage ? '' : ' is-single');
+  cta.innerHTML = regPage
+    ? '<a class="gnb__cta-kakao" href="https://pf.kakao.com/_xlDxdhs/chat" target="_blank" rel="noopener">카카오톡 상담</a>' +
+      '<a class="gnb__cta-tel" href="tel:18994252">등기센터 1899-4252</a>'
+    : '<a class="gnb__cta-tel" href="tel:025370123">전화 02-537-0123</a>';
   gnb.appendChild(cta);
 })();

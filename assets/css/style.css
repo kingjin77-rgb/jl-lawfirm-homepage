@@ -2334,3 +2334,6 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
 .pcard--navy .pcard__title { color: var(--white); }
 .pcard--navy .pcard__desc { color: rgba(255,255,255,.85); }
 .pcard__cta { margin-top: 18px; align-self: flex-start; }
+
+/* 모바일 메뉴 상담 단추가 전화 하나일 때 */
+@media (max-width: 1024px) { .gnb__cta.is-single { grid-template-columns: 1fr; } }
