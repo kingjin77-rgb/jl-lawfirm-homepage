@@ -3,65 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>콘텐츠 관리 | 법무법인 제이엘</title>
-<link rel="stylesheet" href="../assets/css/style.css?v=144">
+<title>직원 업무 | 법무법인 제이엘</title>
+<link rel="stylesheet" href="../assets/css/style.css?v=145">
 <style>
+  /* 직원 첫 화면 — 어디서 무엇을 하는지 한눈에.
+     매일 쓰는 등기업무를 맨 앞에, 설정·홈페이지 관리는 뒤에 둔다. */
   body { background: var(--paper-alt); }
-  .adm { max-width: 1080px; margin-inline: auto; padding: 40px 24px 80px; }
-  .adm__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 22px; border-bottom: 2px solid var(--navy); }
-  .adm__head h1 { font-size: 26px; font-weight: 800; }
-  .adm__head .sub { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
-  .adm__state { font-size: 13px; font-weight: 600; padding: 7px 14px; background: #fff; border: 1px solid var(--line); }
-  .adm__state.ok { color: #1d6b3a; border-color: #b7ddc4; background: #eefaf1; }
-  .adm__state.bad { color: #9c2b22; border-color: #f0c4bf; background: #fdf0ee; }
+  .hub { max-width: 1080px; margin-inline: auto; padding: 44px 24px 90px; }
+  .hub__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;
+    padding-bottom: 22px; border-bottom: 2px solid var(--navy); }
+  .hub__en { font-size: 14px; font-weight: 700; letter-spacing: .2em; color: var(--gold-ink); }
+  .hub__head h1 { margin-top: 6px; font-size: 30px; font-weight: 800; color: var(--navy); }
+  .hub__head p { margin-top: 8px; font-size: 16px; color: var(--gray-700); }
+  .hub__view { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hub__view a { display: inline-flex; align-items: center; height: 42px; padding-inline: 16px; font-size: 15px; font-weight: 600;
+    color: var(--navy); background: #fff; border: 1px solid var(--line); text-decoration: none; }
+  .hub__view a:hover { border-color: var(--navy); }
 
-  .panel { background: #fff; border: 1px solid var(--line); padding: 26px; margin-top: 22px; }
-  .panel h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
-  .panel .hint { font-size: 13px; color: var(--gray-500); line-height: 1.7; }
+  .hub__h2 { margin-top: 40px; font-size: 19px; font-weight: 800; color: var(--navy); }
+  .hub__lead { margin-top: 6px; font-size: 16px; color: var(--gray-700); }
 
-  .row { display: grid; gap: 12px; margin-top: 16px; }
-  .row.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .row.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  label.f { display: block; font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
-  input[type=text], input[type=password], textarea, select {
-    width: 100%; padding: 11px 13px; font: inherit; font-size: 14px; color: var(--ink);
-    border: 1px solid var(--line); background: #fff;
+  .tools { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-top: 18px; }
+  .tool-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; background: #fff; border: 1px solid var(--line);
+    color: var(--ink); text-decoration: none; transition: border-color .25s, transform .25s, box-shadow .25s; }
+  .tool-card:hover { border-color: var(--navy); transform: translateY(-3px); box-shadow: 0 16px 36px -22px rgba(13,33,98,.4); }
+  .tool-card.is-main { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .tool-card__tag { align-self: flex-start; padding: 4px 10px; font-size: 14px; font-weight: 700; background: var(--navy-soft); color: var(--navy); }
+  .tool-card.is-main .tool-card__tag { background: var(--gold); color: #fff; }
+  .tool-card h3 { font-size: 22px; font-weight: 800; color: var(--navy); }
+  .tool-card.is-main h3, .tool-card.is-main .tool-card__go { color: #fff; }
+  .tool-card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .tool-card li { position: relative; padding-left: 14px; font-size: 16px; line-height: 1.6; color: var(--gray-700); }
+  .tool-card.is-main li { color: rgba(255,255,255,.9); }
+  .tool-card li::before { content: ""; position: absolute; left: 0; top: .78em; width: 6px; height: 2px; background: var(--gold); }
+  .tool-card__who { margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--gold-ink); }
+  .tool-card.is-main .tool-card__who { color: var(--gold-light, #cbb27e); }
+  .tool-card__go { margin-top: auto; padding-top: 10px; font-size: 16px; font-weight: 800; }
+
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 18px; counter-reset: f; }
+  .flow li { list-style: none; position: relative; padding: 22px 20px; background: #fff; border: 1px solid var(--line); }
+  .flow li::before { counter-increment: f; content: counter(f); display: inline-grid; place-items: center; width: 30px; height: 30px;
+    font-size: 15px; font-weight: 800; color: #fff; background: var(--navy); border-radius: 50%; }
+  .flow b { display: block; margin-top: 10px; font-size: 17px; color: var(--navy); }
+  .flow span { display: block; margin-top: 6px; font-size: 15px; line-height: 1.65; color: var(--gray-700); }
+  .flow li.is-wait { border-color: var(--gold); background: #fffaf0; }
+  .flow li.is-wait::before { background: var(--gold); }
+  .flow em { display: inline-block; margin-top: 8px; padding: 3px 9px; font-style: normal; font-size: 14px; font-weight: 700; color: #8a5a00; background: #fdefc8; }
+
+  .notice { margin-top: 18px; padding: 20px 22px; background: #fff; border-left: 4px solid var(--navy); }
+  .notice p { font-size: 16px; line-height: 1.75; color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .tools { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr 1fr; }
   }
-  input:focus, textarea:focus, select:focus { outline: 0; border-color: var(--navy); }
-  textarea { resize: vertical; min-height: 78px; line-height: 1.6; }
-
-  .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-  .b { height: 44px; padding-inline: 20px; font-size: 14px; font-weight: 600; border: 1px solid var(--navy); background: #fff; color: var(--navy); }
-  .b:hover { background: var(--navy-soft); }
-  .b.pri { background: var(--navy); color: #fff; }
-  .b.pri:hover { background: var(--navy-deep); }
-  .b.warn { border-color: #c9564a; color: #c9564a; }
-  .b.warn:hover { background: #fdf0ee; }
-  .b:disabled { opacity: .45; cursor: default; }
-
-  .items { margin-top: 18px; border-top: 1px solid var(--line); }
-  .item { border-bottom: 1px solid var(--line); padding: 16px 0; }
-  .item__top { display: flex; align-items: center; gap: 12px; }
-  .item__top .idx { font-size: 13px; font-weight: 700; color: var(--gray-300); min-width: 26px; }
-  .item__top .ttl { flex: 1; font-size: 15px; font-weight: 600; color: var(--ink); }
-  .item__top .cat { font-size: 12px; padding: 4px 10px; background: var(--navy-soft); color: var(--navy); }
-  .item__body { margin-top: 14px; display: none; }
-  .item.open .item__body { display: block; }
-  .mini { height: 32px; padding-inline: 12px; font-size: 12.5px; border: 1px solid var(--line); background: #fff; color: var(--gray-700); }
-  .mini:hover { border-color: var(--navy); color: var(--navy); }
-
-  .log { margin-top: 18px; padding: 16px; background: #0d1220; color: #cfe0ff; font-size: 12.5px; line-height: 1.75; font-family: ui-monospace, Menlo, Consolas, monospace; max-height: 240px; overflow: auto; }
-  .log .ok { color: #7fe0a0; }
-  .log .bad { color: #ff9d92; }
-  .log .dim { color: #7f8db0; }
-  /* 휴대폰: 2·3단 입력칸을 한 줄씩 쌓는다 (390px 에서 가로 넘침 방지) */
-  @media (max-width: 640px) {
-    .adm { padding: 28px 16px 64px; }
-    .panel { padding: 20px 16px; }
-    .row.c2, .row.c3 { grid-template-columns: minmax(0, 1fr); }
-    .item__top { flex-wrap: wrap; }
-    .item__top .ttl { flex-basis: 100%; min-width: 0; }
-    .log { overflow-wrap: anywhere; }
+  @media (max-width: 560px) {
+    .flow { grid-template-columns: 1fr; }
+    .hub__head h1 { font-size: 26px; }
   }
 </style>
 <!-- SEO:AUTO -->
@@ -71,13 +69,13 @@
 <meta property="og:site_name" content="법무법인 제이엘">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:url" content="https://www.jllawfirm.co.kr/admin/index.html">
-<meta property="og:title" content="콘텐츠 관리 | 법무법인 제이엘">
+<meta property="og:title" content="직원 업무 | 법무법인 제이엘">
 <meta property="og:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="법무법인 제이엘">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="콘텐츠 관리 | 법무법인 제이엘">
+<meta name="twitter:title" content="직원 업무 | 법무법인 제이엘">
 <meta name="twitter:image" content="https://www.jllawfirm.co.kr/assets/img/og-default.jpg">
 <meta name="author" content="법무법인 제이엘">
 <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
@@ -99,7 +97,7 @@
       "@type": "WebPage",
       "@id": "https://www.jllawfirm.co.kr/admin/index.html#webpage",
       "url": "https://www.jllawfirm.co.kr/admin/index.html",
-      "name": "콘텐츠 관리 | 법무법인 제이엘",
+      "name": "직원 업무 | 법무법인 제이엘",
       "isPartOf": {
         "@id": "https://www.jllawfirm.co.kr/#website"
       },
@@ -114,85 +112,92 @@
 <!-- /SEO:AUTO -->
 </head>
 <body>
+<script src="../assets/js/admin-gate.js?v=145" data-gate="home"></script>
 
-<div class="adm">
-  <div class="adm__head">
+<main class="hub">
+  <header class="hub__head">
     <div>
-      <h1>콘텐츠 관리</h1>
-      <p class="sub">법무법인 제이엘 홈페이지 · 매거진 / 검토보고서</p>
-      <p class="sub" style="margin-top:8px">
-        다른 관리 화면 —
-        <a href="office.html"><b>등기업무 시스템</b></a> ·
-        <a href="registry.html">등기센터 관리</a> ·
-      </p>
+      <p class="hub__en">JL STAFF</p>
+      <h1>제이엘 직원 업무</h1>
+      <p>등기 업무와 홈페이지 관리 화면을 여기서 엽니다.</p>
     </div>
-    <span class="adm__state" id="state">GitHub 미연결</span>
+    <nav class="hub__view" aria-label="손님 화면 보기">
+      <a href="../index.html" target="_blank" rel="noopener">홈페이지 보기</a>
+      <a href="../tracking.html?demo=1" target="_blank" rel="noopener">손님 조회 화면 (체험)</a>
+    </nav>
+  </header>
+
+  <h2 class="hub__h2">업무 화면</h2>
+  <p class="hub__lead">대부분의 일은 첫 번째 「등기업무 시스템」에서 합니다.</p>
+
+  <div class="tools">
+    <a class="tool-card is-main" href="office.html">
+      <span class="tool-card__tag">매일 사용</span>
+      <h3>등기업무 시스템</h3>
+      <ul>
+        <li>단지·세대 등록 (등기 엑셀 불러오기)</li>
+        <li>세대별 등기 진행 단계 수정</li>
+        <li>설문, 위임장 접수, 문자 발송</li>
+        <li>손님 조회용 서버 업로드본 만들기</li>
+      </ul>
+      <p class="tool-card__who">등기센터 직원</p>
+      <span class="tool-card__go">열기 &#8594;</span>
+    </a>
+
+    <a class="tool-card" href="registry.html">
+      <span class="tool-card__tag">가끔 사용</span>
+      <h3>등기센터 설정</h3>
+      <ul>
+        <li>국민주택채권 할인율 (평소 자동)</li>
+        <li>진행 단지 목록 (손님 조회 화면의 아파트 선택지)</li>
+      </ul>
+      <p class="tool-card__who">등기센터 담당자</p>
+      <span class="tool-card__go">열기 &#8594;</span>
+    </a>
+
+    <a class="tool-card" href="content.html">
+      <span class="tool-card__tag">홈페이지 관리</span>
+      <h3>매거진 · 검토보고서</h3>
+      <ul>
+        <li>제이엘 매거진 검토보고서 목록 등록</li>
+        <li>GitHub 연결이 필요합니다</li>
+      </ul>
+      <p class="tool-card__who">홈페이지 담당자</p>
+      <span class="tool-card__go">열기 &#8594;</span>
+    </a>
   </div>
 
-  <!-- 1. 연결 -->
-  <section class="panel">
-    <h2>1. GitHub 연결</h2>
-    <p class="hint">
-      저장하면 GitHub 저장소에 바로 커밋됩니다. 토큰은 이 브라우저에만 보관되며 서버로 전송되지 않습니다.<br>
-      토큰 발급: GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens →
-      대상 저장소 선택 → Repository permissions에서 <b>Contents: Read and write</b> 부여.
-      <b>공용 PC에서는 사용하지 마세요.</b>
+  <h2 class="hub__h2">손님이 「등기 진행 조회」에서 보게 되는 순서</h2>
+  <p class="hub__lead">직원이 등기업무 시스템에 입력한 진행 단계가 아래 순서로 손님에게 보입니다.</p>
+
+  <ol class="flow">
+    <li>
+      <b>엑셀 불러오기</b>
+      <span>등기업무 시스템 첫 화면에서 「등기 엑셀 불러오기」로 단지와 세대를 만듭니다.</span>
+    </li>
+    <li>
+      <b>진행 단계 수정</b>
+      <span>「등기진행」 메뉴에서 세대별 단계를 바꿉니다.</span>
+      <span>작업이 끝나면 「암호화 저장」으로 PC에 저장합니다.</span>
+    </li>
+    <li class="is-wait">
+      <b>서버에 올리기</b>
+      <span>「등기진행」에서 「서버 업로드본 내보내기」 파일을 만들어 서버에 올립니다.</span>
+      <em>서버 준비 전</em>
+    </li>
+    <li>
+      <b>손님 확인</b>
+      <span>손님이 홈페이지 「등기 진행 조회」에서 동·호수와 이름, 생년월일로 확인합니다.</span>
+    </li>
+  </ol>
+
+  <div class="notice">
+    <p>
+      <span class="s">지금은 조회 서버(가비아)가 준비되기 전이라 손님 조회 화면에는 「준비 중, 문의 1899-4252」로 나옵니다.</span>
+      <span class="s">서버가 열리면 3단계부터 그대로 이어집니다.</span>
+      <span class="s">세대의 이름, 생년월일, 연락처는 이 PC 밖으로 나가지 않습니다.</span>
     </p>
-    <div class="row c3">
-      <div>
-        <label class="f" for="ghRepo">저장소</label>
-        <input type="text" id="ghRepo" placeholder="kingjin77-rgb/jl-lawfirm-homepage">
-      </div>
-      <div>
-        <label class="f" for="ghBranch">브랜치</label>
-        <input type="text" id="ghBranch" placeholder="main">
-      </div>
-      <div>
-        <label class="f" for="ghToken">토큰</label>
-        <input type="password" id="ghToken" placeholder="github_pat_...">
-      </div>
-    </div>
-    <div class="acts">
-      <button class="b pri" id="btnSaveGh">연결 정보 저장</button>
-      <button class="b" id="btnTest">연결 확인</button>
-      <button class="b warn" id="btnClearGh">연결 해제</button>
-    </div>
-  </section>
-
-  <!-- 2. 검토보고서 -->
-  <section class="panel">
-    <h2>2. 검토보고서</h2>
-    <p class="hint">매거진 페이지 하단 카드 목록입니다. 링크를 비워두면 “준비 중”으로 표시됩니다.</p>
-    <div class="items" id="reportList"></div>
-    <div class="acts">
-      <button class="b" id="btnAddReport">보고서 추가</button>
-    </div>
-  </section>
-
-  <!-- 3. 발행호 -->
-  <section class="panel">
-    <h2>3. 매거진 발행호</h2>
-    <p class="hint">가장 위에 있는 호가 최신호로 노출됩니다.</p>
-    <div class="items" id="issueList"></div>
-  </section>
-
-  <!-- 4. 저장 -->
-  <section class="panel">
-    <h2>4. 저장</h2>
-    <p class="hint">
-      <b>GitHub에 저장</b>은 <code>data/magazine.json</code> 을 커밋합니다.
-      연결 전이라면 <b>파일로 내려받기</b>로 받아 직접 올릴 수 있습니다.
-    </p>
-    <div class="acts">
-      <button class="b pri" id="btnPublish">GitHub에 저장</button>
-      <button class="b" id="btnDownload">파일로 내려받기</button>
-      <button class="b" id="btnReload">서버 내용 다시 불러오기</button>
-    </div>
-    <div class="log" id="log"><span class="dim">대기 중…</span></div>
-  </section>
-</div>
-
-<script src="../assets/js/admin-gate.js?v=144" data-gate="home"></script>
-<script src="app.js"></script>
+  </div>
+</main>
 </body>
 </html>
