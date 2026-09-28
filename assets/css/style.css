@@ -2337,3 +2337,7 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
 
 /* 모바일 메뉴 상담 단추가 전화 하나일 때 */
 @media (max-width: 1024px) { .gnb__cta.is-single { grid-template-columns: 1fr; } }
+
+/* 등기 진행 조회 — 새 서버 전 기존 조회 시스템 안내 */
+.trk__legacy .trk__go { margin-top: 24px; }
+.trk__legacy .trk__go + .trk__lead { margin-top: 22px; }

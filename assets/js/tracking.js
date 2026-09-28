@@ -16,6 +16,9 @@
   'use strict';
 
   var ENDPOINT = '';          // 예: 'https://www.jllawfirm.co.kr/track/api/lookup.php'
+  // 새 서버가 붙기 전까지 손님을 보내는 기존 등기 조회 시스템.
+  // jllawfirm.kr 은 별도 서버라 새 홈페이지(jllawfirm.co.kr) 전환과 무관하게 계속 돈다.
+  var LEGACY = 'https://www.jllawfirm.kr/member/login.php';
 
   // 실제 업무의 여덟 단계. 관리자 화면·엑셀과 같은 순서다.
   var STEPS = [
@@ -438,6 +441,24 @@
       b.innerHTML = lines('체험 화면입니다. 규격에 맞게 넣으면 어떤 세대든 결과가 나옵니다. 아래 네 세대는 실제 조회처럼 대조합니다. 생년월일 한 자리만 틀려도 막힙니다.');
       $('form').insertBefore(b, $('form').firstChild);
       drawGuide();
+    }
+
+    /* 새 조회 서버가 붙기 전에는 기존 등기 조회 시스템이 실제로 돌고 있다.
+       손님이 막히지 않도록 입력칸 대신 기존 시스템으로 가는 단추를 보여 준다.
+       새 서버 주소(ENDPOINT)를 넣는 순간 이 안내는 저절로 사라진다. */
+    if (!ENDPOINT && !DEMO) {
+      var form = $('form');
+      [].forEach.call(form.children, function (el) {
+        if (!el.classList.contains('trk__title')) el.hidden = true;
+      });
+      var box = document.createElement('div');
+      box.className = 'trk__legacy';
+      box.innerHTML =
+        '<p class="trk__lead">' + lines('맡기신 세대의 등기 진행 상황은 제이엘 등기 조회 시스템에서 확인하실 수 있습니다. 아래 단추를 누르시면 조회 화면으로 이동합니다.') + '</p>' +
+        '<a class="btn btn--fill trk__go" href="' + LEGACY + '">등기 진행 조회 바로가기 <span class="arrow">&#8594;</span></a>' +
+        '<p class="trk__lead">' + lines('진행 현황, 등기비용 내역서, 미비서류, 권리증 수령 주소, 채권 환불 신청을 같은 화면에서 이용하실 수 있습니다. 문의 1899-4252') + '</p>';
+      form.appendChild(box);
+      return;
     }
 
     loadComplexes();
