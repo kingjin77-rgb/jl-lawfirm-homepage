@@ -31,7 +31,47 @@ $routes = [
     '/faq'      => 'faq',
 ];
 
-$page = $routes[rtrim($path, '/') ?: '/'] ?? null;
+// 직원 관리자 — /admin 아래는 별도 라우트 표 (app/pages/admin/*.php).
+$adminRoutes = [
+    '/admin'                      => 'dashboard',
+    '/admin/login'                => 'login',
+    '/admin/logout'               => 'logout',
+    '/admin/config'               => 'config_info',
+    '/admin/config/faq'           => 'config_faq',
+    '/admin/config/staff'         => 'config_staff',
+    '/admin/member/complex'       => 'member_complex',
+    '/admin/member/household'     => 'member_household',
+    '/admin/member/sms'           => 'member_sms',
+    '/admin/member/sms-log'       => 'member_sms_log',
+    '/admin/registration'         => 'reg_list',
+    '/admin/registration/form'    => 'reg_form',
+    '/admin/registration/cost'    => 'reg_cost',
+    '/admin/registration/address' => 'reg_address',
+    '/admin/registration/refund'  => 'reg_refund',
+    '/admin/registration/upload'  => 'reg_upload',
+    '/admin/registration/export'  => 'reg_export',
+    '/admin/survey'               => 'placeholder',
+    '/admin/accept'               => 'placeholder',
+    '/admin/attorney'             => 'placeholder',
+    '/admin/stats'                => 'stats_login',
+    '/admin/stats/lockout'        => 'stats_lockout',
+    '/admin/stats/audit'          => 'stats_audit',
+];
+
+$clean = rtrim($path, '/') ?: '/';
+
+if ($clean === '/admin' || str_starts_with($clean, '/admin/')) {
+    require __DIR__ . '/../app/admin.php';
+    $page = $adminRoutes[$clean] ?? null;
+    if ($page === null) {
+        http_response_code(404);
+        exit('페이지를 찾을 수 없습니다.');
+    }
+    require __DIR__ . '/../app/pages/admin/' . $page . '.php';
+    exit;
+}
+
+$page = $routes[$clean] ?? null;
 if ($page === null) {
     http_response_code(404);
     exit('페이지를 찾을 수 없습니다.');

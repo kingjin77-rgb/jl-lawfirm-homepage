@@ -13,16 +13,16 @@ if ($hh === null) {
 $prog = db_row('SELECT * FROM progress WHERE household_id = ?', [$customer['household_id']]);
 
 $steps = [];
-$doneUpTo = 0; // 마지막으로 날짜가 채워진 단계
+$doneUpTo = 0; // 마지막으로 완료된 단계 (날짜 또는 완료 표시)
 foreach (progress_step_names() as $n => $label) {
-    $date = $prog['step' . $n . '_date'] ?? null;
-    if ($date !== null) {
+    $done = progress_step_complete($prog, $n);
+    if ($done) {
         $doneUpTo = $n;
     }
-    $steps[$n] = ['label' => $label, 'date' => $date];
+    $steps[$n] = ['label' => $label, 'date' => $prog['step' . $n . '_date'] ?? null, 'done' => $done];
 }
 foreach ($steps as $n => &$s) {
-    if ($s['date'] !== null) {
+    if ($s['done']) {
         $s['state'] = '완료';
     } elseif ($n === $doneUpTo + 1) {
         $s['state'] = '진행중';

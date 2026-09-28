@@ -107,7 +107,8 @@ CREATE TABLE IF NOT EXISTS progress (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 등기비용 내역서 — 세대당 1행. 기존 11항목 + 합계/입금액/차액.
--- 금액은 원 단위 정수(BIGINT)로 둔다. 차액 = 합계 - 입금액.
+-- 금액은 원 단위 정수(BIGINT). 차액 = 입금액 - 합계 (기존 엑셀 36열과 동일,
+-- 음수면 아직 덜 입금된 상태).
 CREATE TABLE IF NOT EXISTS cost (
   household_id  INT UNSIGNED NOT NULL,
   acq_tax       BIGINT NOT NULL DEFAULT 0,        -- 취득세

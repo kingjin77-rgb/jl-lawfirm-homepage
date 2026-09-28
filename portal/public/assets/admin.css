@@ -1,0 +1,174 @@
+/* =====================================================================
+   직원 관리자 전용 — portal.css 토큰(--navy/--gold/--line …)을 이어 쓴다.
+   표 글자 14px 이상, 안내는 카드(.alert)로. 1440 데스크톱과 390 폰 모두
+   가로 넘침 없이: 넓은 표는 .tbl-scroll 로 감싸 표만 가로 스크롤.
+   ===================================================================== */
+
+.adm-body { background: var(--bg); }
+
+/* ---------- 상단 바 + 7메뉴 ---------- */
+.adm-hd { background: var(--navy); color: var(--white); }
+.adm-hd__in {
+  max-width: 1360px; margin: 0 auto; padding: 10px 16px;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+}
+.adm-hd__logo { text-decoration: none; color: var(--white); display: flex; align-items: baseline; gap: 8px; }
+.adm-hd__logo strong { font-size: 17px; white-space: nowrap; }
+.adm-hd__logo span { font-size: 14px; color: #c8d0e8; white-space: nowrap; }
+.adm-nav { display: flex; gap: 2px; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; }
+.adm-nav a {
+  font-size: 15px; font-weight: 700; color: #b9c2dd; text-decoration: none;
+  padding: 9px 12px; border-radius: 8px; white-space: nowrap;
+}
+.adm-nav a:hover { color: var(--white); background: rgba(255,255,255,.08); }
+.adm-nav a.is-on { color: var(--white); background: rgba(255,255,255,.14); box-shadow: inset 0 -3px 0 var(--gold); }
+.adm-hd__user { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #dfe4f2; }
+.adm-hd__out {
+  font-size: 14px; color: var(--white); text-decoration: none;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 6px; padding: 3px 10px;
+}
+.adm-hd__out:hover { background: rgba(255,255,255,.12); }
+
+/* ---------- 프레임: 좌측 서브메뉴 + 본문 ---------- */
+.adm-frame {
+  max-width: 1360px; margin: 0 auto; padding: 24px 16px 56px;
+  display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 24px;
+  align-items: start;
+}
+.adm-side {
+  background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 0; position: sticky; top: 16px;
+}
+.adm-side__ttl { display: block; font-size: 14px; color: var(--gold); padding: 2px 18px 10px; letter-spacing: .04em; }
+.adm-side a {
+  display: block; font-size: 15px; text-decoration: none; color: var(--ink-soft);
+  padding: 10px 18px; border-left: 3px solid transparent;
+}
+.adm-side a:hover { color: var(--navy); background: var(--bg); }
+.adm-side a.is-on { color: var(--navy); font-weight: 700; border-left-color: var(--gold); background: var(--bg); }
+
+.adm-main { min-width: 0; }
+.adm-main--wide { max-width: 1360px; margin: 0 auto; padding: 28px 16px 56px; }
+
+.adm-ttl { margin: 0 0 6px; font-size: 24px; color: var(--navy); }
+.adm-lead { margin: 0 0 20px; font-size: 15px; color: var(--ink-soft); }
+
+/* ---------- 대시보드 요약 카드 ---------- */
+.adm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.adm-stat {
+  background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px 18px; text-decoration: none; display: block;
+}
+.adm-stat b { display: block; font-size: 14px; color: var(--ink-soft); margin-bottom: 4px; font-weight: 500; }
+.adm-stat strong { font-size: 24px; color: var(--navy); font-variant-numeric: tabular-nums; }
+.adm-stat span { font-size: 14px; color: var(--ink-soft); }
+
+/* ---------- 표 ---------- */
+.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 14px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
+.tbl { width: 100%; border-collapse: collapse; background: var(--white); font-size: 14.5px; }
+.tbl th, .tbl td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tbl thead th {
+  background: #f2f5fc; color: var(--navy); font-size: 14px; font-weight: 700;
+  white-space: nowrap; position: sticky; top: 0;
+}
+.tbl tbody tr:hover { background: #fafbfe; }
+.tbl tbody tr:last-child td { border-bottom: 0; }
+.tbl .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tbl .ctr { text-align: center; }
+.tbl .nowrap { white-space: nowrap; }
+.tbl .neg { color: var(--warn); font-weight: 700; }
+.tbl .mark-done { color: var(--ok); font-weight: 700; }
+.tbl .mark-wait { color: #b6bccb; }
+
+/* ---------- 필터 폼 ---------- */
+.adm-filter {
+  background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px 18px; margin-bottom: 18px;
+}
+.adm-filter__row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.adm-filter__f { display: flex; flex-direction: column; gap: 4px; }
+.adm-filter__f label { font-size: 14px; font-weight: 700; color: var(--navy); }
+.adm-filter__f input, .adm-filter__f select {
+  font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; background: var(--white); min-width: 0;
+}
+.adm-filter__f input:focus, .adm-filter__f select:focus { outline: 2px solid var(--navy); border-color: var(--navy); }
+.adm-filter__f--sm input { width: 90px; }
+.adm-filter__steps { display: flex; gap: 4px 12px; flex-wrap: wrap; margin-top: 10px; }
+.adm-filter__steps label { font-size: 14px; display: inline-flex; align-items: center; gap: 5px; color: var(--ink); }
+
+.btn--sm { padding: 8px 16px; font-size: 15px; }
+.btn--xs { padding: 4px 10px; font-size: 14px; border-radius: 6px; }
+.btn--danger { border-color: var(--warn); color: var(--warn); }
+.btn--danger:hover { background: #fdf3f1; }
+
+/* ---------- 페이지네이션 ---------- */
+.pager { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 14px 0; }
+.pager a, .pager strong {
+  font-size: 14.5px; text-decoration: none; color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; background: var(--white);
+}
+.pager strong { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.pager__total { font-size: 14.5px; color: var(--ink-soft); margin-left: auto; }
+
+/* ---------- 상세 폼 섹션 ---------- */
+.adm-sec {
+  background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px; margin-bottom: 18px;
+}
+.adm-sec > h2 {
+  margin: 0 0 14px; font-size: 17px; color: var(--navy);
+  padding-bottom: 10px; border-bottom: 2px solid var(--navy);
+}
+.adm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.adm-field { display: flex; flex-direction: column; gap: 4px; }
+.adm-field label { font-size: 14px; font-weight: 700; color: var(--navy); }
+.adm-field input, .adm-field select, .adm-field textarea {
+  font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 8px;
+  padding: 9px 11px; background: var(--white); width: 100%;
+}
+.adm-field input:focus, .adm-field select:focus, .adm-field textarea:focus {
+  outline: 2px solid var(--navy); border-color: var(--navy);
+}
+.adm-field textarea { min-height: 90px; resize: vertical; }
+
+/* 8단계 입력 줄 */
+.adm-steps { display: grid; gap: 8px; }
+.adm-step {
+  display: grid; grid-template-columns: 34px minmax(130px, 200px) 160px auto;
+  gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
+}
+.adm-step__no { font-size: 13.5px; font-weight: 700; color: var(--gold); }
+.adm-step__name { font-size: 15px; }
+.adm-step input[type=date] { font: inherit; font-size: 14.5px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.adm-step__done { display: inline-flex; align-items: center; gap: 6px; font-size: 14.5px; font-weight: 700; }
+.adm-step.is-done { border-color: #bfdcc9; background: #f7fbf8; }
+
+/* SMS 바이트 카운터 */
+.sms-count { font-size: 14.5px; color: var(--ink-soft); }
+.sms-count b { color: var(--navy); }
+
+/* 소유자 편집 행 */
+.owner-row { display: grid; grid-template-columns: 1.2fr 110px 1.2fr 90px 70px; gap: 8px; margin-bottom: 8px; align-items: center; }
+.owner-row input { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.owner-row .chk { font-size: 14px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.owner-head { font-size: 13.5px; font-weight: 700; color: var(--ink-soft); }
+
+/* 로그인 카드 재사용 */
+.adm-login { max-width: 460px; margin: 48px auto 0; }
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 700px) {
+  /* 화면별 inline 열 구성(고정폭 포함)을 폰에서는 2열로 강제 — 가로 넘침 방지 */
+  .adm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 900px) {
+  .adm-frame { grid-template-columns: 1fr; }
+  .adm-side { position: static; display: flex; flex-wrap: wrap; gap: 2px; padding: 10px; }
+  .adm-side__ttl { flex: 1 1 100%; padding: 2px 8px 8px; }
+  .adm-side a { border-left: 0; border-radius: 8px; padding: 8px 12px; }
+  .adm-side a.is-on { box-shadow: inset 0 -2px 0 var(--gold); }
+  .owner-row { grid-template-columns: 1fr 1fr; }
+  .adm-step { grid-template-columns: 34px 1fr; grid-auto-flow: row; }
+}

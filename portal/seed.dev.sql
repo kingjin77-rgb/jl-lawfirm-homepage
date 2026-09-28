@@ -12,7 +12,7 @@ INSERT INTO complex (id, name, exposed, bank_name, bank_account, bank_holder, so
 VALUES (1, '테스트 스타힐스', 1, '국민은행', '000000-00-000000', '법무법인 제이엘', 1)
 ON DUPLICATE KEY UPDATE name = VALUES(name);
 
--- 세대 101동 101호 — 단독 명의, 전 단계 완료, 비용 전체 + 차액 > 0
+-- 세대 101동 101호 — 단독 명의, 전 단계 완료, 비용 전체 + 미입금 잔액(차액 음수)
 INSERT INTO household (id, complex_id, dong, ho) VALUES (1, 1, '101', '101')
 ON DUPLICATE KEY UPDATE complex_id = VALUES(complex_id);
 
@@ -33,7 +33,7 @@ INSERT INTO cost (household_id,
   trust_cancel, cert_fees, fee, vat, etc_amt, total, paid_amount, diff)
 VALUES (1,
   4200000, 380000, 120000, 150000, 15000, 5000,
-  30000, 20000, 550000, 55000, 10000, 5535000, 5000000, 535000)
+  30000, 20000, 550000, 55000, 10000, 5535000, 5000000, -535000)
 ON DUPLICATE KEY UPDATE total = VALUES(total), paid_amount = VALUES(paid_amount), diff = VALUES(diff);
 
 -- 세대 101동 102호 — 공동명의(김철수+이영희), 중간 단계, 미비서류 있음

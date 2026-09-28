@@ -20,15 +20,16 @@
   <tfoot>
     <tr class="bill__sum"><th>합계</th><td><?= h(won((int)$cost['total'])) ?></td></tr>
     <tr><th>입금액</th><td><?= h(won((int)$cost['paid_amount'])) ?></td></tr>
-    <tr class="bill__diff<?= (int)$cost['diff'] > 0 ? ' is-due' : '' ?>">
+    <?php /* 차액 = 입금액 - 합계 (기존 시스템 기준) — 음수면 아직 덜 입금된 상태 */ ?>
+    <tr class="bill__diff<?= (int)$cost['diff'] < 0 ? ' is-due' : '' ?>">
       <th>차액</th><td><?= h(won((int)$cost['diff'])) ?></td>
     </tr>
   </tfoot>
 </table>
 
-<?php if ((int)$cost['diff'] > 0): ?>
+<?php if ((int)$cost['diff'] < 0): ?>
 <div class="alert alert--warn">
-  <b>아직 <?= h(won((int)$cost['diff'])) ?>이 더 입금되어야 합니다.</b>
+  <b>아직 <?= h(won(abs((int)$cost['diff']))) ?>이 더 입금되어야 합니다.</b>
   <?php if ($hh['bank_account'] !== ''): ?>
   <span class="s">입금 계좌: <?= h($hh['bank_name']) ?> <?= h($hh['bank_account']) ?> (예금주 <?= h($hh['bank_holder']) ?>)</span>
   <?php endif; ?>

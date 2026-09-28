@@ -54,6 +54,18 @@ function progress_step_names(): array
     ];
 }
 
+/**
+ * 단계 완료 판정 — 날짜가 있거나 done 표시가 있으면 완료.
+ * (기존 엑셀은 날짜 없이 「완료」만 적는 칸이 많아 둘 다 인정한다.)
+ */
+function progress_step_complete(?array $prog, int $n): bool
+{
+    if ($prog === null) {
+        return false;
+    }
+    return !empty($prog["step{$n}_date"]) || !empty($prog["step{$n}_done"]);
+}
+
 /** 비용 11항목 — 컬럼명 ↔ 표시명. 표시 순서도 기존 그대로. */
 function cost_item_labels(): array
 {

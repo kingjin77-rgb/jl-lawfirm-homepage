@@ -184,7 +184,7 @@ b, strong { font-weight: 700; }
   background: #f2f5fc; font-weight: 700; color: var(--navy); font-size: 17px;
   border-top: 2px solid var(--navy);
 }
-.bill__diff.is-due td { color: var(--warn); font-weight: 700; }
+.bill__diff.is-due td { color: var(--warn); font-weight: 700; } /* is-due = 차액(입금액-합계) 음수 */
 .bill tr:last-child th, .bill tr:last-child td { border-bottom: 0; }
 
 /* ---------- 미비서류 ---------- */
