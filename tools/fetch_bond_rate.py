@@ -5,7 +5,8 @@
 
 출처는 주택도시기금이 채권 시세 화면에 걸어 둔 우리은행 조회 서비스다.
 주택도시기금 사이트 자체는 이 화면을 iframe 으로 불러오기만 하므로,
-그 안쪽 주소를 직접 조회한다.
+그 안쪽 주소를 직접 조회한다. 주 화면(HBNHB0087)이 개편·장애로 안 읽히면
+같은 서비스의 다른 화면(HBNHB0036)을 예비로 읽는다 — 표 형식이 같다.
 
   기준일        매도단가   수익률   할인율
   2026.08.10    8,541     4.186   14.79755
@@ -40,7 +41,11 @@ UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 )
-ENDPOINT = "https://svc.wooribank.com/svc/Dream?withyou=HBNHB0087"
+# 주 출처 먼저, 실패하면 예비 출처. 둘 다 우리은행 조회 서비스로 표 형식이 같다.
+ENDPOINTS = [
+    "https://svc.wooribank.com/svc/Dream?withyou=HBNHB0087",
+    "https://svc.wooribank.com/svc/Dream?withyou=HBNHB0036",
+]
 
 # 할인율이 이 범위를 벗어나면 받아온 값을 의심한다.
 MIN_RATE, MAX_RATE = 1.0, 40.0
@@ -56,7 +61,7 @@ ROW = re.compile(
 )
 
 
-def fetch_month(year: int, month: int) -> str:
+def fetch_month(endpoint: str, year: int, month: int) -> str:
     body = urllib.parse.urlencode(
         {
             "MODE": "1",
@@ -66,12 +71,12 @@ def fetch_month(year: int, month: int) -> str:
         }
     ).encode()
     req = urllib.request.Request(
-        ENDPOINT,
+        endpoint,
         data=body,
         headers={
             "User-Agent": UA,
             "Content-Type": "application/x-www-form-urlencoded",
-            "Referer": ENDPOINT,
+            "Referer": endpoint,
         },
     )
     with urllib.request.urlopen(req, timeout=25) as res:
@@ -108,23 +113,25 @@ def latest_row(html: str) -> tuple[str, float, float, float] | None:
 
 
 def collect() -> tuple[str, float, float, float] | None:
-    """이번 달을 먼저 보고, 아직 게시가 없으면 지난달을 본다."""
+    """주 출처부터 차례로, 이번 달을 먼저 보고 아직 게시가 없으면 지난달을 본다."""
     now = datetime.now(KST)
     tries = [(now.year, now.month)]
     prev = now.replace(day=1) - timedelta(days=1)
     tries.append((prev.year, prev.month))
 
-    for year, month in tries:
-        try:
-            html = fetch_month(year, month)
-        except (urllib.error.URLError, OSError, TimeoutError) as e:
-            print(f"  조회 실패 — {year}-{month:02d}: {e}", file=sys.stderr)
-            continue
-        row = latest_row(html)
-        if row:
-            print(f"  찾음 — 기준일 {row[0]} · 매도단가 {row[1]:,.0f} · 할인율 {row[3]}%")
-            return row
-        print(f"  자료 없음 — {year}-{month:02d}", file=sys.stderr)
+    for i, endpoint in enumerate(ENDPOINTS):
+        name = "주 출처" if i == 0 else "예비 출처"
+        for year, month in tries:
+            try:
+                html = fetch_month(endpoint, year, month)
+            except (urllib.error.URLError, OSError, TimeoutError) as e:
+                print(f"  조회 실패({name}) — {year}-{month:02d}: {e}", file=sys.stderr)
+                continue
+            row = latest_row(html)
+            if row:
+                print(f"  찾음({name}) — 기준일 {row[0]} · 매도단가 {row[1]:,.0f} · 할인율 {row[3]}%")
+                return row
+            print(f"  자료 없음({name}) — {year}-{month:02d}", file=sys.stderr)
     return None
 
 
@@ -138,23 +145,25 @@ def main() -> int:
     print("채권 할인율 수집 시작")
     row = collect()
     if row is None:
-        print("값을 얻지 못했습니다. 기존 값을 유지합니다.", file=sys.stderr)
-        return 0
+        # 두 출처 모두 실패 — 기존 값은 그대로 두되, 워크플로를 실패시켜
+        # 저장소 알림(이슈·메일)이 가게 한다. 조용히 옛 값이 계속 나가면 안 된다.
+        print("주·예비 출처 모두 값을 얻지 못했습니다. 기존 값을 유지하고 실패로 종료합니다.", file=sys.stderr)
+        return 1
 
     basis_date, price, yield_, rate = row
     prev = float(bond.get("rate", 0) or 0)
 
     if not (MIN_RATE <= rate <= MAX_RATE):
-        print(f"범위 밖 값({rate}%). 갱신하지 않습니다.", file=sys.stderr)
-        return 0
+        print(f"범위 밖 값({rate}%). 갱신하지 않고 실패로 종료합니다 — 사람이 확인해야 합니다.", file=sys.stderr)
+        return 1
     if prev and abs(rate - prev) > MAX_JUMP:
         print(
             f"이전 {prev}% 에서 {rate}% 로 {abs(rate - prev):.2f}%p 움직였습니다.\n"
-            "사람이 확인해야 하므로 갱신하지 않습니다. "
-            "값이 맞다면 registry.json 의 rate 를 손으로 한 번 맞춰 주세요.",
+            "사람이 확인해야 하므로 갱신하지 않고 실패로 종료합니다. "
+            "값이 맞다면 관리자 화면(admin/registry.html)에서 한 번 맞춰 주세요 — 다음 날부터 다시 자동으로 돕니다.",
             file=sys.stderr,
         )
-        return 0
+        return 1
 
     if abs(rate - prev) < 0.0001 and bond.get("rateDate") == basis_date:
         print("변경 없음")

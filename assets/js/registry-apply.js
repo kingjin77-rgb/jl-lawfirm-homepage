@@ -27,6 +27,12 @@
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   };
   var won = function (n) { return Math.round(n).toLocaleString('ko-KR') + '원'; };
+  // 할인율 기준일이 며칠 지났는지 — 자동 수집이 멈춘 채 옛 요율로 계산되는 것을 알리는 데 쓴다
+  var bondStaleDays = function (rateDate) {
+    if (!rateDate) return 0;
+    var d = new Date(rateDate + 'T00:00:00+09:00').getTime();
+    return isNaN(d) ? 0 : Math.floor((Date.now() - d) / 86400000);
+  };
   var $ = function (sel) { return root.querySelector(sel); };
   var $$ = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
 
@@ -228,7 +234,10 @@
         '<li>취득세 ' + e.aRate + '% ' + won(e.acq) + ' · 지방교육세 ' + won(e.edu) +
           (e.rural ? ' · 농특세 ' + won(e.rural) : '') + '</li>' +
         '<li>국민주택채권 즉시매도 손실 ' + won(e.bondLoss) +
-          ' <small>(할인율 ' + e.discount + '% · 기준일 ' + esc(e.rateDate) + ')</small></li>' +
+          ' <small>(할인율 ' + e.discount + '% · 기준일 ' + esc(e.rateDate) + ')</small>' +
+          (bondStaleDays(e.rateDate) > 7
+            ? '<br><b>할인율이 ' + bondStaleDays(e.rateDate) + '일 전 기준이라 실제 부담액과 차이가 날 수 있습니다.</b>'
+            : '') + '</li>' +
         '<li>인지세 · 수수료 ' + won(e.stamp + e.fee) + '</li>' +
       '</ul>' +
       '<p class="apw__note">시가표준액은 분양가의 70%로 추정한 <b>참고용</b>이며 1주택 기준입니다. ' +

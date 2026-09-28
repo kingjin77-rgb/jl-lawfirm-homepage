@@ -2,7 +2,8 @@ name: 채권 할인율 갱신
 
 # 제1종 국민주택채권 즉시매도 할인율은 영업일마다 바뀐다.
 # 등기비용 계산기가 이 값을 쓰므로 매일 아침 받아와 data/registry.json 을 갱신한다.
-# 받아온 값이 이상하면 스크립트가 스스로 갱신을 건너뛴다.
+# 받아온 값이 이상하거나(범위 밖·급변) 주·예비 출처가 모두 안 읽히면
+# 스크립트가 실패로 끝나고, 아래 단계가 저장소에 이슈를 만들어 알린다.
 
 on:
   schedule:
@@ -12,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: bond-rate
@@ -41,3 +43,25 @@ jobs:
           git add data/registry.json
           git commit -m "채권 할인율 자동 갱신 ($(TZ=Asia/Seoul date +%Y-%m-%d))"
           git push
+
+      - name: 실패 알림 (이슈 생성)
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="채권 할인율 자동 수집 실패"
+          BODY="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') 수집이 실패했습니다.
+
+          계산기는 마지막으로 성공한 날의 할인율을 계속 보여주고 있습니다.
+          원인은 실행 기록을 확인하세요: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          - 출처(우리은행 조회 서비스)가 안 열리거나 화면이 바뀐 경우: tools/fetch_bond_rate.py 수정 필요
+          - 값이 급변해 자동 갱신이 멈춘 경우: 실제 공시 확인 후 admin/registry.html 에서 직접 입력
+
+          해결되면 이 이슈를 닫아 주세요. 열려 있는 동안 새 이슈는 만들지 않고 여기에 댓글이 달립니다."
+          EXISTING=$(gh issue list --state open --search "in:title $TITLE" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') 다시 실패 — ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi
