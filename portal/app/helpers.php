@@ -97,6 +97,39 @@ function customer_menus(): array
     ];
 }
 
+/** setting 표 전체 — 손님 화면(운영정보·팝업)이 쓴다. 관리자는 setting_get_all(admin.php). */
+function settings_all(): array
+{
+    $out = [];
+    foreach (db_all('SELECT name, value FROM setting') as $row) {
+        $out[$row['name']] = $row['value'];
+    }
+    return $out;
+}
+
+/**
+ * 팝업 노출 판정 — 사용중(popup_enabled=1)이고 노출기간(빈 값은 무제한) 안이며
+ * 제목·내용이 있어야 보여준다. 손님 홈이 부른다.
+ */
+function popup_active(array $settings, ?string $today = null): ?array
+{
+    $today = $today ?? date('Y-m-d');
+    if (($settings['popup_enabled'] ?? '') !== '1') {
+        return null;
+    }
+    $start = trim((string)($settings['popup_start'] ?? ''));
+    $end   = trim((string)($settings['popup_end'] ?? ''));
+    if (($start !== '' && $today < $start) || ($end !== '' && $today > $end)) {
+        return null;
+    }
+    $title = trim((string)($settings['popup_title'] ?? ''));
+    $body  = trim((string)($settings['popup_body'] ?? ''));
+    if ($title === '' && $body === '') {
+        return null;
+    }
+    return ['title' => $title, 'body' => $body];
+}
+
 /** 로그인 세대의 단지/동/호/명의인들 — 헤더 인사와 각 페이지가 쓴다. */
 function household_context(int $householdId): ?array
 {

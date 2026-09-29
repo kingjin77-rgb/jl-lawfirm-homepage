@@ -38,4 +38,5 @@ render('progress', [
     'hh'        => $hh,
     'steps'     => $steps,
     'hasRecord' => $prog !== null,
+    'sentDate'  => $prog['sent_date'] ?? null,
 ]);

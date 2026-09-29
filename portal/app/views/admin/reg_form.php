@@ -47,9 +47,16 @@
       </div>
       <?php endforeach; ?>
     </div>
+    <div class="adm-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:14px">
+      <div class="adm-field">
+        <label>권리증 발송일 (엑셀 38열)</label>
+        <input type="date" name="sent_date" value="<?= h((string)($prog['sent_date'] ?? '')) ?>">
+      </div>
+    </div>
     <div class="alert alert--info" style="margin:14px 0 0">
       <b>완료 처리 기준</b>
       날짜를 넣으면 자동으로 완료가 되고, 날짜 없이 「완료」만 체크해도 됩니다 (기존 엑셀과 같은 방식).
+      권리증 발송일은 손님의 진행현황 화면(권리증교부 단계)에 함께 나옵니다.
     </div>
   </div>
 

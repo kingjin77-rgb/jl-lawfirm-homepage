@@ -43,7 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $summary[] = (string)$n;
             }
         }
+        $sentDate = trim((string)($_POST['sent_date'] ?? ''));
+        if ($error === '' && $sentDate !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $sentDate)) {
+            $error = '권리증 발송일 형식이 올바르지 않습니다.';
+        }
         if ($error === '') {
+            $cols['sent_date']    = $sentDate !== '' ? $sentDate : null;
             $cols['missing_docs'] = trim((string)($_POST['missing_docs'] ?? '')) ?: null;
             $cols['memo_admin']   = trim((string)($_POST['memo_admin'] ?? '')) ?: null;
             $names = array_keys($cols);

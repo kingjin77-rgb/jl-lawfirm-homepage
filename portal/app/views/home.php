@@ -1,4 +1,4 @@
-<?php /* 메인 — 기존 6개 카드 그대로 */ ?>
+<?php /* 메인 — 기존 6개 카드 + 참여 카드 + 운영정보 + 팝업 */ ?>
 <div class="greet">
   <p class="greet__at"><?= h($hh['complex_name']) ?></p>
   <h1 class="ttl"><?= h($customer['owner_name']) ?> 님, 안녕하십니까</h1>
@@ -7,6 +7,31 @@
     <span class="s">아래에서 원하시는 항목을 눌러 주십시오.</span>
   </p>
 </div>
+
+<?php if ($participations !== []): ?>
+<?php $typeLabels = ['survey' => '설문', 'accept' => '등기접수', 'attorney' => '위임장']; ?>
+<div class="card" style="margin-bottom:20px" id="participate-box">
+  <h2 class="sub">지금 참여하실 수 있습니다</h2>
+  <?php foreach ($participations as $p): ?>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px">
+    <div style="flex:1 1 260px;min-width:0">
+      <p style="margin:0 0 2px;font-size:14.5px;font-weight:700;color:var(--gold)"><?= h($typeLabels[$p['type']] ?? '설문') ?></p>
+      <b style="display:block;font-size:16.5px;color:var(--navy)"><?= h($p['title']) ?></b>
+      <?php if (!empty($p['starts_on']) || !empty($p['ends_on'])): ?>
+      <span class="s" style="font-size:15px;color:var(--ink-soft)">
+        기간: <?= h((string)($p['starts_on'] ?? '')) ?: '제한 없음' ?> ~ <?= h((string)($p['ends_on'] ?? '')) ?: '제한 없음' ?>
+      </span>
+      <?php endif; ?>
+      <?php if ($p['responded']): ?>
+      <span class="s" style="font-size:15px;color:var(--ok);font-weight:700">제출 완료 — 다시 제출하면 수정됩니다</span>
+      <?php endif; ?>
+    </div>
+    <a class="btn<?= $p['responded'] ? '' : ' btn--fill' ?>" href="/participate?id=<?= (int)$p['id'] ?>">
+      <?= $p['responded'] ? '내용 수정' : '참여하기' ?></a>
+  </div>
+  <?php endforeach; ?>
+</div>
+<?php endif; ?>
 
 <?php
 /* 카드별 짧은 설명 — 메뉴 순서는 customer_menus() 기존 그대로 */
@@ -27,3 +52,42 @@ $descriptions = [
   </a>
   <?php endforeach; ?>
 </div>
+
+<?php if ($ops !== [] || $opsNotice !== ''): ?>
+<div class="card" style="margin-top:20px">
+  <h2 class="sub">이용 안내</h2>
+  <?php if ($ops !== []): ?>
+  <dl class="kv">
+    <?php foreach ($ops as $label => $value): ?>
+    <div><dt><?= h($label) ?></dt><dd><?= h($value) ?></dd></div>
+    <?php endforeach; ?>
+  </dl>
+  <?php endif; ?>
+  <?php if ($opsNotice !== ''): ?>
+  <div class="alert alert--info" style="margin:<?= $ops !== [] ? '14px' : '0' ?> 0 0">
+    <b>안내</b>
+    <?= nl2br(h($opsNotice)) ?>
+  </div>
+  <?php endif; ?>
+</div>
+<?php endif; ?>
+
+<?php if ($popup !== null): ?>
+<div id="jl-popup" role="dialog" aria-modal="true" aria-labelledby="jl-popup-ttl"
+     style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(9,24,69,.55)">
+  <div class="card" style="max-width:520px;width:100%;margin:0;box-shadow:0 12px 40px rgba(0,0,0,.25)">
+    <?php if ($popup['title'] !== ''): ?>
+    <h2 class="sub" id="jl-popup-ttl" style="font-size:20px"><?= h($popup['title']) ?></h2>
+    <?php endif; ?>
+    <?php if ($popup['body'] !== ''): ?>
+    <p style="margin:0 0 18px;font-size:16px;line-height:1.7"><?= nl2br(h($popup['body'])) ?></p>
+    <?php endif; ?>
+    <button type="button" class="btn btn--fill btn--full" id="jl-popup-close">확인했습니다</button>
+  </div>
+</div>
+<script>
+document.getElementById('jl-popup-close').addEventListener('click', function () {
+  document.getElementById('jl-popup').remove();
+});
+</script>
+<?php endif; ?>

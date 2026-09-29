@@ -32,6 +32,7 @@ require_once __DIR__ . '/crypto.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/survey.php';
 
 // 공통 보안 헤더
 header('X-Content-Type-Options: nosniff');

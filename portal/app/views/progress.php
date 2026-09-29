@@ -27,6 +27,13 @@
   <?php endforeach; ?>
 </ol>
 
+<?php if (!empty($sentDate)): ?>
+<div class="alert alert--ok" role="status">
+  <b>권리증을 <?= h((string)$sentDate) ?> 에 발송해 드렸습니다.</b>
+  <span class="s">등록하신 수령 주소로 보내드렸습니다. 일주일 넘게 도착하지 않으면 1899-4252 로 연락 주십시오.</span>
+</div>
+<?php endif; ?>
+
 <div class="note">
   <b>알아두실 내용</b>
   <ul>

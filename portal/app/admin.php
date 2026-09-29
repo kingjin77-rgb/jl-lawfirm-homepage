@@ -47,6 +47,8 @@ function admin_menus(): array
     return [
         'config' => ['label' => '기본 정보 관리', 'home' => '/admin/config', 'sub' => [
             '/admin/config'        => '기본 정보 설정',
+            '/admin/config/ops'    => '운영 정보 설정',
+            '/admin/config/popup'  => '팝업 관리',
             '/admin/config/faq'    => 'FAQ 관리',
             '/admin/config/staff'  => '직원 계정 관리',
         ]],
@@ -64,13 +66,19 @@ function admin_menus(): array
             '/admin/registration/upload'  => '등기진행 등록 (엑셀)',
         ]],
         'survey' => ['label' => '설문 관리', 'home' => '/admin/survey', 'sub' => [
-            '/admin/survey' => '설문 목록 (준비 중)',
+            '/admin/survey'      => '설문 목록',
+            '/admin/survey/form' => '설문 등록',
+            '/admin/survey/sms'  => '참여자 SMS',
         ]],
         'accept' => ['label' => '등기접수 관리', 'home' => '/admin/accept', 'sub' => [
-            '/admin/accept' => '등기접수 목록 (준비 중)',
+            '/admin/accept'      => '등기접수 목록',
+            '/admin/accept/form' => '등기접수 등록',
+            '/admin/accept/sms'  => '참여자 SMS',
         ]],
         'attorney' => ['label' => '위임장 관리', 'home' => '/admin/attorney', 'sub' => [
-            '/admin/attorney' => '위임장 목록 (준비 중)',
+            '/admin/attorney'      => '위임장 목록',
+            '/admin/attorney/form' => '위임장 등록',
+            '/admin/attorney/sms'  => '참여자 SMS',
         ]],
         'stats' => ['label' => '접속 통계', 'home' => '/admin/stats', 'sub' => [
             '/admin/stats'         => '일자별 손님 로그인',
@@ -459,6 +467,7 @@ function import_parse_xlsx(string $path): array
             'paid'      => $paid,
             'diff'      => $paid - $total,                // 차액 = 입금액 - 합계
             'missing'   => import_text((string)($cells[37] ?? '')),
+            'sent_date' => import_date($cells[38] ?? null),   // 38열 권리증 발송일
             'addr'      => import_text((string)($cells[39] ?? '')),
             'bank'      => import_text((string)($cells[40] ?? '')),
             'account'   => import_text((string)($cells[41] ?? '')),
@@ -512,6 +521,7 @@ function import_apply(int $complexId, array $rows): array
                 $cols["step{$n}_done"] = $r['steps'][$n]['done'] ? 1 : 0;
             }
             $cols['missing_docs'] = $r['missing'] !== '' ? $r['missing'] : null;
+            $cols['sent_date']    = $r['sent_date'];          // 38열 발송일 (없으면 NULL)
             $names = array_keys($cols);
             $set = implode(', ', array_map(fn($c) => "$c = VALUES($c)", array_slice($names, 1)));
             db_exec('INSERT INTO progress (' . implode(',', $names) . ') VALUES ('

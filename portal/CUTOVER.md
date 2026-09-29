@@ -15,7 +15,7 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
 ## 1단계 — 가비아 설치 (도메인 연결 전, 임시주소)
 - [ ] portal/ 업로드 (public/ 내용 → 문서루트, app/ 는 웹 노출 밖 — README 배치 참고)
 - [ ] portal-config.php 작성 (DB 접속·암호키 새로 생성 — 개발 키 재사용 금지)
-- [ ] schema.sql + schema_phase2.sql 적용, 직원 계정 생성 (tools/make_staff.php)
+- [ ] schema.sql + schema_phase2.sql + schema_phase3.sql 적용, 직원 계정 생성 (tools/make_staff.php)
 - [ ] https 강제, display_errors off 확인
 - [ ] 실측: 손님 로그인·6메뉴, 직원 로그인·7메뉴, 엑셀 업로드, 잠금, 암호화 저장 확인
 

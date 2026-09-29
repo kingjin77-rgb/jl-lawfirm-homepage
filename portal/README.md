@@ -15,6 +15,7 @@ portal/
   tools/         make_staff.php — 직원 계정 SQL 생성 CLI
   schema.sql         전체 스키마 (1단계 기준)
   schema_phase2.sql  2단계 마이그레이션 — schema.sql 뒤에 실행 (여러 번 실행 안전)
+  schema_phase3.sql  3단계 마이그레이션 — 설문 엔진 표 + sent_date (여러 번 실행 안전)
   seed.dev.sql   개발용 가짜 데이터
   config.sample.php  설정 파일 견본 (실제 설정은 저장소·웹루트 밖!)
 ```
@@ -44,8 +45,40 @@ portal/
 `stepN_date 있음 OR stepN_done=1` (기존 엑셀이 날짜 없이 「완료」만 적기 때문 —
 `schema_phase2.sql` 참고).
 
-미룬 것(3단계): 설문/등기접수/위임장 엔진, 운영 정보·팝업 설정, SMS 실제 발송,
-엑셀 38열(발송일) 저장처, 접속 통계의 유입경로·브라우저 분석.
+미룬 것(3단계에서 완료 — 아래 「3단계」 절): 설문/등기접수/위임장 엔진,
+운영 정보·팝업 설정, 엑셀 38열(발송일) 저장처.
+여전히 미룬 것: SMS 실제 발송(업체 연동), 접속 통계의 유입경로·브라우저 분석.
+
+## 3단계 — 설문·등기접수·위임장 엔진 + 운영정보·팝업 + 발송일
+
+`schema_phase3.sql` 을 schema.sql + schema_phase2.sql 뒤에 적용한다 (여러 번 실행 안전).
+
+- **공용 엔진** (`app/survey.php`): 설문(survey)·등기접수(accept)·위임장(attorney)
+  세 메뉴가 `survey.type` 하나로 같은 표(survey/survey_target/survey_question/
+  survey_response/survey_answer)와 같은 컨트롤러(`app/pages/admin/survey_*.php`)를
+  쓴다. 라우터(`public/index.php`)가 경로 접두(`/admin/survey|accept|attorney`)로
+  `$surveyType` 을 정한다.
+- **관리자**: 목록(설문명·주최·총인원/참여/불참·작성일, 등기접수는 기간 열 추가) ·
+  등록/수정(문항 빌더 — 객관식/주관식/설명글, 등기접수는 '핸드폰' 유형과
+  기간·핸드폰 확인 필수 옵션 추가) · 미리보기 · 결과보기(문항별 집계) ·
+  참여/불참데이타(CSV 내보내기, UTF-8 BOM) · 참여대상자(아파트 단위 —
+  고른 단지 전 세대가 총인원).
+- **손님**: 홈에 진행 중 건 참여 카드 → `/participate?id=N` 참여 폼
+  (필수 검증 + 핸드폰 형식 검증). 세대당 1건 업서트 — 다시 제출하면 수정.
+  등기접수는 기간(시작~종료, 양끝 포함) 밖이면 화면·서버 양쪽에서 차단.
+- **참여자 SMS**: member_sms 와 같은 대기 저장 방식. 대상은 참여/불참/전체
+  (핸드폰 있는 명의인 + 참여 세대의 제출 핸드폰, 같은 번호 1건).
+  `sms_log.survey_id/audience` 로 어느 건의 어떤 대상인지 남는다.
+- **운영정보·팝업** (setting 키-값): 운영 정보 설정(상담시간·점심·휴무·안내문 →
+  손님 홈 「이용 안내」 카드), 팝업 관리(제목/내용/노출기간/사용여부 → 손님 홈
+  로그인 직후 팝업, 기간 밖이면 자동 숨김).
+- **발송일**: 엑셀 38열 → `progress.sent_date`. 반입·관리자 상세(② 단계 폼)에서
+  입력하고, 손님 진행현황 화면에 발송 안내 카드로 나온다.
+
+검증(2026-09-29): `php -l` 전 파일 통과 · schema_phase3 2회 연속 적용 멱등 확인 ·
+Playwright E2E 55건 통과 (설문 등록→3유형 문항→손님 참여·수정→집계→불참→CSV,
+기간 밖 차단, 위임장 목록 분리, 팝업 노출·기간종료 숨김, 발송일 반입 반영,
+1440/390 가로 무넘침, 콘솔 오류 0).
 
 ## 로컬 개발
 
@@ -59,6 +92,7 @@ $ini = "D:\DDownloads\jl-portal-dev\php.ini"
 # 스키마 + 시드 (MariaDB 13, 127.0.0.1:3307, DB jlportal)
 Get-Content portal\schema.sql        -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 Get-Content portal\schema_phase2.sql -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
+Get-Content portal\schema_phase3.sql -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 Get-Content portal\seed.dev.sql      -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 
 # 개발 서버 (리포 루트에서)
