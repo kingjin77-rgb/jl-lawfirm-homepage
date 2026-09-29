@@ -89,7 +89,10 @@
 
       new kakao.maps.Marker({ map: map, position: pos });
 
-      var label = el.dataset.label || '';
+      // data-label 은 우리 마크업에서만 오지만, 오버레이는 HTML 로 들어가므로 이스케이프한다
+      var label = String(el.dataset.label || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       if (label) {
         new kakao.maps.CustomOverlay({
           map: map,

@@ -25,6 +25,25 @@
   var won = function (n) { return Math.round(n).toLocaleString('ko-KR') + '원'; };
   var eok = function (n) { return (n / 100000000).toFixed(2) + '억'; };
 
+  // 결과 등장 모션·카운트업은 취득 원인이 바뀌거나 결과가 새로 나타날 때만 건다.
+  // 키보드로 금액을 고치는 중에 매번 튀어오르면 오히려 산만하다.
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lastAnimKey = '';
+
+  /** 합계 숫자 세어 올리기 — 끝값은 반드시 won(target) 그대로 쓴다 */
+  function countUp(cell, target) {
+    if (!cell || reduced || !(target > 0)) return;
+    var dur = 750, t0 = null;
+    requestAnimationFrame(function step(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min((t - t0) / dur, 1);
+      var e = 1 - Math.pow(1 - p, 3);
+      cell.textContent = won(target * e);
+      if (p < 1) requestAnimationFrame(step);
+      else cell.textContent = won(target);
+    });
+  }
+
   /* =======================================================
      1) 등기비용 계산기
      ======================================================= */
@@ -99,6 +118,7 @@
     var out = $('#calcOut');
     if (!price || price <= 0) {
       out.innerHTML = '<p class="calc__empty">금액을 입력하면 예상 비용이 계산됩니다.</p>';
+      lastAnimKey = '';
       return;
     }
 
@@ -109,9 +129,12 @@
     var rows = [];
     var notes = [];
     var total = 0;
+    var parts = { tax: 0, bond: 0, fee: 0 };   // 구성 막대용 — 표의 금액을 그대로 옮긴다
+    var bondInfo = null;                        // 채권 손실 설명 카드용
 
-    function row(label, memo, amount) {
-      rows.push('<tr><th>' + esc(label) + '</th><td>' + esc(memo || '') + '</td><td>' +
+    function row(label, memo, amount, cat) {
+      rows.push('<tr' + (cat ? ' class="' + cat + '"' : '') + '><th>' + esc(label) +
+                '</th><td>' + esc(memo || '') + '</td><td>' +
                 (amount ? won(amount) : '—') + '</td></tr>');
     }
 
@@ -122,9 +145,11 @@
       var regEdu = reg * m.eduRatio;
       var fee0 = CFG.misc.registrationFee + CFG.misc.certFee;
       total = reg + regEdu + fee0;
-      row('등록면허세', m.rate + '%' + (cause === 'mortgage' ? ' · 채권최고액 기준' : ''), reg);
-      row('지방교육세', '등록면허세의 20%', regEdu);
-      row('등기신청수수료 · 증명서', '', fee0);
+      parts.tax = reg + regEdu;
+      parts.fee = fee0;
+      row('등록면허세', m.rate + '%' + (cause === 'mortgage' ? ' · 채권최고액 기준' : ''), reg, 'c-tax');
+      row('지방교육세', '등록면허세의 20%', regEdu, 'c-tax');
+      row('등기신청수수료 · 증명서', '', fee0, 'c-fee');
       if (cause === 'mortgage') {
         notes.push('근저당권설정 시 국민주택채권 매입 의무가 별도로 있을 수 있습니다(채권최고액 2천만원 이상). 정확한 매입액은 담당자가 안내합니다.');
       }
@@ -232,19 +257,23 @@
     var fee = CFG.misc.registrationFee + CFG.misc.certFee;
 
     total = taxTotal + bondLoss + stamp + fee;
+    parts.tax = taxTotal;
+    parts.bond = bondLoss;
+    parts.fee = stamp + fee;
+    if (bondBuy > 0) bondInfo = { buy: bondBuy, loss: bondLoss, discount: discount };
 
-    row('취득세', rateMemo, acq);
-    if (reliefAmt) row('감면 (−)', reliefMemo, -reliefAmt);
-    row('지방교육세', '', edu);
-    row('농어촌특별세', rural ? '' : (smallHouse ? '전용 85㎡ 이하 비과세' : ''), rural);
+    row('취득세', rateMemo, acq, 'c-tax');
+    if (reliefAmt) row('감면 (−)', reliefMemo, -reliefAmt, 'c-relief');
+    row('지방교육세', '', edu, 'c-tax');
+    row('농어촌특별세', rural ? '' : (smallHouse ? '전용 85㎡ 이하 비과세' : ''), rural, 'c-tax');
     rows.push('<tr class="sum"><th>세금 소계</th><td></td><td>' + won(taxTotal) + '</td></tr>');
-    row('국민주택채권 매입', (bRate ? bRate + '% · 시가표준액 ' + eok(std) : '매입 면제'), bondBuy);
-    row('채권 즉시매도 손실', '할인율 ' + discount + '%', bondLoss);
+    row('국민주택채권 매입', (bRate ? bRate + '% · 시가표준액 ' + eok(std) : '매입 면제'), bondBuy, 'c-bond');
+    row('채권 즉시매도 손실', '할인율 ' + discount + '%', bondLoss, 'c-bond');
     row('인지세', stamp ? '' :
         (cause === 'inherit' || cause === 'gift') ? '계약서 없음 · 비과세'
       : (c.kind === 'house') ? '주택 1억 이하 비과세'
-      : '1천만원 이하 비과세', stamp);
-    row('등기신청수수료 · 증명서', '', fee);
+      : '1천만원 이하 비과세', stamp, 'c-fee');
+    row('등기신청수수료 · 증명서', '', fee, 'c-fee');
 
     if (estimated && (cause === 'purchase_house' || cause === 'purchase_other')) {
       notes.unshift('시가표준액을 입력하지 않아 <b>취득가액의 70%</b>로 추정했습니다. 공시가격을 넣으면 정확해집니다.');
@@ -261,11 +290,67 @@
     render();
 
     function render() {
+      // 결과가 새로 나타나거나 취득 원인이 바뀔 때만 등장 모션·카운트업을 건다
+      var isNew = lastAnimKey !== cause;
+      lastAnimKey = cause;
+
+      /* 비용 구성 막대 — 표의 금액을 그대로 비중으로 옮긴다. 새 수치를 만들지 않는다 */
+      var segs = [
+        ['c-tax', '세금', parts.tax],
+        ['c-bond', '채권 즉시매도 손실', parts.bond],
+        ['c-fee', '인지세 · 수수료', parts.fee]
+      ].filter(function (s) { return s[2] > 0; });
+
+      var barHtml = '';
+      if (total > 0 && segs.length > 1) {
+        barHtml =
+          '<div class="calc__bar">' +
+            '<p class="calc__bar-cap">예상 합계 ' + won(total) + ' 의 구성</p>' +
+            '<div class="calc__bar-track">' + segs.map(function (s) {
+              return '<i class="calc__bar-seg ' + s[0] + '" data-w="' + (s[2] / total * 100) + '"></i>';
+            }).join('') + '</div>' +
+            '<ul class="calc__bar-legend">' + segs.map(function (s) {
+              return '<li><i class="' + s[0] + '"></i>' + esc(s[1]) +
+                     ' <b>' + Math.round(s[2] / total * 100) + '%</b> · ' + won(s[2]) + '</li>';
+            }).join('') + '</ul>' +
+          '</div>';
+      }
+
+      /* 채권 손실이 왜 생기는지 — 표만 보면 매입액과 손실액이 왜 다른지 알 수 없다 */
+      var whyHtml = '';
+      if (bondInfo) {
+        whyHtml =
+          '<details class="calc__why"><summary>채권 손실은 왜 생기나요?</summary>' +
+          '<p>' +
+            '<span class="s">부동산 등기를 하면 국민주택채권을 의무적으로 매입합니다.</span>' +
+            '<span class="s">이 계산에서는 매입액이 <b>' + won(bondInfo.buy) + '</b>입니다.</span>' +
+            '<span class="s">채권을 보유하지 않고 매입과 동시에 되파는 세대가 대부분인데, 이때 그날의 할인율(' +
+              bondInfo.discount + '%)만큼 차액을 부담합니다.</span>' +
+            '<span class="s">그래서 예상 합계에는 매입액 전체가 아니라 즉시매도 손실 <b>' +
+              won(bondInfo.loss) + '</b>만 들어갑니다.</span>' +
+            '<span class="s">할인율은 매일 달라지므로 실제 손실액은 납부일 기준으로 다시 계산됩니다.</span>' +
+          '</p></details>';
+      }
+
       out.innerHTML =
+        '<div class="' + (isNew ? 'calc__anim' : '') + '">' +
         '<table class="calc__table"><tbody>' + rows.join('') +
         '<tr class="total"><th>예상 합계</th><td></td><td>' + won(total) + '</td></tr>' +
         '</tbody></table>' +
-        '<p class="calc__note">' + notes.join('<br>') + '</p>';
+        barHtml + whyHtml +
+        '<p class="calc__note">' + notes.join('<br>') + '</p></div>';
+
+      // 막대는 0에서 실제 비중까지 차오른다. 값을 바꾸는 중에는 CSS 전환이 이어받는다
+      var segEls = $$('.calc__bar-seg', out);
+      function fill() {
+        segEls.forEach(function (el) { el.style.width = el.getAttribute('data-w') + '%'; });
+      }
+      if (reduced || !isNew) { fill(); }
+      else {
+        requestAnimationFrame(function () { requestAnimationFrame(fill); });
+      }
+
+      if (isNew) countUp(out.querySelector('tr.total td:last-child'), total);
     }
   }
 

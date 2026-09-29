@@ -326,7 +326,7 @@
     $('rDate').textContent = res.at ? res.at + ' 기준' : '';
 
     var pct = i < 0 ? 0 : Math.round((i + 1) / STEPS.length * 100);
-    $('rBar').style.width = pct + '%';
+    $('rBar').style.width = '0%';   // 결과가 열린 뒤 실제 비율까지 차오른다 (아래 rAF)
     if (i >= 0) {
       $('rPct').textContent = STEPS.length + '단계 중 ' + (i + 1) + '번째 · ' + pct + '%';
     } else if (!res.step || res.step === NOT_YET) {
@@ -355,6 +355,11 @@
 
     $('form').hidden = true;
     $('result').hidden = false;
+    // 진행 막대 — 숨김 상태에서 너비를 넣으면 전환 없이 붙어 버린다.
+    // 화면에 보인 다음 프레임에 채워야 0에서 실제 비율까지 차오른다.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { $('rBar').style.width = pct + '%'; });
+    });
     // 맨 위로 올리면 큰 제목 그림만 보이고 결과는 화면 밖이다. 결과 첫 줄로 데려간다.
     toResult();
   }

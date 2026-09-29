@@ -18,6 +18,29 @@
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  /* 단지 수 세어 올리기 — 목록은 fetch 뒤에 그려져 motion.js 카운터가 못 잡는다.
+     화면에 들어올 때 0부터 실제 개수까지 오르고, 끝값은 항상 실제 개수 그대로다. */
+  function countUp(el, target) {
+    el.textContent = target;                      // 관찰이 안 되는 환경에서도 값은 보인다
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window) || !(target > 0)) return;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(el);
+        var dur = 1000, t0 = null;
+        requestAnimationFrame(function step(t) {
+          if (t0 === null) t0 = t;
+          var p = Math.min((t - t0) / dur, 1);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(step);
+          else el.textContent = target;
+        });
+      });
+    }, { threshold: 0.5 });
+    io.observe(el);
+  }
+
   fetch('data/registry.json', { cache: 'no-cache' })
     .then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -42,7 +65,7 @@
         return '<li><span>' + esc(it.name) + '</span>' +
                (it.union ? '<em>조합 포함</em>' : '') + '</li>';
       }).join('');
-      if (cntEl) cntEl.textContent = items.length;
+      if (cntEl) countUp(cntEl, items.length);
       root.removeAttribute('hidden');
     })
     .catch(function (err) {
