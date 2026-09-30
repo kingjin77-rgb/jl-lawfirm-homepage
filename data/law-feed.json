@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29 10:00",
+  "generatedAt": "2026-09-30 09:21",
   "source": "법제처 국가법령정보 공동활용 (law.go.kr)",
   "counts": {
     "law": 12,
@@ -49,6 +49,20 @@
     {
       "type": "prec",
       "category": "기업법무",
+      "title": "공사대금등청구의소·건물철거등청구",
+      "summary": "대법원 · 2026다202468 · 판결",
+      "date": "2026.07.16",
+      "meta": {
+        "caseNo": "2026다202468",
+        "court": "대법원",
+        "keyword": "공사대금"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=624227",
+      "no": 71
+    },
+    {
+      "type": "prec",
+      "category": "기업법무",
       "title": "공사대금",
       "summary": "대법원 · 2025다215725 · 판결",
       "date": "2026.07.09",
@@ -58,7 +72,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623711",
-      "no": 71
+      "no": 70
     },
     {
       "type": "law",
@@ -71,7 +85,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EA%B3%B5%EB%8F%99%EC%A3%BC%ED%83%9D%EA%B4%80%EB%A6%AC%EB%B2%95",
-      "no": 70
+      "no": 69
     },
     {
       "type": "law",
@@ -84,7 +98,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%8F%84%EC%8B%9C%20%EB%B0%8F%20%EC%A3%BC%EA%B1%B0%ED%99%98%EA%B2%BD%EC%A0%95%EB%B9%84%EB%B2%95",
-      "no": 69
+      "no": 68
     },
     {
       "type": "law",
@@ -97,7 +111,7 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%B9%88%EC%A7%91%20%EB%B0%8F%20%EC%86%8C%EA%B7%9C%EB%AA%A8%EC%A3%BC%ED%83%9D%20%EC%A0%95%EB%B9%84%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%A1%80%EB%B2%95",
-      "no": 68
+      "no": 67
     },
     {
       "type": "prec",
@@ -111,7 +125,7 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623067",
-      "no": 67
+      "no": 66
     },
     {
       "type": "prec",
@@ -125,7 +139,7 @@
         "keyword": "사해행위취소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=622255",
-      "no": 66
+      "no": 65
     },
     {
       "type": "law",
@@ -138,7 +152,7 @@
         "ministry": "국토교통부,법무부"
       },
       "link": "https://www.law.go.kr/법령/%EC%83%81%EA%B0%80%EA%B1%B4%EB%AC%BC%20%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
-      "no": 65
+      "no": 64
     },
     {
       "type": "prec",
@@ -152,7 +166,7 @@
         "keyword": "이사 해임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=621989",
-      "no": 64
+      "no": 63
     },
     {
       "type": "prec",
@@ -166,7 +180,7 @@
         "keyword": "분양전환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=620455",
-      "no": 63
+      "no": 62
     },
     {
       "type": "prec",
@@ -180,7 +194,7 @@
         "keyword": "업무상배임"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=620417",
-      "no": 62
+      "no": 61
     },
     {
       "type": "prec",
@@ -194,7 +208,7 @@
         "keyword": "임대차보증금 반환"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=619451",
-      "no": 61
+      "no": 60
     },
     {
       "type": "prec",
@@ -208,7 +222,7 @@
         "keyword": "주택재개발정비사업조합"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618533",
-      "no": 60
+      "no": 59
     },
     {
       "type": "prec",
@@ -222,20 +236,6 @@
         "keyword": "소유권이전등기 말소"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618541",
-      "no": 59
-    },
-    {
-      "type": "prec",
-      "category": "기업법무",
-      "title": "공사대금[하도급대금 직접지급합의금액 변경과 발주자의 승인 거절 등을 계기로 기존 하도급대금 직접지급합의의 합의해지 여부가 다투어진 사건]",
-      "summary": "대법원 · 2025다215212 · 판결",
-      "date": "2026.02.26",
-      "meta": {
-        "caseNo": "2025다215212",
-        "court": "대법원",
-        "keyword": "공사대금"
-      },
-      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618133",
       "no": 58
     },
     {
@@ -888,7 +888,7 @@
         "court": "대법원",
         "keyword": "관리처분계획 무효"
       },
-      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=204340",
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618307",
       "no": 11
     },
     {
