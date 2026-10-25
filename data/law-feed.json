@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-25 08:16",
+  "generatedAt": "2026-10-26 08:14",
   "source": "법제처 국가법령정보 공동활용 (law.go.kr)",
   "counts": {
     "law": 12,
-    "prec": 60,
-    "total": 72
+    "prec": 62,
+    "total": 74
   },
   "items": [
     {
@@ -18,20 +18,7 @@
         "ministry": "법무부"
       },
       "link": "https://www.law.go.kr/법령/%EC%83%81%EB%B2%95",
-      "no": 72
-    },
-    {
-      "type": "law",
-      "category": "재건축·재개발",
-      "title": "공익사업을 위한 토지 등의 취득 및 보상에 관한 법률",
-      "summary": "소관 국토교통부 · 시행 2026.09.08 · 최종 공포 2026.09.08",
-      "date": "2026.09.08",
-      "meta": {
-        "lawId": "009295",
-        "ministry": "국토교통부"
-      },
-      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EC%9D%B5%EC%82%AC%EC%97%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%ED%86%A0%EC%A7%80%20%EB%93%B1%EC%9D%98%20%EC%B7%A8%EB%93%9D%20%EB%B0%8F%20%EB%B3%B4%EC%83%81%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B2%95%EB%A5%A0",
-      "no": 71
+      "no": 74
     },
     {
       "type": "law",
@@ -44,7 +31,20 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EB%B2%95",
-      "no": 70
+      "no": 73
+    },
+    {
+      "type": "law",
+      "category": "재건축·재개발",
+      "title": "공익사업을 위한 토지 등의 취득 및 보상에 관한 법률",
+      "summary": "소관 국토교통부 · 시행 2026.09.08 · 최종 공포 2026.09.08",
+      "date": "2026.09.08",
+      "meta": {
+        "lawId": "009295",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EC%9D%B5%EC%82%AC%EC%97%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%ED%86%A0%EC%A7%80%20%EB%93%B1%EC%9D%98%20%EC%B7%A8%EB%93%9D%20%EB%B0%8F%20%EB%B3%B4%EC%83%81%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B2%95%EB%A5%A0",
+      "no": 72
     },
     {
       "type": "prec",
@@ -58,6 +58,33 @@
         "keyword": "공사대금"
       },
       "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=624227",
+      "no": 71
+    },
+    {
+      "type": "prec",
+      "category": "기업법무",
+      "title": "공사대금",
+      "summary": "대법원 · 2025다215725 · 판결",
+      "date": "2026.07.09",
+      "meta": {
+        "caseNo": "2025다215725",
+        "court": "대법원",
+        "keyword": "공사대금"
+      },
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623711",
+      "no": 70
+    },
+    {
+      "type": "law",
+      "category": "하자소송",
+      "title": "공동주택관리법",
+      "summary": "소관 국토교통부 · 시행 2026.07.01 · 최종 공포 2026.03.05",
+      "date": "2026.07.01",
+      "meta": {
+        "lawId": "012345",
+        "ministry": "국토교통부"
+      },
+      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EB%8F%99%EC%A3%BC%ED%83%9D%EA%B4%80%EB%A6%AC%EB%B2%95",
       "no": 69
     },
     {
@@ -87,16 +114,17 @@
       "no": 67
     },
     {
-      "type": "law",
-      "category": "하자소송",
-      "title": "공동주택관리법",
-      "summary": "소관 국토교통부 · 시행 2026.07.01 · 최종 공포 2026.03.05",
-      "date": "2026.07.01",
+      "type": "prec",
+      "category": "기업법무",
+      "title": "공사대금",
+      "summary": "대법원 · 2026다201517 · 판결",
+      "date": "2026.06.05",
       "meta": {
-        "lawId": "012345",
-        "ministry": "국토교통부"
+        "caseNo": "2026다201517",
+        "court": "대법원",
+        "keyword": "공사대금"
       },
-      "link": "https://www.law.go.kr/법령/%EA%B3%B5%EB%8F%99%EC%A3%BC%ED%83%9D%EA%B4%80%EB%A6%AC%EB%B2%95",
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623067",
       "no": 66
     },
     {
@@ -281,19 +309,6 @@
     },
     {
       "type": "law",
-      "category": "민사·형사",
-      "title": "주택임대차보호법",
-      "summary": "소관 국토교통부,법무부 · 시행 2026.01.02 · 최종 공포 2025.10.01",
-      "date": "2026.01.02",
-      "meta": {
-        "lawId": "001248",
-        "ministry": "국토교통부,법무부"
-      },
-      "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
-      "no": 52
-    },
-    {
-      "type": "law",
       "category": "단체등기",
       "title": "민간임대주택에 관한 특별법",
       "summary": "소관 국토교통부 · 시행 2026.01.02 · 최종 공포 2025.10.01",
@@ -303,6 +318,19 @@
         "ministry": "국토교통부"
       },
       "link": "https://www.law.go.kr/법령/%EB%AF%BC%EA%B0%84%EC%9E%84%EB%8C%80%EC%A3%BC%ED%83%9D%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%B3%84%EB%B2%95",
+      "no": 52
+    },
+    {
+      "type": "law",
+      "category": "민사·형사",
+      "title": "주택임대차보호법",
+      "summary": "소관 국토교통부,법무부 · 시행 2026.01.02 · 최종 공포 2025.10.01",
+      "date": "2026.01.02",
+      "meta": {
+        "lawId": "001248",
+        "ministry": "국토교통부,법무부"
+      },
+      "link": "https://www.law.go.kr/법령/%EC%A3%BC%ED%83%9D%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95",
       "no": 51
     },
     {
@@ -860,7 +888,7 @@
         "court": "대법원",
         "keyword": "관리처분계획 무효"
       },
-      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=204340",
+      "link": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=618307",
       "no": 11
     },
     {
