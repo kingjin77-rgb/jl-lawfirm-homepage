@@ -24,6 +24,7 @@ $questions = array_values(array_filter(survey_questions($id), fn($q) => $q['qtyp
 $answersBy = $mode === 'joined' ? survey_answers_by_response($id) : [];
 
 if (($_GET['export'] ?? '') === 'csv') {
+    staff_require_reauth();      // CSV 내보내기는 최근 10분 내 OTP 재확인 필요
     staff_audit((int)$staff['id'], 'survey.export', 'survey:' . $id,
         ($mode === 'absent' ? '불참' : '참여') . ' ' . count($rows) . '행 내보내기');
     header('Content-Type: text/csv; charset=UTF-8');
@@ -55,6 +56,8 @@ if (($_GET['export'] ?? '') === 'csv') {
     exit;
 }
 
+$reveal = reveal_guard($staff, 'survey.data');
+
 render_admin('survey_data', [
     'pageTitle'  => ($mode === 'absent' ? '불참데이타' : '참여데이타') . ' — ' . $survey['title'],
     'staff'      => $staff,
@@ -65,4 +68,5 @@ render_admin('survey_data', [
     'rows'       => $rows,
     'questions'  => $questions,
     'answersBy'  => $answersBy,
+    'reveal'     => $reveal,
 ]);

@@ -85,7 +85,7 @@ $descriptions = [
     <button type="button" class="btn btn--fill btn--full" id="jl-popup-close">확인했습니다</button>
   </div>
 </div>
-<script>
+<script nonce="<?= h(csp_nonce()) ?>">
 document.getElementById('jl-popup-close').addEventListener('click', function () {
   document.getElementById('jl-popup').remove();
 });

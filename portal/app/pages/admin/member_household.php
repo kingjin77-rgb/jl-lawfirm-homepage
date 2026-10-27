@@ -89,13 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// 목록 휴대폰은 기본 마스킹 — 「보기」는 OTP 재확인 + 열람 기록
+$reveal = reveal_guard($staff, 'household.phone');
+
 // 수정 대상 로드
 $editId = (int)($_GET['edit'] ?? 0);
 $edit = null;
 if ($editId > 0) {
+    staff_require_reauth();      // 수정 화면은 휴대폰 원문이 입력칸에 들어가므로 「보기」와 같이 OTP 재확인
     $edit = db_row('SELECT * FROM household WHERE id = ?', [$editId]);
     if ($edit !== null) {
         $edit['owners'] = db_all('SELECT * FROM owner WHERE household_id = ? ORDER BY is_primary DESC, id', [$editId]);
+        staff_audit((int)$staff['id'], 'household.edit.view', "household:$editId", '수정 화면 열람(명의인 연락처 포함)');
     }
 }
 $showForm = $edit !== null || isset($_GET['new']) || $error !== '';
@@ -154,4 +159,5 @@ render_admin('member_household', [
     'showForm'  => $showForm,
     'notice'    => $notice,
     'error'     => $error,
+    'reveal'    => $reveal,
 ]);

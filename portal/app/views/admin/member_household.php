@@ -72,7 +72,7 @@
 
   <?php if ($edit !== null && ($staff['role'] ?? '') === 'admin'): ?>
   <form method="post" action="/admin/member/household" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:12px; align-items:center; flex-wrap:wrap"
-        onsubmit="return confirm('이 세대와 등기진행·비용·주소·환불 기록이 전부 삭제됩니다. 계속할까요?')">
+        data-confirm="이 세대와 등기진행·비용·주소·환불 기록이 전부 삭제됩니다. 계속할까요?">
     <?= csrf_field() ?>
     <input type="hidden" name="act" value="delete">
     <input type="hidden" name="id" value="<?= (int)$edit['id'] ?>">
@@ -85,6 +85,14 @@
 </div>
 <?php endif; ?>
 
+<div class="reveal-bar">
+  <div class="alert alert--info" style="margin:0; flex:1 1 320px">
+    <b>휴대폰 번호는 가려서 보여드립니다</b>
+    「보기」를 누르면 OTP 를 다시 확인한 뒤 원문이 나오고, 열람 기록이 작업기록에 남습니다.
+  </div>
+  <?php if ($reveal === null): ?><a class="btn btn--sm" id="reveal-all" href="<?= h(reveal_link('all')) ?>">이 쪽 전체 보기</a>
+  <?php else: ?><a class="btn btn--sm" href="<?= h(strtok((string)($_SERVER['REQUEST_URI'] ?? ''), '?') . '?' . http_build_query(array_diff_key($_GET, ['reveal' => 1]))) ?>">다시 가리기</a><?php endif; ?>
+</div>
 <div class="tbl-scroll">
   <table class="tbl">
     <thead><tr><th>번호</th><th>아파트명</th><th class="ctr">동</th><th class="ctr">호수</th><th>명의인 (생년월일)</th><th>핸드폰</th><th>수정일</th><th class="ctr">관리</th></tr></thead>
@@ -102,9 +110,11 @@
         <?php endforeach; ?>
       </td>
       <td>
-        <?php foreach ($r['owners'] as $o): ?>
-        <span class="nowrap" style="display:block"><?= h($o['phone']) ?: '—' ?></span>
+        <?php $show = reveal_hit($reveal, (int)$r['id']); $hasPhone = false;
+        foreach ($r['owners'] as $o): $hasPhone = $hasPhone || $o['phone'] !== ''; ?>
+        <span class="nowrap masked" style="display:block"><?= h($show ? $o['phone'] : mask_phone($o['phone'])) ?: '—' ?></span>
         <?php endforeach; ?>
+        <?php if ($hasPhone && !$show): ?><a class="btn btn--xs" data-reveal href="<?= h(reveal_link((int)$r['id'])) ?>">보기</a><?php endif; ?>
       </td>
       <td class="nowrap"><?= h(substr((string)$r['updated_at'], 0, 10)) ?></td>
       <td class="ctr nowrap">

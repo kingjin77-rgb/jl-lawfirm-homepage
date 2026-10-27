@@ -5,6 +5,7 @@
  */
 
 $staff = staff_require();
+staff_require_reauth();          // CSV 내보내기는 최근 10분 내 OTP 재확인 필요
 
 $f = reg_filters_from_get();
 [$whereSql, $params] = reg_filters_where($f);

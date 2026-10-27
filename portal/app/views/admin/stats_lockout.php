@@ -30,13 +30,14 @@
   <h2>최근 실패 기록 50건</h2>
   <div class="tbl-scroll" style="border:0; margin:0">
     <table class="tbl">
-      <thead><tr><th>일시</th><th>아파트</th><th class="ctr">동</th><th class="ctr">호수</th><th>IP</th></tr></thead>
+      <thead><tr><th>일시</th><th>구분</th><th>아파트</th><th class="ctr">동</th><th class="ctr">호수</th><th>IP</th></tr></thead>
       <tbody>
-      <?php if ($recent === []): ?><tr><td colspan="5" class="ctr">실패 기록이 없습니다.</td></tr><?php endif; ?>
+      <?php if ($recent === []): ?><tr><td colspan="6" class="ctr">실패 기록이 없습니다.</td></tr><?php endif; ?>
       <?php foreach ($recent as $r): ?>
       <tr>
         <td class="nowrap"><?= h($r['created_at']) ?></td>
-        <td class="nowrap"><?= h($r['complex_name'] ?? '(단지 미상)') ?></td>
+        <td class="nowrap"><?= h(['customer' => '손님 로그인', 'sms_otp' => '손님 문자인증', 'staff' => '직원 비밀번호', 'staff_otp' => '직원 OTP'][$r['kind']] ?? $r['kind']) ?><?= $r['target'] !== '' ? ' · ' . h($r['target']) : '' ?></td>
+        <td class="nowrap"><?= h($r['complex_name'] ?? ($r['kind'] === 'customer' || $r['kind'] === 'sms_otp' ? '(단지 미상)' : '—')) ?></td>
         <td class="ctr"><?= h($r['dong']) ?></td>
         <td class="ctr"><?= h($r['ho']) ?></td>
         <td class="nowrap"><?= h($r['ip']) ?></td>

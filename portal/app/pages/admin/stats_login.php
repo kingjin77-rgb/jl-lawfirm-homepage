@@ -8,7 +8,7 @@ $rows = db_all(
             SUM(ok = 1) AS ok_cnt,
             SUM(ok = 0) AS fail_cnt
        FROM login_log
-      WHERE created_at > DATE_SUB(NOW(), INTERVAL 30 DAY)
+      WHERE kind = 'customer' AND created_at > DATE_SUB(NOW(), INTERVAL 30 DAY)
       GROUP BY DATE(created_at)
       ORDER BY d DESC");
 

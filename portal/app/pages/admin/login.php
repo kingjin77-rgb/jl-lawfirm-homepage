@@ -1,7 +1,7 @@
 <?php
 /**
- * 직원 로그인 — 아이디/비밀번호. 5회 실패 15분 잠금은 staff_login() 이 처리.
- * 성공 기록은 staff_login() 안에서 staff_audit('staff.login') 으로 남는다.
+ * 직원 로그인 1단계 — 아이디/비밀번호. 5회 실패 15분 잠금 + IP 차단은 staff_login() 이 처리.
+ * 통과하면 OTP 화면(/admin/otp), 처음이면 OTP 등록 화면(/admin/otp/setup)으로 간다.
  */
 
 if (staff_current() !== null) {
@@ -9,6 +9,7 @@ if (staff_current() !== null) {
 }
 
 $error = '';
+$expired = session_take_expired('staff');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify_or_fail();
     $loginId = trim((string)($_POST['login_id'] ?? ''));
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $res = staff_login($loginId, $password);
         if ($res['ok']) {
-            redirect('/admin');
+            redirect($res['next']);
         }
         $error = $res['error'];
     }
@@ -27,4 +28,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 render_admin('login', [
     'pageTitle' => '직원 로그인',
     'error'     => $error,
+    'expired'   => $expired,
 ]);

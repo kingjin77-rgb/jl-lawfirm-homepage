@@ -6,7 +6,30 @@
     <span class="s">본인 확인을 위해 아래 내용을 채워 주십시오.</span>
   </p>
 
-  <?php if ($lockout): ?>
+  <?php if ($expired): ?>
+  <div class="alert alert--info" role="status">
+    <b>안전을 위해 로그아웃했습니다.</b>
+    <span class="s">한동안 사용하지 않았거나 접속 환경이 바뀌었습니다.</span>
+    <span class="s">다시 조회해 주십시오.</span>
+  </div>
+  <?php endif; ?>
+
+  <?php if ($nophone): ?>
+  <div class="card card--notice" role="alert" id="nophone-card">
+    <h2 class="sub">등록된 휴대폰이 없어 조회할 수 없습니다</h2>
+    <p class="lead">
+      <span class="s">본인 확인 문자를 받을 휴대폰 번호가 이 세대에 등록되어 있지 않습니다.</span>
+      <span class="s">등기센터로 전화 주시면 번호를 등록해 드립니다.</span>
+    </p>
+    <a class="btn btn--fill btn--full" href="tel:18994252">등기센터 1899-4252 로 연락</a>
+  </div>
+  <?php elseif ($ipblock): ?>
+  <div class="alert alert--warn" role="alert">
+    <b>이 접속 위치의 조회를 잠시 막았습니다.</b>
+    <span class="s">짧은 시간에 여러 세대의 조회 실패가 이어져 1시간 동안 멈췄습니다.</span>
+    <span class="s">급하시면 <a href="tel:18994252">문의 1899-4252</a> 로 전화해 주십시오.</span>
+  </div>
+  <?php elseif ($lockout): ?>
   <div class="alert alert--warn" role="alert">
     <b>조회가 잠시 잠겼습니다.</b>
     <span class="s">틀린 입력이 여러 번 이어져 이 세대의 조회를 1시간 동안 멈췄습니다.</span>

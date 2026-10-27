@@ -4,6 +4,15 @@
 <?php if ($notice !== ''): ?><div class="alert alert--ok"><?= h($notice) ?></div><?php endif; ?>
 <?php if ($error !== ''): ?><div class="alert alert--err"><?= h($error) ?></div><?php endif; ?>
 
+<div class="reveal-bar">
+  <div class="alert alert--info" style="margin:0; flex:1 1 320px">
+    <b>휴대폰·환불 계좌·권리증 주소는 가려서 보여드립니다</b>
+    「보기」를 누르면 OTP 를 다시 확인한 뒤 원문이 나오고, 열람 기록이 작업기록에 남습니다.
+  </div>
+  <?php if ($reveal === null): ?><a class="btn btn--sm" id="reveal-all" href="<?= h(reveal_link('all')) ?>">이 쪽 전체 보기</a>
+  <?php else: ?><a class="btn btn--sm" href="<?= h(strtok((string)($_SERVER['REQUEST_URI'] ?? ''), '?') . '?' . http_build_query(array_diff_key($_GET, ['reveal' => 1]))) ?>">다시 가리기</a><?php endif; ?>
+</div>
+
 <!-- ① 인적사항 -->
 <div class="adm-sec">
   <h2>① 인적사항</h2>
@@ -158,7 +167,7 @@
 
 <p><a class="btn" href="/admin/registration">목록으로</a></p>
 
-<script>
+<script nonce="<?= h(csp_nonce()) ?>">
 (function () {
   var items = document.querySelectorAll('.cost-in');
   var paid = document.getElementById('cost-paid');

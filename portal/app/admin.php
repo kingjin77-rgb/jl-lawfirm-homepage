@@ -19,6 +19,22 @@ function staff_require(): array
     if ($s === null) {
         redirect('/admin/login');
     }
+    // 매 요청 DB 와 대조 — 중지·비밀번호 재설정·OTP 초기화(auth_version 증가)면 즉시 끊고,
+    // 권한이 바뀌었으면 세션에 반영하면서 세션ID 를 재발급한다.
+    $row = db_row('SELECT name, role, is_active, auth_version FROM staff WHERE id = ?', [(int)$s['id']]);
+    if ($row === null || (int)$row['is_active'] !== 1 || (int)$row['auth_version'] !== (int)($s['av'] ?? 0)
+        || !staff_totp_enabled((int)$s['id'])) {
+        session_end_role('staff');
+        session_regenerate_id(true);
+        $_SESSION['_expired_staff'] = 1;
+        redirect('/admin/login');
+    }
+    if ($row['role'] !== $s['role'] || $row['name'] !== $s['name']) {
+        session_regenerate_id(true);
+        $_SESSION['staff']['role'] = $row['role'];
+        $_SESSION['staff']['name'] = $row['name'];
+        $s = $_SESSION['staff'];
+    }
     return $s;
 }
 
@@ -51,6 +67,7 @@ function admin_menus(): array
             '/admin/config/popup'  => '팝업 관리',
             '/admin/config/faq'    => 'FAQ 관리',
             '/admin/config/staff'  => '직원 계정 관리',
+            '/admin/config/security' => '보안 설정 (IP)',
         ]],
         'member' => ['label' => '인적사항 관리', 'home' => '/admin/member/complex', 'sub' => [
             '/admin/member/complex'   => '아파트 관리',

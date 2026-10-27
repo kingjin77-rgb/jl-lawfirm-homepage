@@ -58,7 +58,7 @@
   <button type="submit" class="btn btn--fill">대기 목록에 저장</button>
 </form>
 
-<script>
+<script nonce="<?= h(csp_nonce()) ?>">
 (function () {
   var ta = document.getElementById('sms-body');
   var out = document.getElementById('sms-bytes');

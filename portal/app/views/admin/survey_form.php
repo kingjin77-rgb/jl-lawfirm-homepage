@@ -152,7 +152,7 @@ $qtypeLabels = survey_qtype_labels($surveyType);
   </div>
 </template>
 
-<script>
+<script nonce="<?= h(csp_nonce()) ?>">
 (function () {
   var list = document.getElementById('q-list');
   var tpl = document.getElementById('q-tpl');

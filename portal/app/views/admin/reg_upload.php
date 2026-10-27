@@ -42,7 +42,7 @@
         <td class="ctr"><?= h($r['ho']) ?></td>
         <td>
           <?php foreach ($r['owners'] as $o): ?>
-          <span class="nowrap" style="display:block"><?= h($o['name']) ?> (<?= h($o['birth6']) ?><?= $o['phone'] !== '' ? ' / ' . h($o['phone']) : '' ?>)</span>
+          <span class="nowrap" style="display:block"><?= h($o['name']) ?> (<?= h($o['birth6']) ?><?= $o['phone'] !== '' ? ' / ' . h(mask_phone($o['phone'])) : '' ?>)</span>
           <?php endforeach; ?>
         </td>
         <td class="nowrap">
@@ -76,7 +76,7 @@
   </div>
   <?php else: ?>
   <form method="post" action="/admin/registration/upload"
-        onsubmit="return confirm('<?= h($preview['complex_name']) ?> 에 <?= number_format(count($preview['rows'])) ?>행을 반입합니다. 같은 동·호 세대는 엑셀 내용으로 갱신됩니다. 계속할까요?')">
+        data-confirm="<?= h($preview['complex_name']) ?> 에 <?= number_format(count($preview['rows'])) ?>행을 반입합니다. 같은 동·호 세대는 엑셀 내용으로 갱신됩니다. 계속할까요?">
     <?= csrf_field() ?>
     <input type="hidden" name="act" value="confirm">
     <input type="hidden" name="token" value="<?= h($preview['token']) ?>">
@@ -106,7 +106,7 @@
         </select>
       </div>
       <div class="adm-field">
-        <label for="up-file">엑셀 파일 (.xlsx)</label>
+        <label for="up-file">엑셀 파일 (.xlsx · 10MB 이하)</label>
         <input type="file" id="up-file" name="xlsx" accept=".xlsx" required>
       </div>
     </div>

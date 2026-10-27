@@ -149,3 +149,28 @@ function household_context(int $householdId): ?array
     );
     return $row;
 }
+
+/* ------------------------------------------------------------------ */
+/* 화면 마스킹 (4단계) — 목록 기본값. 원문은 재인증 후 「보기」로만.      */
+/* ------------------------------------------------------------------ */
+
+/** 계좌번호 → ****123 (뒤 3자리) */
+function mask_account_no(string $account): string
+{
+    $digits = preg_replace('/\D/', '', $account);
+    if ($digits === '') {
+        return '';
+    }
+    return str_repeat('*', max(4, strlen($digits) - 3)) . substr($digits, -3);
+}
+
+/** 주소 → 앞 두 낱말(시·구) + ●●● */
+function mask_address_list(string $addr): string
+{
+    $addr = trim($addr);
+    if ($addr === '') {
+        return '';
+    }
+    $words = preg_split('/\s+/u', $addr);
+    return implode(' ', array_slice($words, 0, 2)) . ' ●●●';
+}

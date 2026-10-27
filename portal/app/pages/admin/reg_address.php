@@ -26,9 +26,16 @@ $rows = db_all(
             c.name AS complex_name,
             (SELECT o.name FROM owner o WHERE o.household_id = h.id ORDER BY o.is_primary DESC, o.id LIMIT 1) AS owner_name
        $base ORDER BY a.id DESC LIMIT $perPage OFFSET $offset", $params);
+$reveal = reveal_guard($staff, 'address.list');
 foreach ($rows as &$r) {
     $r['addr1'] = decrypt_field($r['addr1_enc']) ?? '(복호화 실패)';
     $r['addr2'] = decrypt_field($r['addr2_enc']) ?? '';
+    $r['shown'] = reveal_hit($reveal, (int)$r['id']);
+    if (!$r['shown']) {
+        $r['addr1'] = mask_address_list($r['addr1']);
+        $r['addr2'] = '';
+    }
+    unset($r['addr1_enc'], $r['addr2_enc']);
 }
 unset($r);
 
@@ -43,4 +50,5 @@ render_admin('reg_address', [
     'total'     => $total,
     'page'      => $page,
     'pages'     => $pages,
+    'reveal'    => $reveal,
 ]);

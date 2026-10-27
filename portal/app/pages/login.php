@@ -1,12 +1,22 @@
 <?php
-/** 손님 로그인 — 아파트 선택 + 동 + 호 + 이름 + 생년월일 6자리 */
+/**
+ * 손님 로그인 1단계 — 아파트 선택 + 동 + 호 + 이름 + 생년월일 6자리.
+ * 통과하면 등록 휴대폰으로 인증번호를 보내고 /login/verify(2단계)로 간다.
+ * 휴대폰이 없는 세대는 등기센터 연락 안내 카드로 막는다.
+ */
 
 if (customer_current() !== null) {
     redirect('/home');
 }
+if (isset($_GET['reset'])) {
+    unset($_SESSION['customer_pending'], $_SESSION['otp_notice_login']);
+}
 
 $error = '';
 $lockout = false;
+$ipblock = false;
+$nophone = false;
+$expired = session_take_expired('customer');
 $old = ['complex_id' => 0, 'dong' => '', 'ho' => '', 'name' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -19,13 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $result = customer_login($old['complex_id'], $old['dong'], $old['ho'], $old['name'], $birth6);
     if ($result['ok']) {
-        redirect('/home');
+        redirect('/login/verify');
     }
-    if ($result['error'] === 'lockout') {
-        $lockout = true;
-    } else {
-        $error = $result['error'];
-    }
+    match ($result['error']) {
+        'lockout' => $lockout = true,
+        'ipblock' => $ipblock = true,
+        'nophone' => $nophone = true,
+        default   => $error = $result['error'],
+    };
 }
 
 // 노출 중인 단지만 선택지로 보여준다.
@@ -36,5 +47,8 @@ render('login', [
     'complexes' => $complexes,
     'error'     => $error,
     'lockout'   => $lockout,
+    'ipblock'   => $ipblock,
+    'nophone'   => $nophone,
+    'expired'   => $expired,
     'old'       => $old,
 ]);

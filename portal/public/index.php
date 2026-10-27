@@ -8,7 +8,13 @@
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
 // php -S 내장서버의 라우터로 쓰일 때: 실제 존재하는 정적 파일은 그대로 서빙.
+// 운영(Apache)의 .htaccess 규칙과 같게: index.php 외 .php 실행 금지, 숨김파일·.sql·.md 차단.
 if (PHP_SAPI === 'cli-server') {
+    $base = basename($path);
+    if (($base !== '' && $base[0] === '.') || preg_match('/\.(php\d?|phtml|phar|inc|sql|md|bak|log|ini|env|sh)$/i', $path)) {
+        http_response_code(404);
+        exit('페이지를 찾을 수 없습니다.');
+    }
     $file = __DIR__ . $path;
     if ($path !== '/' && is_file($file)) {
         return false;
@@ -21,6 +27,8 @@ require __DIR__ . '/../app/bootstrap.php';
 $routes = [
     '/'         => 'home',
     '/login'    => 'login',
+    '/login/verify' => 'login_verify',
+    '/verify'   => 'reauth',
     '/logout'   => 'logout',
     '/home'     => 'home',
     '/progress' => 'progress',
@@ -36,6 +44,11 @@ $routes = [
 $adminRoutes = [
     '/admin'                      => 'dashboard',
     '/admin/login'                => 'login',
+    '/admin/otp'                  => 'otp',
+    '/admin/otp/setup'            => 'otp_setup',
+    '/admin/otp/recovery'         => 'otp_recovery',
+    '/admin/reauth'               => 'reauth',
+    '/admin/config/security'      => 'config_security',
     '/admin/logout'               => 'logout',
     '/admin/config'               => 'config_info',
     '/admin/config/ops'           => 'config_ops',
@@ -83,7 +96,18 @@ $adminRoutes = [
 
 $clean = rtrim($path, '/') ?: '/';
 
+// 운영 도구 웹크론 — 쉘 없는 가비아용. config 'cron_token' 이 비어 있으면 404.
+if (str_starts_with($clean, '/cron/')) {
+    require __DIR__ . '/../app/cron.php';
+    exit;
+}
+
 if ($clean === '/admin' || str_starts_with($clean, '/admin/')) {
+    // 관리자 IP 허용목록 — 비어 있으면 미적용. 목록 밖 IP 는 로그인 화면조차 열지 않는다.
+    if (!admin_ip_allowed(client_ip())) {
+        http_response_code(403);
+        exit('허용되지 않은 접속 위치입니다.');
+    }
     require __DIR__ . '/../app/admin.php';
     // 설문 엔진 공용 컨트롤러의 유형 — 경로 접두로 정한다.
     $surveyType = 'survey';

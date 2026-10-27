@@ -5,6 +5,6 @@ $s = staff_current();
 if ($s !== null) {
     staff_audit((int)$s['id'], 'staff.logout', 'staff:' . $s['id']);
 }
-unset($_SESSION['staff']);
+session_end_role('staff');
 session_regenerate_id(true);
 redirect('/admin/login');

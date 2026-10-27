@@ -42,8 +42,12 @@ $rows = db_all(
             h.id AS hid, h.dong, h.ho, c.name AS complex_name,
             (SELECT o.name FROM owner o WHERE o.household_id = h.id ORDER BY o.is_primary DESC, o.id LIMIT 1) AS owner_name
        $base ORDER BY rr.id DESC LIMIT $perPage OFFSET $offset", $params);
+$reveal = reveal_guard($staff, 'refund.list');
 foreach ($rows as &$r) {
-    $r['account'] = decrypt_field($r['account_enc']) ?? '(복호화 실패)';
+    $plain = decrypt_field($r['account_enc']);
+    $r['shown'] = reveal_hit($reveal, (int)$r['id']);
+    $r['account'] = $plain === null ? '(복호화 실패)' : ($r['shown'] ? $plain : mask_account_no($plain));
+    unset($r['account_enc']);
 }
 unset($r);
 
@@ -60,4 +64,5 @@ render_admin('reg_refund', [
     'pages'     => $pages,
     'notice'    => $notice,
     'error'     => $error,
+    'reveal'    => $reveal,
 ]);

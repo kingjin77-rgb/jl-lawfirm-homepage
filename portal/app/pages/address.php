@@ -12,9 +12,14 @@ if ($hh === null) {
 
 $saved = false;
 $error = '';
+// 민감 작업 재인증 — 최근 5분 안에 문자 인증이 없으면 등록·변경 전에 다시 받는다.
+$fresh = customer_recent_sms();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify_or_fail();
+    if (!$fresh) {
+        redirect('/verify?next=/address');
+    }
     $zip   = preg_replace('/\D/', '', (string)($_POST['zip'] ?? ''));
     $addr1 = trim((string)($_POST['addr1'] ?? ''));
     $addr2 = trim((string)($_POST['addr2'] ?? ''));
@@ -42,6 +47,11 @@ $current = db_row(
 if ($current !== null) {
     $current['addr1'] = decrypt_field($current['addr1_enc']) ?? '(복호화 실패)';
     $current['addr2'] = decrypt_field($current['addr2_enc']) ?? '';
+    if (!$fresh) {
+        // 재인증 전에는 시·구까지만 보여준다.
+        $current['addr1'] = mask_address_list($current['addr1']);
+        $current['addr2'] = '';
+    }
 }
 
 render('address', [
@@ -51,4 +61,5 @@ render('address', [
     'current'   => $current,
     'saved'     => $saved,
     'error'     => $error,
+    'fresh'     => $fresh,
 ]);

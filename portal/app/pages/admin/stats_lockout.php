@@ -11,13 +11,13 @@ $hot = db_all(
             MAX(l.created_at) AS last_at
        FROM login_log l
        LEFT JOIN complex c ON c.id = l.complex_id
-      WHERE l.ok = 0 AND l.created_at > DATE_SUB(NOW(), INTERVAL 60 MINUTE)
+      WHERE l.kind = 'customer' AND l.ok = 0 AND l.created_at > DATE_SUB(NOW(), INTERVAL 60 MINUTE)
       GROUP BY l.complex_id, l.dong, l.ho
       ORDER BY fails DESC, last_at DESC
       LIMIT 50");
 
 $recent = db_all(
-    "SELECT l.created_at, c.name AS complex_name, l.dong, l.ho, l.ip
+    "SELECT l.created_at, l.kind, l.target, c.name AS complex_name, l.dong, l.ho, l.ip
        FROM login_log l
        LEFT JOIN complex c ON c.id = l.complex_id
       WHERE l.ok = 0

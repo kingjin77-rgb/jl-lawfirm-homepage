@@ -17,9 +17,14 @@ $banks = ['국민은행','신한은행','우리은행','하나은행','농협은
 
 $saved = false;
 $error = '';
+// 민감 작업 재인증 — 최근 5분 안에 문자 인증이 없으면 등록·변경 전에 다시 받는다.
+$fresh = customer_recent_sms();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify_or_fail();
+    if (!$fresh) {
+        redirect('/verify?next=/refund');
+    }
     $bank = trim((string)($_POST['bank'] ?? ''));
     if ($bank === '직접입력') {
         $bank = trim((string)($_POST['bank_etc'] ?? ''));
@@ -47,7 +52,10 @@ $current = db_row(
     [$customer['household_id']]
 );
 if ($current !== null) {
-    $current['account'] = decrypt_field($current['account_enc']) ?? '(복호화 실패)';
+    $plain = decrypt_field($current['account_enc']);
+    // 재인증 전에는 등록 계좌도 가려서 보여준다 (세션 탈취 시 노출 최소화).
+    $current['account'] = $plain === null ? '(복호화 실패)'
+        : ($fresh ? $plain : mask_account_no($plain));
 }
 
 render('refund', [
@@ -58,4 +66,5 @@ render('refund', [
     'current'   => $current,
     'saved'     => $saved,
     'error'     => $error,
+    'fresh'     => $fresh,
 ]);

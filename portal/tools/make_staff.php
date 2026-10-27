@@ -36,8 +36,20 @@ $hash = defined('PASSWORD_ARGON2ID')
 // 홑따옴표만 이스케이프하면 되는 값들이지만, 안전하게 전부 처리한다.
 $q = fn(string $s): string => str_replace(['\\', "'"], ['\\\\', "\\'"], $s);
 
+// 4단계 — OTP 등록코드(1회용·24시간). 첫 로그인 때 이 코드를 넣어야 OTP 를 등록할 수 있다.
+// (schema_phase4.sql 적용 후의 DB 에 넣는다.) 주석 줄의 코드는 DB 에 남지 않는다 — 본인에게 직접 전달.
+$alpha = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+$raw = '';
+for ($i = 0; $i < 8; $i++) {
+    $raw .= $alpha[random_int(0, strlen($alpha) - 1)];
+}
+$enroll = substr($raw, 0, 4) . '-' . substr($raw, 4);
+$enrollHash = password_hash($enroll, PASSWORD_DEFAULT);
+
 echo "-- {$loginId} ({$role}) 계정 등록/갱신 SQL\n";
-echo "INSERT INTO staff (login_id, name, role, pass_hash)\n";
-echo "VALUES ('{$q($loginId)}', '{$q($name)}', '{$role}', '{$q($hash)}')\n";
+echo "-- OTP 등록코드: {$enroll}  (24시간 안에 첫 로그인)\n";
+echo "INSERT INTO staff (login_id, name, role, pass_hash, enroll_hash, enroll_until)\n";
+echo "VALUES ('{$q($loginId)}', '{$q($name)}', '{$role}', '{$q($hash)}', '{$q($enrollHash)}', DATE_ADD(NOW(), INTERVAL 24 HOUR))\n";
 echo "ON DUPLICATE KEY UPDATE name = VALUES(name), role = VALUES(role),\n";
-echo "  pass_hash = VALUES(pass_hash), failed_count = 0, locked_until = NULL;\n";
+echo "  pass_hash = VALUES(pass_hash), failed_count = 0, locked_until = NULL,\n";
+echo "  enroll_hash = VALUES(enroll_hash), enroll_until = VALUES(enroll_until), auth_version = auth_version + 1;\n";

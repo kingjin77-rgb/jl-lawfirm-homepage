@@ -32,13 +32,23 @@
 </div>
 <?php endif; ?>
 
+<?php if (!$fresh): ?>
+<div class="card card--notice" id="reauth-card">
+  <h2 class="sub">계좌를 등록하거나 바꾸시려면 본인 확인이 한 번 더 필요합니다</h2>
+  <p class="lead">
+    <span class="s">개인정보 보호를 위해 등록 휴대폰으로 인증번호를 다시 보내드립니다.</span>
+    <span class="s">확인 후 5분 동안 등록·변경하실 수 있습니다.</span>
+  </p>
+  <a class="btn btn--fill btn--full" href="/verify?next=/refund">문자로 본인 확인하기</a>
+</div>
+<?php else: ?>
 <form method="post" action="/refund" class="frm card">
   <?= csrf_field() ?>
   <h2 class="sub"><?= $current !== null ? '새 계좌로 바꾸기' : '계좌 등록' ?></h2>
   <div class="frm__field">
     <label for="inBank">은행</label>
     <select id="inBank" name="bank" required
-            onchange="document.getElementById('fBankEtc').hidden = this.value !== '직접입력';">
+            data-toggle-etc="fBankEtc" data-etc-value="직접입력">
       <option value="">은행을 선택해 주십시오</option>
       <?php foreach ($banks as $b): ?>
       <option value="<?= h($b) ?>"><?= h($b) ?></option>
@@ -62,3 +72,4 @@
   <button type="submit" class="btn btn--fill btn--full">계좌 저장</button>
   <p class="frm__lock">입력하신 계좌번호는 암호화해 보관하며, 채권 환불에만 씁니다.</p>
 </form>
+<?php endif; ?>

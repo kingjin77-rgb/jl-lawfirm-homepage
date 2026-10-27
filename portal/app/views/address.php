@@ -28,6 +28,16 @@
 </div>
 <?php endif; ?>
 
+<?php if (!$fresh): ?>
+<div class="card card--notice" id="reauth-card">
+  <h2 class="sub">주소를 등록하거나 바꾸시려면 본인 확인이 한 번 더 필요합니다</h2>
+  <p class="lead">
+    <span class="s">개인정보 보호를 위해 등록 휴대폰으로 인증번호를 다시 보내드립니다.</span>
+    <span class="s">확인 후 5분 동안 등록·변경하실 수 있습니다.</span>
+  </p>
+  <a class="btn btn--fill btn--full" href="/verify?next=/address">문자로 본인 확인하기</a>
+</div>
+<?php else: ?>
 <form method="post" action="/address" class="frm card">
   <?= csrf_field() ?>
   <h2 class="sub"><?= $current !== null ? '새 주소로 바꾸기' : '주소 등록' ?></h2>
@@ -46,3 +56,4 @@
   <button type="submit" class="btn btn--fill btn--full">주소 저장</button>
   <p class="frm__lock">입력하신 주소는 암호화해 보관하며, 권리증 발송에만 씁니다.</p>
 </form>
+<?php endif; ?>

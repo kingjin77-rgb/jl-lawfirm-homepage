@@ -114,17 +114,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// 휴대폰·환불계좌·주소는 기본 마스킹 — 「보기」는 OTP 재확인 + 열람 기록
+$reveal = reveal_guard($staff, 'household.detail');
+$show = $reveal !== null;
+
 $owners  = db_all('SELECT * FROM owner WHERE household_id = ? ORDER BY is_primary DESC, id', [$hid]);
 $prog    = db_row('SELECT * FROM progress WHERE household_id = ?', [$hid]);
 $cost    = db_row('SELECT * FROM cost WHERE household_id = ?', [$hid]);
 $refund  = db_row('SELECT * FROM refund_request WHERE household_id = ? ORDER BY id DESC LIMIT 1', [$hid]);
 if ($refund !== null) {
-    $refund['account'] = decrypt_field($refund['account_enc']) ?? '(복호화 실패)';
+    $plain = decrypt_field($refund['account_enc']);
+    $refund['account'] = $plain === null ? '(복호화 실패)' : ($show ? $plain : mask_account_no($plain));
 }
 $address = db_row('SELECT * FROM address_request WHERE household_id = ? ORDER BY id DESC LIMIT 1', [$hid]);
 if ($address !== null) {
     $address['addr1'] = decrypt_field($address['addr1_enc']) ?? '(복호화 실패)';
     $address['addr2'] = decrypt_field($address['addr2_enc']) ?? '';
+    if (!$show) {
+        $address['addr1'] = mask_address_list($address['addr1']);
+        $address['addr2'] = '';
+    }
+}
+if (!$show) {
+    foreach ($owners as &$o) {
+        $o['phone'] = mask_phone((string)$o['phone']);
+    }
+    unset($o);
 }
 
 render_admin('reg_form', [
@@ -138,4 +153,5 @@ render_admin('reg_form', [
     'address'   => $address,
     'notice'    => $notice,
     'error'     => $error,
+    'reveal'    => $reveal,
 ]);

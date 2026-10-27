@@ -15,6 +15,15 @@ $isJoined = $mode === 'joined';
   <a class="btn btn--sm" href="<?= h($base) ?>/data?id=<?= (int)$survey['id'] ?>&amp;mode=<?= h($mode) ?>&amp;export=csv">CSV 내려받기</a>
 </p>
 
+<?php if ($isJoined): ?><div class="reveal-bar">
+  <div class="alert alert--info" style="margin:0; flex:1 1 320px">
+    <b>핸드폰 번호는 가려서 보여드립니다</b>
+    「보기」를 누르면 OTP 를 다시 확인한 뒤 원문이 나오고, 열람 기록이 작업기록에 남습니다.
+  </div>
+  <?php if ($reveal === null): ?><a class="btn btn--sm" id="reveal-all" href="<?= h(reveal_link('all')) ?>">이 쪽 전체 보기</a>
+  <?php else: ?><a class="btn btn--sm" href="<?= h(strtok((string)($_SERVER['REQUEST_URI'] ?? ''), '?') . '?' . http_build_query(array_diff_key($_GET, ['reveal' => 1]))) ?>">다시 가리기</a><?php endif; ?>
+</div>
+<?php endif; ?>
 <div class="tbl-scroll">
   <table class="tbl">
     <?php if ($isJoined): ?>
@@ -30,7 +39,8 @@ $isJoined = $mode === 'joined';
       <td class="ctr"><?= h($r['dong']) ?></td>
       <td class="ctr"><?= h($r['ho']) ?></td>
       <td class="nowrap"><?= h($r['owner_name']) ?></td>
-      <td class="nowrap"><?= h($r['phone']) ?: '—' ?></td>
+      <td class="nowrap masked"><?= h(reveal_hit($reveal, (int)$r['response_id']) ? $r['phone'] : mask_phone($r['phone'])) ?: '—' ?>
+        <?php if ($r['phone'] !== '' && !reveal_hit($reveal, (int)$r['response_id'])): ?><a class="btn btn--xs btn--reveal" data-reveal href="<?= h(reveal_link((int)$r['response_id'])) ?>">보기</a><?php endif; ?></td>
       <td class="nowrap"><?= h($r['submitted_at']) ?></td>
       <?php foreach ($questions as $q): ?>
       <td><?= nl2br(h((string)($answersBy[(int)$r['response_id']][(int)$q['id']] ?? ''))) ?: '—' ?></td>

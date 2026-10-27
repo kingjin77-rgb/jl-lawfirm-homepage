@@ -236,3 +236,21 @@ b, strong { font-weight: 700; }
   .frm__grid { grid-template-columns: 1fr 1fr; }
   .kv > div { grid-template-columns: 84px 1fr; }
 }
+
+/* ---------- 4단계 보안 화면 (문자 인증·재인증·안내 카드) ---------- */
+.card--notice { border: 2px solid var(--gold); background: #fffaf0; margin: 0 0 20px; }
+.card--notice .lead { margin-bottom: 16px; color: var(--ink); }
+.otp-sent { margin: 0 0 18px; font-size: 16px; }
+.otp-sent b { color: var(--navy); }
+.frm__field input.otp-in {
+  font-size: 26px; letter-spacing: .4em; text-align: center; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.otp-dev {
+  border: 2px dashed var(--gold); border-radius: 12px; background: #fffaf0;
+  padding: 14px 18px; margin: 0 0 18px; font-size: 16px;
+}
+.otp-dev strong { font-size: 24px; letter-spacing: .2em; color: var(--navy); }
+.otp-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.otp-actions form { margin: 0; }
+.otp-actions .btn { padding: 10px 18px; font-size: 15px; }

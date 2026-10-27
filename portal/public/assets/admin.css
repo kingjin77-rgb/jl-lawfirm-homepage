@@ -172,3 +172,29 @@
   .owner-row { grid-template-columns: 1fr 1fr; }
   .adm-step { grid-template-columns: 34px 1fr; grid-auto-flow: row; }
 }
+
+/* ---------- 4단계 보안 — OTP 등록·복구코드·마스킹 보기 ---------- */
+.adm-otp-setup { max-width: 640px; margin: 40px auto; }
+.adm-otp-steps { margin: 0; padding-left: 22px; display: grid; gap: 18px; font-size: 15.5px; line-height: 1.7; }
+.adm-otp-steps > li b { display: block; color: var(--navy); font-size: 16px; margin-bottom: 4px; }
+.adm-otp-qr { margin: 10px 0; }
+.adm-otp-qr svg { width: 220px; height: 220px; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+.adm-otp-secret {
+  display: block; margin: 8px 0; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; font-size: 17px; letter-spacing: .08em; word-break: break-all;
+}
+.adm-otp-uri summary { cursor: pointer; font-size: 15px; color: var(--navy); }
+.adm-otp-uri code { display: block; margin-top: 6px; font-size: 14px; word-break: break-all; }
+.adm-otp-form { margin-top: 8px; max-width: 320px; }
+.adm-recovery { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.adm-recovery code { display: block; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font-size: 17px; text-align: center; letter-spacing: .06em; }
+.reveal-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 0 0 14px; }
+.masked { letter-spacing: .02em; }
+.btn--reveal { margin-left: 6px; }
+
+/* 390px 가로 넘침 보정 (세대 수정 폼 소유자 줄 · 참여대상자 단지 카드) — 칸 내용의 최소폭이 열을 밀지 않게 */
+.owner-row > *, .adm-grid > * { min-width: 0; }
+@media (max-width: 480px) {
+  .owner-row input { width: 100%; }
+  .adm-grid { grid-template-columns: minmax(0, 1fr) !important; }
+}

@@ -7,6 +7,9 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
 ## 0단계 — 준비물 (대표님)
 - [ ] 가비아 웹호스팅 신청 (PHP 8 + MySQL + https). 신청 후 임시주소·FTP·DB 접속정보 전달
 - [ ] 문자 발송 업체 계정 (알리고·솔라피 등) + 발신번호 1899-4252 등록 서류
+      — **손님 로그인이 문자 인증 2단계라, 업체 연동 전에는 운영에서 손님 로그인이 안 된다** (직원 화면은 됨)
+- [ ] 사무실 고정 IP (관리자 IP 허용목록용) — 가비아·통신사 계약서 또는 사무실 PC 에서 확인
+- [ ] 직원마다 휴대폰 인증 앱 설치 (Google Authenticator 등, 무료)
 - [ ] 직원 계정 목록 (이름 · 역할: 관리자/직원)
 - [ ] 개인정보처리방침 개정 승인 (수집항목에 권리증 수령 주소·환불 계좌, 위탁: 호스팅·문자 업체)
 - [ ] 개인정보 보호책임자 확정 (현 방침 기준 확인)
@@ -14,10 +17,28 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
 
 ## 1단계 — 가비아 설치 (도메인 연결 전, 임시주소)
 - [ ] portal/ 업로드 (public/ 내용 → 문서루트, app/ 는 웹 노출 밖 — README 배치 참고)
-- [ ] portal-config.php 작성 (DB 접속·암호키 새로 생성 — 개발 키 재사용 금지)
-- [ ] schema.sql + schema_phase2.sql + schema_phase3.sql 적용, 직원 계정 생성 (tools/make_staff.php)
-- [ ] https 강제, display_errors off 확인
-- [ ] 실측: 손님 로그인·6메뉴, 직원 로그인·7메뉴, 엑셀 업로드, 잠금, 암호화 저장 확인
+- [ ] portal-config.php 작성 (config.sample.php 기준) — DB 접속, `crypto_key`·`backup_key` 를 **각각 새로**
+      생성(개발 키를 쓰면 부팅이 503 으로 거부된다), `sms_driver` aligo|solapi, `cron_token` 48자,
+      `backup_dir`·`integrity_baseline`·`tmp_dir`·`session_path` 는 도큐먼트루트 **밖** 폴더
+- [ ] 두 키(crypto_key·backup_key)의 사본을 서버 밖 안전한 곳에 보관 (잃으면 주소·계좌·백업 복구 불가)
+- [ ] schema.sql + schema_phase2.sql + schema_phase3.sql + **schema_phase4.sql** 순서로 적용
+- [ ] 직원 계정 생성: 로컬 PC 에서 `tools/make_staff.php` → 출력 SQL 을 DB 에 실행.
+      출력 첫 주석 줄의 **OTP 등록코드**를 본인에게 직접(전화·대면) 전달 (24시간 유효)
+- [ ] **OTP 등록**: 각 직원이 첫 로그인 → 등록코드 → 인증 앱으로 QR 찍기 → 6자리 확인 →
+      복구코드 8개를 종이에 적어 보관. admin 은 「직원 계정 관리」에서 전원 OTP 「사용」 확인
+- [ ] **IP 허용목록**: admin 이 「기본 정보 관리 → 보안 설정 (IP)」에 사무실 IP(필요하면 대표 자택 IP)를 넣고 저장.
+      다른 망(휴대폰 테더링)에서 /admin 이 403 인지 확인. 출장 때는 목록을 잠시 비우고 돌아와 다시 넣는다
+- [ ] https 강제(http 접속 → https 로 넘어가는지), display_errors off 확인 — env=prod 면 앱이 둘 다 강제한다
+- [ ] PHP 설정: `upload_max_filesize` 12M·`post_max_size` 16M 이상, zip·fileinfo·sodium·intl 확장 켜짐
+- [ ] `public/.htaccess` 가 올라갔는지 확인: `/.htaccess`, `/README.md`, 아무 `/assets/x.php` 가 403/404
+- [ ] **무결성 기준선**: 업로드가 끝난 뒤(쉘 없으면 로컬에서 같은 파일로 만들어 올림)
+      `php tools/integrity.php baseline` → 이후 코드 배포 때마다 다시 baseline
+- [ ] **백업 크론**: 가비아 크론(또는 무료 외부 크론 서비스)에
+      `/cron/backup` (매일 03:00) · `/cron/integrity` (매시간) 를 헤더 `X-Cron-Token: <cron_token>` 으로 등록.
+      헤더를 못 붙이는 서비스만 config `cron_allow_query => true` 후 `?token=` 사용 (접속 로그에 남음 — 토큰 주기적 교체).
+      실패(HTTP 500) 시 메일 알림 켜기
+- [ ] 복원 리허설: 백업 파일을 로컬로 받아 `php tools/restore.php <파일> --decrypt-to check.sql` 로 풀리는지 확인
+- [ ] 실측: 손님 로그인(문자 인증)·6메뉴, 직원 로그인(OTP)·7메뉴, 엑셀 업로드, 잠금, 암호화 저장 확인
 
 ## 2단계 — 자료 이전 (진행 중 단지만)
 - [ ] 기존 관리자에서 진행 중 단지 목록 확정 (아파트 관리 화면의 노출 22곳 기준, 직원 확인)
@@ -27,7 +48,9 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
 
 ## 3단계 — 직원 시험 운영 (임시주소, 기존 포털 병행)
 - [ ] 직원 2인 이상이 실제 업무 1주 병행 (새 입력은 양쪽에)
-- [ ] 문자 발송 연동 후 테스트 번호 발송 확인
+- [ ] 문자 발송 연동 후 테스트 번호 발송 확인 — config `sms.<업체>.live => true` 로 바꾼 뒤
+      손님 인증번호·재발송 제한(60초)·환불계좌 변경 재인증을 실제 휴대폰으로 확인
+- [ ] 휴대폰 미등록 세대 목록 뽑아 연락처 보강 (문자 인증을 못 받아 로그인 불가)
 - [ ] 발견 문제 수정 완료 확인
 
 ## 4단계 — 전환 당일
@@ -37,8 +60,11 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
 - [ ] 손님 로그인·직원 로그인·문자 1건 실측
 - [ ] 새 홈페이지 tracking.html 의 기존 포털 연결(LEGACY)을 새 포털 주소로 교체
 - [ ] 관리자 비밀번호·직원 비밀번호 전부 새로 (기본값 금지)
+- [ ] 전환 직후 `tools/integrity.php baseline` 다시 + 웹크론 무결성 200 확인
 
 ## 5단계 — 전환 후
 - [ ] 1주간 기존 서버 유지(되돌릴 길 확보) 후 해지 결정
-- [ ] 백업 자동화 확인 (매일 DB 덤프), 복원 리허설 1회
+- [ ] 백업 자동화 확인 (매일 `/cron/backup`, backup_dir 에 jlportal_*.jlbk 14개 유지), 복원 리허설 1회
+- [ ] 보안 설정 화면의 자동 차단 IP · 접속 통계의 조회 실패 기록 주 1회 확인
+- [ ] SECURITY.md 운영자 점검표 월 1회
 - [ ] 접속 통계로 오류·잠금 모니터링
