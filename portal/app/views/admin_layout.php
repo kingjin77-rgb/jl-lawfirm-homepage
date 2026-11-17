@@ -17,8 +17,9 @@ $menus = admin_menus();
 <title><?= h($pageTitle ?? '관리자') ?> | 제이엘 등기 관리자</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="/assets/portal.css?v=2">
-<link rel="stylesheet" href="/assets/admin.css?v=2">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/assets/portal.css?v=3">
+<link rel="stylesheet" href="/assets/admin.css?v=3">
 <script src="/assets/admin.js?v=1" defer></script>
 </head>
 <body class="adm-body">

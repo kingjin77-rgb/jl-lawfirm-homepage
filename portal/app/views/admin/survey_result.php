@@ -4,6 +4,30 @@ $base = $typeInfo['base'];
 <h1 class="adm-ttl">결과보기 — <?= h($survey['title']) ?></h1>
 <p class="adm-lead">문항별 집계입니다. 개별 답 전체는 「참여데이타」에서 CSV 로 내려받습니다.</p>
 
+<?php if (!empty($_GET['purged'])): ?>
+<div class="alert alert--ok"><b>파기했습니다</b>응답·답·서명을 지웠습니다. 아래 수치는 파기 직전 집계입니다.</div>
+<?php endif; ?>
+<?php if (!empty($survey['purged_at'])): ?>
+<div class="alert alert--info"><b>파기된 <?= h($typeInfo['label']) ?>입니다 (<?= h(substr((string)$survey['purged_at'], 0, 16)) ?>)</b>
+  개인 응답·서명은 남아 있지 않고, 아래 집계 수치만 보관합니다. 새 참여도 받지 않습니다.</div>
+<?php else: ?>
+<div class="alert <?= $daysLeft !== null && $daysLeft <= SURVEY_RETENTION_WARN_DAYS ? 'alert--warn' : 'alert--info' ?> retention-card">
+  <div>
+    <b>파기예정일 <?= h((string)($survey['retention_until'] ?? '미정')) ?> (<?= h(survey_dday_label($survey)) ?>)</b>
+    이 날이 지나면 응답·답·서명이 자동으로 지워지고 집계 수치만 남습니다.
+    <?php if ($daysLeft !== null && $daysLeft <= SURVEY_RETENTION_WARN_DAYS): ?>
+    <br>협의회 전달용 결과가 필요하면 파기 전에 참여데이타 CSV 를 받아 두십시오.
+    <?php endif; ?>
+  </div>
+  <p style="margin:10px 0 0;display:flex;gap:8px;flex-wrap:wrap">
+    <a class="btn btn--sm" href="<?= h($base) ?>/data?id=<?= (int)$survey['id'] ?>&amp;export=csv">결과 CSV 받기</a>
+    <?php if (($staff['role'] ?? '') === 'admin'): ?>
+    <a class="btn btn--sm btn--danger" href="<?= h($base) ?>/purge?id=<?= (int)$survey['id'] ?>">지금 파기</a>
+    <?php endif; ?>
+  </p>
+</div>
+<?php endif; ?>
+
 <div class="adm-stats">
   <div class="adm-stat"><b>총인원 (대상 세대)</b><strong><?= number_format($survey['cnt_total']) ?></strong><span>세대</span></div>
   <div class="adm-stat"><b>참여</b><strong><?= number_format($survey['cnt_joined']) ?></strong><span>세대</span></div>
@@ -49,11 +73,19 @@ $base = $typeInfo['base'];
       </table>
     </div>
   </div>
+  <?php elseif ($q['qtype'] === 'signature'): $no++; ?>
+  <div class="adm-sec">
+    <h2>문항 <?= $no ?>. <?= h($q['title']) ?> <span style="font-weight:500">(서명 · 응답 <?= number_format($q['answered']) ?>건)</span></h2>
+    <div class="alert alert--info" style="margin:0"><b>서명 이미지는 여기 띄우지 않습니다</b>
+      「참여데이타」의 「보기」(OTP 재확인)에서 세대별로 복호화해 봅니다. 열람은 작업기록에 남습니다.</div>
+  </div>
   <?php else: $no++; ?>
   <div class="adm-sec">
     <h2>문항 <?= $no ?>. <?= h($q['title']) ?>
       <span style="font-weight:500">(<?= $q['qtype'] === 'phone' ? '핸드폰' : '주관식' ?> · 응답 <?= number_format($q['answered']) ?>건)</span></h2>
-    <?php if ($q['texts'] === []): ?>
+    <?php if (!empty($survey['purged_at'])): ?>
+    <div class="alert alert--info" style="margin:0"><b>개별 답은 파기했습니다</b>응답 건수만 남아 있습니다.</div>
+    <?php elseif ($q['texts'] === []): ?>
     <div class="alert alert--info" style="margin:0"><b>응답 없음</b>아직 이 문항에 답한 세대가 없습니다.</div>
     <?php else: ?>
     <div class="tbl-scroll" style="border:0;margin:0">

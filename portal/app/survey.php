@@ -16,13 +16,14 @@ function survey_types(): array
     ];
 }
 
-/** 문항 유형 라벨 — 핸드폰 문항은 등기접수에서만 만들 수 있다. */
+/** 문항 유형 라벨 — 핸드폰 문항은 등기접수에서만, 서명은 세 메뉴 공통. */
 function survey_qtype_labels(string $type): array
 {
     $labels = ['choice' => '객관식', 'text' => '주관식', 'note' => '설명글'];
     if ($type === 'accept') {
         $labels['phone'] = '핸드폰';
     }
+    $labels['signature'] = '서명';
     return $labels;
 }
 
@@ -78,6 +79,11 @@ function survey_attach_counts(array $surveys): array
               WHERE h.complex_id IN (SELECT complex_id FROM survey_target WHERE survey_id = ?)',
             [$sid])['n'] ?? 0);
         $joined = (int)(db_row('SELECT COUNT(*) AS n FROM survey_response WHERE survey_id = ?', [$sid])['n'] ?? 0);
+        $sum = survey_purged_summary($s);
+        if ($sum !== null) {                           // 파기 후에는 파기 직전 집계를 보여준다
+            $total  = (int)($sum['total'] ?? 0);
+            $joined = (int)($sum['joined'] ?? 0);
+        }
         $s['cnt_total']  = $total;
         $s['cnt_joined'] = $joined;
         $s['cnt_absent'] = max(0, $total - $joined);
@@ -98,6 +104,9 @@ function survey_is_open(array $s, ?string $today = null): bool
     }
     if (!empty($s['ends_on']) && $today > $s['ends_on']) {
         return false;
+    }
+    if (!empty($s['purged_at'])) {
+        return false;                                  // 파기된 건은 다시 받지 않는다
     }
     if ($s['type'] === 'accept') {
         return !empty($s['starts_on']) || !empty($s['ends_on']) ? true : (bool)$s['is_open'];
@@ -204,6 +213,21 @@ function survey_submit(array $survey, int $householdId, string $ownerName, array
         }
         $qid = (int)$q['id'];
         $val = trim((string)($post['q' . $qid] ?? ''));
+        if ($q['qtype'] === 'signature') {
+            // 다시 제출할 때도 새 서명을 받는다 — 서명은 지금 제출하는 내용에 대한 것.
+            $png = $val === '' ? '' : survey_signature_png($val);
+            if ($png === null) {
+                return ['ok' => false, 'error' => '「' . $q['title'] . '」 서명 이미지가 올바르지 않습니다. 지우고 다시 서명해 주십시오.'];
+            }
+            if ($png === '') {
+                if ($q['required']) {
+                    return ['ok' => false, 'error' => '「' . $q['title'] . '」 칸에 서명해 주십시오.'];
+                }
+                continue;
+            }
+            $answers[$qid] = encrypt_field($png);      // 평문 PNG 는 저장하지 않는다
+            continue;
+        }
         if ($val === '') {
             if ($q['required']) {
                 return ['ok' => false, 'error' => '「' . $q['title'] . '」 항목은 꼭 답해 주셔야 합니다.'];
@@ -324,4 +348,224 @@ function survey_answers_by_response(int $surveyId): array
         $out[(int)$a['response_id']][(int)$a['question_id']] = $a['value'];
     }
     return $out;
+}
+
+/* ------------------------------------------------------------------ */
+/* 서명 문항 (5단계)                                                     */
+/* ------------------------------------------------------------------ */
+
+const SIGNATURE_MAX_BYTES = 200 * 1024;   // PNG 원본 상한
+const SIGNATURE_MAX_SIDE  = 2000;         // 가로·세로 픽셀 상한 (손님 canvas 는 최대 약 1400x520)
+
+/**
+ * 손님이 보낸 서명 data URI 를 검증해 PNG 바이트를 돌려준다.
+ *   null = 형식 위반(PNG 아님·과대·손상) · '' = 빈 서명(투명 픽셀뿐) · 그 밖 = PNG 원본
+ * GD 없이 검증한다(가비아 기본 확장만): data:image/png;base64 · 엄격 base64 · PNG 시그니처 ·
+ * getimagesize · IHDR(8비트 RGBA, 비월) · IDAT 압축 해제 크기 정확히 일치(압축 폭탄 차단).
+ * 빈 판정: canvas 의 투명 픽셀은 전부 0 바이트이고, 0 뿐인 행은 어떤 필터를 써도 0 으로
+ * 남으며 0 이 아닌 첫 바이트는 예측값이 0 이라 그대로 남는다 → 필터 바이트를 뺀 나머지가
+ * 전부 0 이면 빈 서명.
+ */
+function survey_signature_png(string $uri): ?string
+{
+    $prefix = 'data:image/png;base64,';
+    if (!str_starts_with($uri, $prefix)
+        || strlen($uri) > strlen($prefix) + intdiv(SIGNATURE_MAX_BYTES * 4, 3) + 4) {
+        return null;
+    }
+    $png = base64_decode(substr($uri, strlen($prefix)), true);
+    if ($png === false || strlen($png) > SIGNATURE_MAX_BYTES || strlen($png) < 45
+        || substr($png, 0, 8) !== "\x89PNG\r\n\x1a\n") {
+        return null;
+    }
+    $info = @getimagesizefromstring($png);
+    if ($info === false || $info[2] !== IMAGETYPE_PNG) {
+        return null;
+    }
+    // 청크 순회: IHDR → … IDAT … → IEND
+    $pos = 8;
+    $len = strlen($png);
+    $idat = '';
+    $ihdr = null;
+    $ended = false;
+    while ($pos + 8 <= $len) {
+        $clen = unpack('N', substr($png, $pos, 4))[1];
+        $ctype = substr($png, $pos + 4, 4);
+        if ($clen > $len - $pos - 12) {
+            return null;
+        }
+        $data = substr($png, $pos + 8, $clen);
+        if ($ihdr === null && $ctype !== 'IHDR') {
+            return null;
+        }
+        if ($ctype === 'IHDR') {
+            $ihdr = unpack('Nw/Nh/Cdepth/Ccolor/Ccomp/Cfilter/Cinterlace', $data);
+        } elseif ($ctype === 'IDAT') {
+            $idat .= $data;
+        } elseif ($ctype === 'IEND') {
+            $ended = true;
+            break;
+        }
+        $pos += 12 + $clen;
+    }
+    if (!$ended || $ihdr === null || $idat === ''
+        || $ihdr['w'] < 1 || $ihdr['h'] < 1 || $ihdr['w'] > SIGNATURE_MAX_SIDE || $ihdr['h'] > SIGNATURE_MAX_SIDE
+        || $ihdr['depth'] !== 8 || $ihdr['color'] !== 6 || $ihdr['interlace'] !== 0) {
+        return null;
+    }
+    $rowLen = 1 + $ihdr['w'] * 4;
+    $expect = $rowLen * $ihdr['h'];
+    $raw = @gzuncompress($idat, $expect + 1);
+    if ($raw === false || strlen($raw) !== $expect) {
+        return null;
+    }
+    for ($y = 0; $y < $ihdr['h']; $y++) {
+        if (trim(substr($raw, $y * $rowLen + 1, $rowLen - 1), "\0") !== '') {
+            return $png;                                // 잉크가 있다
+        }
+    }
+    return '';
+}
+
+/** 저장된 서명(암호문) → 화면용 data URI. 복호화 실패면 null. */
+function survey_signature_data_uri(string $stored): ?string
+{
+    $png = decrypt_field($stored);
+    if ($png === null || $png === '' || substr($png, 0, 8) !== "\x89PNG\r\n\x1a\n") {
+        return null;
+    }
+    return 'data:image/png;base64,' . base64_encode($png);
+}
+
+/* ------------------------------------------------------------------ */
+/* 설문별 자동 파기 (5단계)                                              */
+/* ------------------------------------------------------------------ */
+
+const SURVEY_RETENTION_WARN_DAYS = 30;
+
+/** 기본 파기예정일 — 종료일 + 90일, 종료일이 없으면 작성일(없으면 오늘) + 1년. */
+function survey_default_retention(?string $endsOn, ?string $createdAt = null): string
+{
+    if ($endsOn !== null && $endsOn !== '') {
+        return date('Y-m-d', strtotime($endsOn . ' +90 days'));
+    }
+    $base = $createdAt !== null && $createdAt !== '' ? substr($createdAt, 0, 10) : date('Y-m-d');
+    return date('Y-m-d', strtotime($base . ' +1 year'));
+}
+
+/** 파기예정일까지 남은 날 (오늘이 예정일이면 0, 지났으면 음수). 날짜 없으면 null. */
+function survey_days_left(?string $until, ?string $today = null): ?int
+{
+    if ($until === null || $until === '') {
+        return null;
+    }
+    $t = new DateTimeImmutable($today ?? date('Y-m-d'));
+    return (int)$t->diff(new DateTimeImmutable($until))->format('%r%a');
+}
+
+/** 목록 D-day 표기 */
+function survey_dday_label(array $s): string
+{
+    if (!empty($s['purged_at'])) {
+        return '파기됨';
+    }
+    $d = survey_days_left($s['retention_until'] ?? null);
+    if ($d === null) {
+        return '—';
+    }
+    return $d > 0 ? 'D-' . $d : ($d === 0 ? 'D-day' : '파기 대기');
+}
+
+/** 파기된 건의 집계 JSON (파기 전이면 null) */
+function survey_purged_summary(array $s): ?array
+{
+    if (empty($s['purged_at'])) {
+        return null;
+    }
+    $sum = json_decode((string)($s['purged_summary'] ?? ''), true);
+    return is_array($sum) ? $sum : [];
+}
+
+/**
+ * 문항별 집계 수치 — 객관식은 보기별 응답수, 나머지는 응답 건수.
+ * 결과보기와 파기 직전 집계 보존이 함께 쓴다.
+ * @return array<int, array{answered:int, tally?:array<string,int>}>  question_id 키
+ */
+function survey_tally(array $questions): array
+{
+    $out = [];
+    foreach ($questions as $q) {
+        $qid = (int)$q['id'];
+        if ($q['qtype'] === 'note') {
+            continue;
+        }
+        if ($q['qtype'] === 'choice') {
+            $byValue = [];
+            foreach (db_all('SELECT value, COUNT(*) AS n FROM survey_answer
+                              WHERE question_id = ? GROUP BY value', [$qid]) as $r) {
+                $byValue[$r['value']] = (int)$r['n'];
+            }
+            $tally = [];
+            foreach ($q['options'] as $opt) {
+                $tally[$opt] = $byValue[$opt] ?? 0;
+            }
+            $out[$qid] = ['answered' => array_sum($tally), 'tally' => $tally];
+        } else {
+            $out[$qid] = ['answered' => (int)(db_row('SELECT COUNT(*) AS n FROM survey_answer WHERE question_id = ?',
+                [$qid])['n'] ?? 0)];
+        }
+    }
+    return $out;
+}
+
+/**
+ * 파기 — 집계 수치만 survey.purged_summary 에 남기고 응답·답·서명을 지운다
+ * (survey_answer 는 FK CASCADE). 문항·대상 단지는 남는다. 이미 파기됐으면 null.
+ * @return array{responses:int, answers:int}|null
+ */
+function survey_purge(int $surveyId): ?array
+{
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $s = db_row('SELECT * FROM survey WHERE id = ? FOR UPDATE', [$surveyId]);
+        if ($s === null || !empty($s['purged_at'])) {
+            $pdo->rollBack();
+            return null;
+        }
+        [$counted] = survey_attach_counts([$s]);
+        $summary = [
+            'total'     => $counted['cnt_total'],
+            'joined'    => $counted['cnt_joined'],
+            'questions' => survey_tally(survey_questions($surveyId)),
+        ];
+        $answers = (int)(db_row('SELECT COUNT(*) AS n FROM survey_answer a
+                                   JOIN survey_response r ON r.id = a.response_id
+                                  WHERE r.survey_id = ?', [$surveyId])['n'] ?? 0);
+        $responses = db_exec('DELETE FROM survey_response WHERE survey_id = ?', [$surveyId]);
+        db_exec('UPDATE survey SET purged_at = NOW(), purged_summary = ? WHERE id = ?',
+            [json_encode($summary, JSON_UNESCAPED_UNICODE), $surveyId]);
+        $pdo->commit();
+    } catch (Throwable $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
+    return ['responses' => $responses, 'answers' => $answers];
+}
+
+/** 파기예정일이 지난(오늘 이전) 미파기 건 */
+function survey_purge_due(): array
+{
+    return db_all('SELECT id, type, title, retention_until FROM survey
+                    WHERE purged_at IS NULL AND retention_until IS NOT NULL AND retention_until < CURDATE()
+                    ORDER BY retention_until, id');
+}
+
+/** 대시보드 경고 — 파기예정일이 30일 안으로 들어온 미파기 건 (지난 것 포함) */
+function survey_retention_soon(int $days = SURVEY_RETENTION_WARN_DAYS): array
+{
+    return db_all('SELECT id, type, title, retention_until FROM survey
+                    WHERE purged_at IS NULL AND retention_until IS NOT NULL
+                      AND retention_until <= DATE_ADD(CURDATE(), INTERVAL ? DAY)
+                    ORDER BY retention_until, id', [$days]);
 }

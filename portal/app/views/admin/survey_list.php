@@ -21,11 +21,11 @@ $isAccept = $surveyType === 'accept';
       <th>번호</th><th><?= h($typeInfo['label']) ?>명</th><th>주최</th>
       <?php if ($isAccept): ?><th class="ctr">시작일</th><th class="ctr">종료일</th><?php endif; ?>
       <th class="ctr">총인원</th><th class="ctr">참여</th><th class="ctr">불참</th>
-      <th class="ctr">진행</th><th class="ctr">작성일</th><th>관리</th>
+      <th class="ctr">진행</th><th class="ctr">작성일</th><th class="ctr">파기예정</th><th>관리</th>
     </tr></thead>
     <tbody>
     <?php if ($rows === []): ?>
-    <tr><td colspan="<?= $isAccept ? 12 : 10 ?>" class="ctr">등록된 <?= h($typeInfo['label']) ?>이(가) 없습니다.
+    <tr><td colspan="<?= $isAccept ? 13 : 11 ?>" class="ctr">등록된 <?= h($typeInfo['label']) ?>이(가) 없습니다.
       위의 「<?= h($typeInfo['label']) ?> 등록」으로 시작하십시오.</td></tr>
     <?php endif; ?>
     <?php foreach ($rows as $r): $open = survey_is_open($r); ?>
@@ -42,6 +42,10 @@ $isAccept = $surveyType === 'accept';
       <td class="ctr num"><?= number_format($r['cnt_absent']) ?></td>
       <td class="ctr"><?= $open ? '<span class="mark-done">진행중</span>' : '<span class="mark-wait">마감</span>' ?></td>
       <td class="ctr nowrap"><?= h(substr((string)$r['created_at'], 0, 10)) ?></td>
+      <?php $dl = empty($r['purged_at']) ? survey_days_left($r['retention_until'] ?? null) : null; ?>
+      <td class="ctr nowrap" title="<?= h((string)($r['retention_until'] ?? '')) ?>">
+        <span class="<?= $dl !== null && $dl <= SURVEY_RETENTION_WARN_DAYS ? 'mark-wait' : '' ?>"><?= h(survey_dday_label($r)) ?></span>
+        <br><?= h((string)($r['retention_until'] ?? '')) ?></td>
       <td class="nowrap">
         <a class="btn btn--xs" href="<?= h($base) ?>/target?id=<?= (int)$r['id'] ?>">참여대상자</a>
         <a class="btn btn--xs" href="<?= h($base) ?>/result?id=<?= (int)$r['id'] ?>">결과보기</a>

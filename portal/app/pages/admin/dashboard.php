@@ -65,4 +65,5 @@ render_admin('dashboard', [
     'counts'     => $counts,
     'stepCounts' => $stepCounts,
     'recent'     => $recent,
+    'purgeSoon'  => survey_retention_soon(),       // 파기예정일 30일 안 (지난 것 포함)
 ]);

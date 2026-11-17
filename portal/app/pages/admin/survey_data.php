@@ -47,7 +47,8 @@ if (($_GET['export'] ?? '') === 'csv') {
             $line = [$r['complex_name'], $r['dong'], $r['ho'], $r['owner_name'],
                      $r['phone'], $r['submitted_at']];
             foreach ($questions as $q) {
-                $line[] = $answersBy[(int)$r['response_id']][(int)$q['id']] ?? '';
+                $v = $answersBy[(int)$r['response_id']][(int)$q['id']] ?? '';
+                $line[] = $q['qtype'] === 'signature' ? ($v !== '' ? '서명 있음' : '') : $v;   // 서명 이미지는 내보내지 않는다
             }
             fputcsv($out, $line);
         }
@@ -57,6 +58,25 @@ if (($_GET['export'] ?? '') === 'csv') {
 }
 
 $reveal = reveal_guard($staff, 'survey.data');
+// 서명은 「보기」(재인증 통과) 때만 복호화한다. 몇 건을 풀었는지 따로 남긴다.
+$signatures = [];
+if ($reveal !== null && $mode === 'joined') {
+    foreach ($questions as $q) {
+        if ($q['qtype'] !== 'signature') {
+            continue;
+        }
+        foreach ($answersBy as $rid => $ans) {
+            if (isset($ans[(int)$q['id']]) && reveal_hit($reveal, (int)$rid)) {
+                $signatures[$rid][(int)$q['id']] = survey_signature_data_uri($ans[(int)$q['id']]);
+            }
+        }
+    }
+    if ($signatures !== []) {
+        staff_audit((int)$staff['id'], 'survey.signature.reveal', 'survey:' . $id,
+            '서명 ' . array_sum(array_map('count', $signatures)) . '건 복호화 열람 ('
+            . ($reveal === 'all' ? '이 쪽 전체' : '응답 ' . $reveal) . ')');
+    }
+}
 
 render_admin('survey_data', [
     'pageTitle'  => ($mode === 'absent' ? '불참데이타' : '참여데이타') . ' — ' . $survey['title'],
@@ -69,4 +89,5 @@ render_admin('survey_data', [
     'questions'  => $questions,
     'answersBy'  => $answersBy,
     'reveal'     => $reveal,
+    'signatures' => $signatures,
 ]);

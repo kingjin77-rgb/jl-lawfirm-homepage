@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $endsOn      = trim((string)($_POST['ends_on'] ?? ''));
     $phoneReq    = !empty($_POST['phone_required']) ? 1 : 0;
     $isOpen      = !empty($_POST['is_open']) ? 1 : 0;
+    $retention   = trim((string)($_POST['retention_until'] ?? ''));
+    if ($retention === '') {
+        $retention = survey_default_retention($endsOn, $survey['created_at'] ?? null);
+    }
 
     if ($title === '') {
         $error = '제목을 넣어 주십시오.';
@@ -39,24 +43,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = '종료일이 시작일보다 빠릅니다.';
     } elseif ($surveyType === 'accept' && ($startsOn === '' || $endsOn === '')) {
         $error = '등기접수는 시작일과 종료일을 모두 넣어 주십시오.';
+    } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $retention)) {
+        $error = '파기예정일 형식이 올바르지 않습니다.';
+    } elseif ($endsOn !== '' && $retention < $endsOn) {
+        $error = '파기예정일은 종료일 이후여야 합니다.';
+    } elseif ($retention < date('Y-m-d') && $retention !== (string)($survey['retention_until'] ?? '')) {
+        // 지난 날짜로 바꾸면 다음 크론에 바로 파기된다 — 재인증을 거치는 「지금 파기」로만.
+        $error = '파기예정일을 오늘 이전으로 바꿀 수 없습니다. 바로 파기하려면 결과보기의 「지금 파기」를 쓰십시오.';
     } else {
         $pdo = db();
         $pdo->beginTransaction();
         try {
             if ($survey === null) {
                 db_exec('INSERT INTO survey (type, title, organizer, description, starts_on, ends_on,
-                            phone_required, is_open) VALUES (?,?,?,?,?,?,?,?)',
+                            phone_required, is_open, retention_until) VALUES (?,?,?,?,?,?,?,?,?)',
                     [$surveyType, $title, $organizer, $description !== '' ? $description : null,
                      $startsOn !== '' ? $startsOn : null, $endsOn !== '' ? $endsOn : null,
-                     $phoneReq, $isOpen]);
+                     $phoneReq, $isOpen, $retention]);
                 $id = db_insert_id();
                 $action = $typeInfo['label'] . ' 등록';
             } else {
                 db_exec('UPDATE survey SET title=?, organizer=?, description=?, starts_on=?, ends_on=?,
-                            phone_required=?, is_open=? WHERE id=? AND type=?',
+                            phone_required=?, is_open=?, retention_until=? WHERE id=? AND type=?',
                     [$title, $organizer, $description !== '' ? $description : null,
                      $startsOn !== '' ? $startsOn : null, $endsOn !== '' ? $endsOn : null,
-                     $phoneReq, $isOpen, $id, $surveyType]);
+                     $phoneReq, $isOpen, $retention, $id, $surveyType]);
                 $action = $typeInfo['label'] . ' 수정';
             }
             $qres = survey_save_questions($id, $surveyType, $_POST);
@@ -80,7 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $survey = [
         'id' => $id, 'type' => $surveyType, 'title' => $title, 'organizer' => $organizer,
         'description' => $description, 'starts_on' => $startsOn, 'ends_on' => $endsOn,
-        'phone_required' => $phoneReq, 'is_open' => $isOpen,
+        'phone_required' => $phoneReq, 'is_open' => $isOpen, 'retention_until' => $retention,
+        'created_at' => $survey['created_at'] ?? null, 'purged_at' => $survey['purged_at'] ?? null,
     ];
     $questions = [];
     foreach ((array)($_POST['q_type'] ?? []) as $i => $qt) {

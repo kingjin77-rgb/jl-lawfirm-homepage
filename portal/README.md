@@ -117,6 +117,29 @@ IP 허용목록 자기잠금 방지·403, 웹크론 토큰, CSP 하 손님 11·�
 백업→변경→복원 왕복·1바이트 변조 거부 · 무결성 웹쉘 탐지·기준선 변조 탐지 ·
 운영 설정(개발키·dev 드라이버 503, http→https 301).
 
+## 5단계 — 서명 문항 · 설문별 자동 파기 (2026-11-17)
+
+`schema_phase5.sql` 을 1~4단계 스키마 뒤에 적용한다 (여러 번 실행 안전).
+
+| 항목 | 내용 | 코드 |
+|---|---|---|
+| 서명 문항 | 문항 빌더에 「서명」 유형(설문·등기접수·위임장 공통). 손님 화면은 canvas 서명 패드(Pointer Events — 마우스·터치·펜, 지우기, `touch-action:none`, 고해상도 최대 2배). 필수 서명이 비면 화면에서 막는다 | `views/survey_join.php`, `assets/portal.js` |
+| 서버 검증 | `data:image/png;base64` 만 · 엄격 base64 · 200KB 상한 · PNG 시그니처 · `getimagesize` · IHDR(8비트 RGBA·비월)·2000px 상한 · IDAT 압축 해제 크기 정확히 일치(압축 폭탄 차단) · 투명 픽셀뿐이면 빈 서명으로 거부. GD 불필요 | `survey.php` `survey_signature_png()` |
+| 저장 | PNG 바이트를 sodium secretbox(`encrypt_field`)로 암호화해 `survey_answer.value`(MEDIUMTEXT)에. 평문 PNG 는 DB·디스크에 남지 않는다. 수정 재제출 때는 서명도 새로 받아 교체 | `survey.php` `survey_submit()` |
+| 관리자 열람 | 결과보기는 건수만, 참여데이타는 「서명 있음」만. 「보기」→ OTP 재확인(10분) → 복호화 이미지 + `staff_audit survey.signature.reveal`. CSV 는 「서명 있음」만 | `pages/admin/survey_data.php` |
+| 파기예정일 | `survey.retention_until` — 기본 종료일 + 90일, 종료일 없으면 작성일 + 1년. 등록/수정 화면에서 바꿀 수 있으나 오늘 이전·종료일 이전으로는 못 바꾼다(재인증 없는 우회 파기 방지). 목록에 D-day, 대시보드에 30일 전 경고 카드 + CSV 받기 | `survey_form.php`, `dashboard.php` |
+| 자동 파기 | 웹크론 `/cron/purge` (토큰 헤더) — 예정일이 지난 건의 응답·답·서명 삭제, 문항별 집계 수치만 `survey.purged_summary`(JSON)에 남김. 파기된 건은 참여 불가, 결과보기·목록은 보존 집계로 표시. `staff_audit cron.survey.purge` | `app/cron.php`, `survey.php` `survey_purge()` |
+| 지금 파기 | 결과보기의 「지금 파기」(admin 전용) → OTP 재확인 → 확인 화면(CSV 받기 안내 + 체크 + 확인창) → `staff_audit survey.purge` | `pages/admin/survey_purge.php` |
+
+검증(2026-11-17): `php -l` 118파일 통과 · schema_phase5 2회 연속 적용 멱등 · 서명 검증기 자체점검 12건
+(필터 None/Sub 빈·잉크, RGB·JPEG·GIF·HTML·SVG·과대·과폭·잘린 IDAT 거부) · Playwright E2E 62건 통과
+(서명 문항 등록 → 손님 390px 참여: 빈 서명·지우기 후 거부, 서명 제출 → DB 암호문만·PNG 흔적 0 →
+위조 data URI 6종 서버 거부 → 재제출 새 서명 교체 → 관리자 서명 숨김·보기 재인증·감사기록·CSV 「서명 있음」 →
+파기예정일 과거 변경 거부 → 지금 파기 재인증·확인창 취소/실행·감사기록·집계 유지 → 크론 파기 응답·서명 0건·집계 유지·멱등·
+다른 설문 무영향·참여 차단 → 손님 6·관리자 18화면 390/1440 무넘침, 콘솔 오류·HTTP 4xx 0).
+
+주의: 파기는 DB 행 삭제다. 이미 만든 암호화 백업(`/cron/backup`, 14개 보관)에는 파기 전 응답이 최대 14일 남는다.
+
 ## 로컬 개발
 
 설정 파일: `D:\DDownloads\jl-portal-dev\config.local.php` (저장소 밖).
@@ -131,6 +154,7 @@ Get-Content portal\schema.sql        -Raw | mysql --host=127.0.0.1 --port=3307 -
 Get-Content portal\schema_phase2.sql -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 Get-Content portal\schema_phase3.sql -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 Get-Content portal\schema_phase4.sql -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
+Get-Content portal\schema_phase5.sql -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 Get-Content portal\seed.dev.sql      -Raw | mysql --host=127.0.0.1 --port=3307 -u jl_dev -p jlportal
 
 # 개발 서버 (리포 루트에서)

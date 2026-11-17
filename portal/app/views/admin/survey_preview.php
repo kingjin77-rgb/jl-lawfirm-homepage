@@ -43,6 +43,8 @@ $base = $typeInfo['base'];
         <?php endforeach; ?>
       <?php elseif ($q['qtype'] === 'phone'): ?>
       <input type="text" placeholder="010-1234-5678" disabled>
+      <?php elseif ($q['qtype'] === 'signature'): ?>
+      <div style="height:200px;border:2px dashed var(--line);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center">서명 칸 (손님 화면에서 손가락·마우스로 서명)</div>
       <?php else: ?>
       <textarea style="min-height:70px" disabled></textarea>
       <?php endif; ?>

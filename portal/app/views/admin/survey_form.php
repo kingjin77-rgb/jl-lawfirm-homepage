@@ -53,12 +53,22 @@ $qtypeLabels = survey_qtype_labels($surveyType);
       </div>
       <?php endif; ?>
       <div class="adm-field">
+        <label for="sv-retention">파기예정일</label>
+        <input type="date" id="sv-retention" name="retention_until" value="<?= h((string)($survey['retention_until'] ?? '')) ?>">
+      </div>
+      <div class="adm-field">
         <label>진행 상태</label>
         <label style="display:flex;align-items:center;gap:6px;font-weight:500;padding:10px 0">
           <input type="checkbox" name="is_open" value="1"<?= $survey === null || !empty($survey['is_open']) ? ' checked' : '' ?>>
           진행중 (끄면 손님 화면에서 숨김)
         </label>
       </div>
+    </div>
+    <div class="alert alert--info" style="margin:14px 0 0">
+      <b>파기예정일</b>
+      이 날이 지나면 응답·답·서명이 자동으로 지워지고 집계 수치만 남습니다.
+      비워 두면 종료일 + 90일, 종료일이 없으면 작성일 + 1년으로 정합니다.
+      <?php if (!empty($survey['purged_at'])): ?><br><b style="display:inline">이미 <?= h(substr((string)$survey['purged_at'], 0, 10)) ?> 에 파기했습니다.</b><?php endif; ?>
     </div>
     <?php if ($isAccept): ?>
     <div class="alert alert--info" style="margin:14px 0 0">
@@ -72,7 +82,7 @@ $qtypeLabels = survey_qtype_labels($surveyType);
     <h2>문항 빌더</h2>
     <div class="alert alert--info" style="margin:0 0 14px">
       <b>문항 유형</b>
-      객관식(보기 중 선택) · 주관식(자유 입력) · 설명글(답 없이 안내만)<?= $isAccept ? ' · 핸드폰(번호 형식 검증)' : '' ?>.
+      객관식(보기 중 선택) · 주관식(자유 입력) · 설명글(답 없이 안내만)<?= $isAccept ? ' · 핸드폰(번호 형식 검증)' : '' ?> · 서명(손글씨 서명, 암호화 보관).
       객관식 보기는 한 줄에 하나씩 적습니다. 순서대로 손님 화면에 나옵니다.
     </div>
 

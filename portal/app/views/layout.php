@@ -14,8 +14,9 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 <title><?= h($pageTitle ?? '등기 진행 조회') ?> | 법무법인 제이엘</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="/assets/portal.css?v=2">
-<script src="/assets/portal.js?v=1" defer></script>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/assets/portal.css?v=3">
+<script src="/assets/portal.js?v=2" defer></script>
 </head>
 <body>
 

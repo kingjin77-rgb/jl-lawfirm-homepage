@@ -17,8 +17,9 @@ $isJoined = $mode === 'joined';
 
 <?php if ($isJoined): ?><div class="reveal-bar">
   <div class="alert alert--info" style="margin:0; flex:1 1 320px">
-    <b>핸드폰 번호는 가려서 보여드립니다</b>
-    「보기」를 누르면 OTP 를 다시 확인한 뒤 원문이 나오고, 열람 기록이 작업기록에 남습니다.
+    <b>핸드폰 번호·서명은 가려서 보여드립니다</b>
+    「보기」를 누르면 OTP 를 다시 확인한 뒤 원문(서명은 복호화한 이미지)이 나오고, 열람 기록이 작업기록에 남습니다.
+    CSV 에는 서명 이미지 대신 「서명 있음」만 적힙니다.
   </div>
   <?php if ($reveal === null): ?><a class="btn btn--sm" id="reveal-all" href="<?= h(reveal_link('all')) ?>">이 쪽 전체 보기</a>
   <?php else: ?><a class="btn btn--sm" href="<?= h(strtok((string)($_SERVER['REQUEST_URI'] ?? ''), '?') . '?' . http_build_query(array_diff_key($_GET, ['reveal' => 1]))) ?>">다시 가리기</a><?php endif; ?>
@@ -42,8 +43,14 @@ $isJoined = $mode === 'joined';
       <td class="nowrap masked"><?= h(reveal_hit($reveal, (int)$r['response_id']) ? $r['phone'] : mask_phone($r['phone'])) ?: '—' ?>
         <?php if ($r['phone'] !== '' && !reveal_hit($reveal, (int)$r['response_id'])): ?><a class="btn btn--xs btn--reveal" data-reveal href="<?= h(reveal_link((int)$r['response_id'])) ?>">보기</a><?php endif; ?></td>
       <td class="nowrap"><?= h($r['submitted_at']) ?></td>
-      <?php foreach ($questions as $q): ?>
-      <td><?= nl2br(h((string)($answersBy[(int)$r['response_id']][(int)$q['id']] ?? ''))) ?: '—' ?></td>
+      <?php foreach ($questions as $q): $rid = (int)$r['response_id']; $v = (string)($answersBy[$rid][(int)$q['id']] ?? ''); ?>
+      <?php if ($q['qtype'] === 'signature'): ?>
+      <td class="nowrap"><?php if ($v === ''): ?>—<?php elseif (array_key_exists((int)$q['id'], $signatures[$rid] ?? [])): $uri = $signatures[$rid][(int)$q['id']]; ?>
+        <?php if ($uri === null): ?>(복호화 실패)<?php else: ?><img class="sig-img" src="<?= h($uri) ?>" alt="<?= h($r['owner_name']) ?> 서명"><?php endif; ?>
+      <?php else: ?>서명 있음 <a class="btn btn--xs btn--reveal" data-reveal href="<?= h(reveal_link($rid)) ?>">보기</a><?php endif; ?></td>
+      <?php else: ?>
+      <td><?= nl2br(h($v)) ?: '—' ?></td>
+      <?php endif; ?>
       <?php endforeach; ?>
     </tr>
     <?php endforeach; ?>

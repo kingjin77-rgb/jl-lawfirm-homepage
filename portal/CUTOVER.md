@@ -21,7 +21,9 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
       생성(개발 키를 쓰면 부팅이 503 으로 거부된다), `sms_driver` aligo|solapi, `cron_token` 48자,
       `backup_dir`·`integrity_baseline`·`tmp_dir`·`session_path` 는 도큐먼트루트 **밖** 폴더
 - [ ] 두 키(crypto_key·backup_key)의 사본을 서버 밖 안전한 곳에 보관 (잃으면 주소·계좌·백업 복구 불가)
-- [ ] schema.sql + schema_phase2.sql + schema_phase3.sql + **schema_phase4.sql** 순서로 적용
+- [ ] schema.sql + schema_phase2.sql + schema_phase3.sql + schema_phase4.sql + **schema_phase5.sql** 순서로 적용
+      (5단계: 서명 문항·파기예정일. 기존 설문은 파기예정일이 자동으로 채워지되 적용일 + 30일보다 앞당겨지지 않는다 —
+      적용 직후 대시보드 경고 카드에 뜨는 건은 협의회 전달용 CSV 를 받아 두거나 수정 화면에서 파기예정일을 늦춘다)
 - [ ] 직원 계정 생성: 로컬 PC 에서 `tools/make_staff.php` → 출력 SQL 을 DB 에 실행.
       출력 첫 주석 줄의 **OTP 등록코드**를 본인에게 직접(전화·대면) 전달 (24시간 유효)
 - [ ] **OTP 등록**: 각 직원이 첫 로그인 → 등록코드 → 인증 앱으로 QR 찍기 → 6자리 확인 →
@@ -34,7 +36,8 @@ jllawfirm.kr(등기 포털, 116.125.140.40)과 jllawfirm.co.kr(홈페이지, 211
 - [ ] **무결성 기준선**: 업로드가 끝난 뒤(쉘 없으면 로컬에서 같은 파일로 만들어 올림)
       `php tools/integrity.php baseline` → 이후 코드 배포 때마다 다시 baseline
 - [ ] **백업 크론**: 가비아 크론(또는 무료 외부 크론 서비스)에
-      `/cron/backup` (매일 03:00) · `/cron/integrity` (매시간) 를 헤더 `X-Cron-Token: <cron_token>` 으로 등록.
+      `/cron/backup` (매일 03:00) · `/cron/integrity` (매시간) · `/cron/purge` (매일 04:00, 파기예정일 지난 설문 응답 파기)
+      를 헤더 `X-Cron-Token: <cron_token>` 으로 등록.
       헤더를 못 붙이는 서비스만 config `cron_allow_query => true` 후 `?token=` 사용 (접속 로그에 남음 — 토큰 주기적 교체).
       실패(HTTP 500) 시 메일 알림 켜기
 - [ ] 복원 리허설: 백업 파일을 로컬로 받아 `php tools/restore.php <파일> --decrypt-to check.sql` 로 풀리는지 확인

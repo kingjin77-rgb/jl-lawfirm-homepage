@@ -76,6 +76,20 @@
       </label>
       <?php endforeach; ?>
     </fieldset>
+    <?php elseif ($q['qtype'] === 'signature'): ?>
+    <div class="frm__field sig" data-sig-pad<?= $q['required'] ? ' data-required' : '' ?>>
+      <label id="q-<?= $qid ?>-lbl"><?= h($q['title']) ?><?= $q['required'] ? ' *' : '' ?></label>
+      <canvas class="sig__pad" role="img" aria-labelledby="q-<?= $qid ?>-lbl"></canvas>
+      <input type="hidden" name="q<?= $qid ?>" value="">
+      <div class="sig__bar">
+        <span>칸 안에 손가락·펜·마우스로 서명해 주십시오.</span>
+        <button type="button" class="btn btn--sm sig__clear">지우기</button>
+      </div>
+      <p class="alert alert--err sig__err" role="alert" hidden>서명 칸에 서명해 주십시오.</p>
+      <?php if ($val !== ''): ?>
+      <p class="alert alert--info" style="margin-top:8px">이미 서명하셨습니다. 다시 제출하실 때는 서명도 새로 해 주십시오. 새 서명으로 바뀝니다.</p>
+      <?php endif; ?>
+    </div>
     <?php elseif ($q['qtype'] === 'phone'): ?>
     <div class="frm__field">
       <label for="q-<?= $qid ?>"><?= h($q['title']) ?><?= $q['required'] ? ' *' : '' ?></label>
