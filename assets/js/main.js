@@ -11,14 +11,9 @@
   var toggle = document.querySelector('.nav-toggle');
   var body = document.body;
 
-  /* ---------- 헤더: 스크롤하면 흰 배경 ---------- */
-  if (header && !header.classList.contains('is-sub')) {
-    var onScroll = function () {
-      header.classList.toggle('is-solid', window.scrollY > 40);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
+  /* ---------- 헤더: 모든 페이지에서 흰 바탕 (v148) ----------
+     메인도 영상 위에 투명하게 띄우지 않는다. 영상은 헤더 아래에서 시작한다 */
+  if (header && !header.classList.contains('is-sub')) header.classList.add('is-solid');
 
   /* ---------- 모바일 내비 ---------- */
   if (toggle) {
@@ -99,9 +94,11 @@
   /* ---------- 히어로 배경 영상 ----------
      파일이 없거나 재생 실패하면 이미지 슬라이드가 그대로 유지된다.
      데이터 절약 모드 · 모션 최소화 설정에서는 로드하지 않는다.
-     휴대폰은 첫 영상(도시) 한 편만 받는다 — 세 편을 다 받으면 데이터가 아깝다. */
+     휴대폰(768px 이하)은 영상을 받지 않고 포스터 사진만 둔다 — 데이터와 배터리를 아낀다. */
   var videos = [].slice.call(document.querySelectorAll('.hero__video'));
-  if (window.innerWidth <= 768) videos = videos.slice(0, 1);
+  if (window.innerWidth <= 768) videos = [];
+  var pauseBtn = document.querySelector('[data-hero-pause]');
+  var heroPaused = false;
   if (videos.length && !reduced &&
       !(navigator.connection && navigator.connection.saveData)) {
     var ready = [];   // 실제로 재생되는 것만 모은다. 없는 파일은 조용히 빠진다
@@ -116,7 +113,7 @@
     }
 
     function step() {
-      if (ready.length < 2) return;
+      if (heroPaused || ready.length < 2) return;
       var prev = ready[at];
       at = (at + 1) % ready.length;
       var v = ready[at];
@@ -146,8 +143,9 @@
         // 이때부터 화면에 보이는 것은 영상이므로 뒤에 깔린 이미지 슬라이드는 멈춘다.
         v.classList.add('is-ready');
         if (slideTimer) { clearInterval(slideTimer); slideTimer = null; }
+        if (pauseBtn) pauseBtn.hidden = false;
         var p = v.play();
-        if (p && p.catch) p.catch(function () { v.classList.remove('is-ready'); });
+        if (p && p.catch) p.catch(function () { v.classList.remove('is-ready'); if (pauseBtn) pauseBtn.hidden = true; });
       } else {
         v.pause();   // 차례가 올 때까지 멈춰 둔다
       }
@@ -178,6 +176,16 @@
     first.addEventListener('error', startRest, { once: true });
     setTimeout(startRest, 4000);   // 첫 영상이 늦어도 나머지는 받는다
     fetchVideo(first);
+
+    /* 일시정지 — 보이는 영상을 멈추고 순환도 멈춘다. 다시 누르면 그 자리에서 이어 간다 */
+    if (pauseBtn) pauseBtn.addEventListener('click', function () {
+      heroPaused = !heroPaused;
+      var v = ready[at];
+      if (v) { if (heroPaused) v.pause(); else { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
+      pauseBtn.setAttribute('aria-pressed', String(heroPaused));
+      pauseBtn.querySelector('span').textContent = heroPaused ? '배경 영상 재생' : '배경 영상 멈춤';
+      pauseBtn.querySelector('path').setAttribute('d', heroPaused ? 'M4 2.5l8 4.5-8 4.5z' : 'M4 2.5v9M10 2.5v9');
+    });
   }
 
   /* ---------- 글자 단위 스태거 리빌 ---------- */
@@ -192,7 +200,7 @@
               var span = document.createElement('span');
               span.className = 'split-char';
               span.textContent = ch;
-              span.style.transitionDelay = (order * 28) + 'ms';
+              span.style.transitionDelay = Math.min(order * 10, 320) + 'ms';   // 제목 전체가 0.8초 안에 다 선다
               order++;
               frag.appendChild(span);
             });

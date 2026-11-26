@@ -99,7 +99,7 @@
       var gap = parseInt(g.getAttribute('data-stagger'), 10) || 70;
       kids.forEach(function (k, i) {
         k.classList.add('stag');
-        k.style.transitionDelay = (i * gap) + 'ms';
+        k.style.transitionDelay = Math.min(i * gap, 300) + 'ms';   // 목록이 길어도 마지막 칸이 0.3초 안에 출발한다
       });
       if (reduced || !hasIO) { kids.forEach(function (k) { k.classList.add('is-in'); }); return; }
       new IntersectionObserver(function (es, ob) {

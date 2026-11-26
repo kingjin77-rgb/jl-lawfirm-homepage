@@ -10,3 +10,9 @@ tools/shots/
 tools/menubook.html
 tools/menubook.pdf
 server/config.php
+
+# 시안 점검 도구가 남긴 크롬 프로필(약 300MB) — 올리지 않는다
+v2/.taste-skill/
+
+# 검토용 최종 스크린샷 — 배포 대상 아님
+shots_final/

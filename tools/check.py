@@ -13,7 +13,7 @@ problems: list[str] = []
 
 # docs/legacy 는 이관 전 옛 시스템을 그대로 떠 둔 보존본이다.
 # 우리 자산이 아니므로 링크·파일 검사 대상에서 뺀다.
-SKIP_DIRS = {".git", "legacy"}
+SKIP_DIRS = {".git", "legacy", "v2", ".taste-skill"}  # v2: <base href="../"> 를 쓰는 noindex 시안 · .taste-skill: 점검 도구 크롬 프로필
 pages = sorted(q for q in ROOT.rglob("*.html") if not SKIP_DIRS & set(q.parts))
 ids = {p.name: set(re.findall(r'id="([^"]+)"', p.read_text(encoding="utf-8"))) for p in pages}
 

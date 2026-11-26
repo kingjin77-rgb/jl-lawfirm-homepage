@@ -165,7 +165,7 @@ def page_html(L, all_lawyers):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(name)s %(rolePlain)s | 법무법인 제이엘</title>
 <meta name="description" content="%(metaDesc)s">
-<script>document.documentElement.className+=' js';</script>
+<script>document.documentElement.className+=' js';setTimeout(function(){if(!window.JLReveal)document.documentElement.classList.remove('js')},2500);</script>
 <link rel="stylesheet" href="../assets/css/style.css?v=6">
 </head>
 <body>

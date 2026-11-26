@@ -1,4 +1,5 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&display=swap");
 
 /* =========================================================
    법무법인 제이엘 — Design Tokens
@@ -2481,4 +2482,233 @@ li > .s + .s, td > .s + .s, dd > .s + .s { margin-top: .35em; }
   .js .regflow li:not(.is-in)::before { background: var(--navy); border-color: var(--navy); }
   .js .calc__anim, .js .trk, .js .trk__steps li, .js .apw__panel:not([hidden]) { animation: none; }
   .calc__bar-seg { transition: none; }
+}
+
+/* =========================================================
+   v148 최종 디자인 — v2 시안(v2/) 방향을 사이트 전체에 입힌다
+   · 남색 #0d2162 하나만 포인트, 금색은 제목 밑 선과 실적 숫자에만
+   · 한글 Pretendard, 숫자 · 영문 라벨 Archivo
+   · 상자 그림자 대신 윗선 한 줄로 나누는 열린 카드, 넓은 여백
+   · 내용(문안 · 수치 · 법령 · 연락처)은 손대지 않는다. 겉모습만 이 블록이 정한다
+   ========================================================= */
+:root {
+  --ff-num: "Archivo", "Pretendard Variable", Pretendard, system-ui, sans-serif;
+  --fs-body: 17px;               /* 카드 본문도 17px — 본문 크기 하나로 */
+  --line-strong: #cfd4dc;
+  --r-lg: 14px;
+  --r-md: 10px;
+  --sec-pad: clamp(80px, 9vw, 144px);
+}
+
+/* 숫자 · 영문 라벨 — Archivo */
+.sec-title .en, .hero__eyebrow, .hero__count, .subhero .en, .regbanner__en,
+.pcard__no, .whycard__no, .parea__no, .step__no, .acc__no, .rdv-door__tag, .rdv-why__no,
+.statcard .num, .header__tel .num, .apw__total strong, .trk__now-lbl {
+  font-family: var(--ff-num); font-stretch: 110%;
+}
+.statcard .num small, .apw__total strong small { font-family: var(--ff); font-stretch: 100%; }
+
+/* ── 제목 ── 굵기는 줄이고 크기로 위계를 잡는다 */
+.sec-title { font-weight: 600; letter-spacing: -.03em; line-height: 1.28; font-size: clamp(30px, 3.9vw, 50px); }
+.sec-title .en { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .16em; margin-bottom: 18px; }
+.sec-desc { margin-top: 36px; }
+/* 제목 밑 금색 선 — 짧게(48px) 그어진다. 제목 전체를 긋지 않는다 */
+.uline::after { width: 48px; bottom: -18px; transition: transform .5s var(--ease) .1s; }
+.sec-head--center .uline::after { left: 50%; margin-left: -24px; transform-origin: 50% 50%; }
+.sec-head { margin-bottom: clamp(44px, 5vw, 72px); }
+.sec-title--sub { font-weight: 600; }
+
+/* ── 섹션 바탕 ── 회색 띠를 번갈아 깔지 않는다. 흰 바탕 + 여백 + 가는 선.
+   남색 섹션은 로고 남색 그대로 */
+.section--alt, .section--tint { background: var(--paper); }
+main > .section--alt, main > .section--tint { border-top: 1px solid var(--line); }
+.section--dark { background: var(--navy); }
+
+/* ── 버튼 ── 부드러운 모서리, 채움은 남색 하나 */
+.btn { border-radius: var(--r-md); height: 54px; padding-inline: 28px; }
+.btn--sm { height: 44px; padding-inline: 20px; }
+
+/* ── 헤더 ── 모든 페이지에서 흰 바탕. 상담 전화는 남색 단추 */
+.header, .header.is-solid, .header.is-sub {
+  background: rgba(255,255,255,.97); border-bottom-color: var(--line);
+  backdrop-filter: saturate(180%) blur(12px);
+}
+.header .logo__img--white { display: none; }
+.header .logo__img--color { display: block; }
+.header .gnb a { color: var(--ink); }
+.header .gnb a:hover { color: var(--navy); }
+.header .nav-toggle span { background: var(--navy); }
+.header .gnbdrop { color: var(--line); }
+.header .gnbdrop__list b { color: var(--gray-700); }
+.header.has-drop { background: rgba(255,255,255,.98); border-bottom-color: var(--line); }
+.btn-track {
+  border-radius: var(--r-md); color: var(--navy); background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+.btn-track:hover { background: var(--navy-soft); }
+.header__tel {
+  flex-direction: row; align-items: center; gap: 10px; height: 44px; padding-inline: 18px;
+  border-radius: var(--r-md); background: var(--navy); line-height: 1;
+}
+.header .header__tel, .header.is-sub .header__tel, .header.is-solid .header__tel { color: var(--white); }
+.header .header__tel .lbl, .header.is-sub .header__tel .lbl, .header.is-solid .header__tel .lbl { color: rgba(255,255,255,.88); letter-spacing: 0; font-weight: 600; }
+.header__tel .num { font-size: var(--fs-base); font-weight: 600; }
+.header__tel:hover { background: var(--navy-deep); }
+@media (min-width: 1025px) { .btn-track { height: 44px; } }
+@media (max-width: 1340px) { .header__tel .lbl { display: none; } }
+
+/* ── 메인 히어로 ── 흰 헤더 아래에서 영상이 시작한다.
+   글은 남색 판 위에 둔다. 영상의 어느 장면이 와도 글자 대비가 떨어지지 않는다 */
+.hero { height: auto; min-height: 100vh; min-height: 100dvh; padding: var(--header-h) 0 0; background: var(--navy-deep); align-items: center; }
+.hero__media { top: var(--header-h); }
+.hero::after {
+  inset: var(--header-h) 0 0 0;
+  background: linear-gradient(90deg, rgba(4,8,20,.30) 0%, rgba(4,8,20,.08) 50%, rgba(4,8,20,0) 75%),
+              linear-gradient(0deg, rgba(4,8,20,.34) 0, rgba(4,8,20,0) 28%);
+}
+.hero__video.is-ready { opacity: 1; }
+.hero__inner { padding-top: clamp(40px, 6vh, 80px); padding-bottom: 110px; }
+.hero__panel {
+  max-width: 720px; padding: clamp(28px, 3.4vw, 48px);
+  background: rgba(13, 33, 98, .94); border-radius: var(--r-lg);
+  box-shadow: 0 30px 60px -30px rgba(4, 8, 20, .55);
+}
+.hero__title { font-size: clamp(32px, 4.3vw, 54px); font-weight: 700; text-shadow: none; }
+.hero__lead, .hero__eyebrow { text-shadow: none; }
+.hero__lead { color: rgba(255,255,255,.9); font-weight: 400; }
+.hero__fields a { background: transparent; backdrop-filter: none; border-color: rgba(255,255,255,.38); }
+.hero__actions .btn--ghost { background: transparent; backdrop-filter: none; }
+.hero__actions .btn--fill { background: var(--white); color: var(--navy); border-color: var(--white); }
+.hero__actions .btn--fill:hover { background: var(--navy-soft); }
+.hero__hud { bottom: 28px; align-items: center; }
+.hero__count, .hero__scroll { text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+/* 영상 일시정지 — 움직이는 배경은 멈출 수 있어야 한다 */
+.hero__pause {
+  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding-inline: 16px;
+  border-radius: 999px; background: rgba(4,8,20,.55); color: var(--white);
+  font-size: var(--fs-sm); font-weight: 600; backdrop-filter: blur(4px); white-space: nowrap;
+}
+.hero__pause:hover { background: rgba(4,8,20,.75); }
+.hero__pause svg { width: 14px; height: 14px; flex: 0 0 auto; }
+.hero__pause[hidden] { display: none; }
+@media (max-width: 768px) {
+  .hero__inner { padding-top: 20px; padding-bottom: 92px; }
+  .hero__panel { padding: 26px 22px; }
+}
+@media (max-width: 640px) { .hero { padding-block: var(--header-h) 0; } }
+
+/* ── 하위 페이지 머리 ── 남색 판을 화면 가장자리에서 띄운다(v2 등기 페이지 방식) */
+.subhero {
+  margin: calc(var(--header-h) + 12px) clamp(12px, 1.6vw, 24px) 0;
+  padding-top: 0; min-height: 300px; border-radius: var(--r-lg); overflow: hidden;
+  background: var(--navy);
+}
+.subhero--tall { min-height: 380px; }
+.subhero h1 { font-weight: 700; letter-spacing: -.03em; }
+.subhero h1::after {
+  content: ""; display: block; width: 48px; height: 2px; margin-top: 22px; background: var(--gold-light);
+  transform-origin: 0 50%;
+}
+.js .subhero h1::after { animation: jl-draw .5s var(--ease) .15s backwards; }
+@keyframes jl-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.subhero .en { font-weight: 500; }
+
+/* ── 열린 카드 ── 테두리 상자 · 그림자 · 떠오름 대신 윗선 한 줄.
+   선은 마우스를 올리면 남색으로 그어진다 */
+.pcard, .whycard, .step, .rdv-door, .vcard {
+  position: relative; background: transparent; border: 0; border-top: 2px solid var(--line-strong);
+  padding: 28px 0 0; border-radius: 0;
+}
+.pcard::before { top: -2px; height: 2px; }
+.whycard::before, .step::before, .rdv-door::before, .vcard::before {
+  content: ""; position: absolute; left: 0; top: -2px; width: 100%; height: 2px; background: var(--navy);
+  transform: scaleX(0); transform-origin: 0 50%; transition: transform .45s var(--ease);
+}
+.rdv-door--gold { border-top-color: var(--line-strong); }
+.whycard:hover::before, .rdv-door:hover::before, .vcard:hover::before, .step:hover::before { transform: scaleX(1); }
+.pcard:hover, .whycard:hover, .rdv-door:hover, .vcard:hover, .step:hover { transform: none; box-shadow: none; }
+.pcard.pcard--navy { padding: var(--card-pad); border-radius: var(--r-lg); border-top: 0; background: var(--navy); }
+.step__no { width: auto; height: auto; margin-bottom: 14px; background: none; color: var(--navy); font-size: var(--fs-sm); font-weight: 600; letter-spacing: .12em; }
+.step.step--dark { background: transparent; border-top-color: rgba(255,255,255,.24); }
+.step--dark .step__no { color: var(--gold-light); }
+.step--dark::before { background: var(--gold-light); }
+.whygrid, .grid { gap: clamp(28px, 3vw, 48px) clamp(20px, 2.6vw, 40px); }
+.pcard__tags { gap: 4px 8px; }
+.pcard__tags li { background: transparent; padding: 0; border-radius: 0; color: var(--gray-700); font-size: var(--fs-sm); }
+.pcard__tags li + li::before { content: "· "; color: var(--gray-300); }
+
+/* 업무분야 여섯 칸 — 벤토. 옅은 면 위 글, 단체등기 칸만 남색 */
+.parea { gap: 16px; }
+.parea__card { background: var(--paper-alt); border: 0; border-radius: var(--r-lg); }
+.parea__card::before { display: none; }
+.parea__card:hover { transform: none; box-shadow: inset 0 0 0 1.5px var(--navy); }
+.parea__title { font-weight: 700; color: var(--ink); }
+.parea__card[href="registry.html"] { background: var(--navy); }
+.parea__card[href="registry.html"] :is(.parea__title, .parea__icon, .parea__more) { color: var(--white); }
+.parea__card[href="registry.html"] .parea__list li { color: rgba(255,255,255,.88); }
+.parea__card[href="registry.html"] .parea__no { color: var(--gold-light); }
+.parea__card[href="registry.html"]:hover { box-shadow: 0 18px 40px -24px rgba(13,33,98,.6); }
+
+/* 실적 · 기한 숫자 — 남색 상자를 걷어내고 큰 숫자만. 숫자는 금색 */
+.statgrid { gap: clamp(20px, 2.6vw, 40px); }
+.statcard, .statcard:nth-child(even), .statcard.statcard--glass {
+  background: transparent; color: var(--ink); border: 0; border-top: 2px solid var(--line-strong);
+  padding: 22px 0 0; gap: 8px;
+}
+.statcard:hover { transform: none; }
+.statcard .num { font-weight: 500; letter-spacing: -.035em; color: var(--gold-ink); }
+.statcard .num small { color: var(--ink); font-weight: 600; }
+.statcard .lbl { color: var(--ink); font-size: var(--fs-base); }
+.statcard .desc { color: var(--gray-700); }
+.section--dark .statcard { border-top-color: rgba(255,255,255,.24); }
+.section--dark .statcard .num { color: var(--gold-light); }
+.section--dark .statcard .num small, .section--dark .statcard .lbl { color: var(--white); }
+.section--dark .statcard .desc { color: rgba(255,255,255,.86); }
+
+/* 최신 법률정보 · 매거진 · 구성원 카드 — 모서리와 면을 맞춘다 */
+.lawnew__card, .magcard, .lawyer, .lwp-col, .lwp-focus__card, .lwp-work__card, .office, .casecard, .errcard, .apw__type {
+  border-radius: var(--r-lg);
+}
+.lawnew__card { background: var(--paper-alt); border-color: transparent; }
+.lawnew__kind, .lawnew__cat { border-radius: 999px; }
+.lawnew__card:hover, .magcard:hover, .lawyer:hover, .lwp-col:hover, .errcard:hover, .apw__type:hover {
+  transform: none; box-shadow: inset 0 0 0 1.5px var(--navy); border-color: var(--navy);
+}
+
+/* 남색 띠 · 도구 · 조회 카드 */
+.regbanner { background: var(--navy); border-radius: var(--r-lg); }
+.regbanner__en { color: var(--gold-light); }
+.tool, .apw, .trk { border-radius: var(--r-lg); overflow: hidden; }
+.trk__now, .trk__demo, .trk__err, .apw__total, .apw__note { border-radius: var(--r-md); }
+.trk__field input, .trk__field select, .apw input, .apw select, .apw textarea { border-radius: var(--r-md); }
+.calc__bar-track { border-radius: 999px; border: 0; }
+.greet__photo, .lwgroup__frame { border-radius: var(--r-lg); overflow: hidden; }
+.quote { border-radius: 0 var(--r-md) var(--r-md) 0; }
+
+/* ── 푸터 ── 로고 남색 */
+.footer { background: var(--navy); }
+.footer__offices { font-size: var(--fs-base); }
+.footer__offices h4 { font-size: var(--fs-base); }
+
+/* ── 등장 모션 ── 짧고 작게(0.45초 · 12px). 내용이 오래 숨지 않게 한다 */
+.js .reveal { transform: translateY(12px); transition: opacity .45s var(--ease), transform .45s var(--ease); }
+.js .stag { transform: translateY(12px); transition: opacity .45s var(--ease), transform .45s var(--ease); }
+.js .split-char { transform: translateY(.3em); transition: opacity .4s var(--ease), transform .45s var(--ease); }
+/* 사진은 살짝 크게 들어와 제자리로 */
+.js figure.reveal img, .js .reveal figure img, .js .reveal .lwgroup__frame img {
+  transform: scale(1.04); transition: transform .9s var(--ease);
+}
+.js figure.reveal.is-in img, .js .reveal.is-in figure img, .js .reveal.is-in .lwgroup__frame img { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal, .js .stag, .js .split-char { opacity: 1; transform: none; transition: none; }
+  .js figure.reveal img, .js .reveal figure img, .js .reveal .lwgroup__frame img { transform: none; transition: none; }
+  .js .subhero h1::after { animation: none; }
+  .uline::after { transition: none; }
+}
+
+/* ── 휴대폰 ── */
+@media (max-width: 640px) {
+  .sec-title { font-size: clamp(27px, 7.4vw, 34px); }
+  .subhero { min-height: 220px; margin-top: calc(var(--header-h) + 8px); }
+  .subhero__inner { padding-block: 34px; }
 }
